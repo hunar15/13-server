@@ -8,7 +8,7 @@ var inventory = require('../models/inventory'),
 	requests = require('../models/requests');
 
 exports.index = function(req, res){
-  res.sendFile('index.html');
+  res.redirect('/index.html');
 };
 
 
