@@ -4,6 +4,7 @@ window.onload = function() {
 	var metadata = [];
 	metadata.push({ name: "barcode", label: "Barcode", datatype: "string", editable: false});
 	metadata.push({ name: "name", label:"Name", datatype: "string", editable: false});
+	metadata.push({ name: "s_name", label:"Name", datatype: "string", editable: false});	
 	metadata.push({ name: "category", label: "Category", datatype: "string", editable: true});
 	metadata.push({ name: "manufacturer", label: "Manufacturer", datatype: "string", editable: true});
 	metadata.push({ name: "stock", label: "Stock", datatype: "integer", editable: true});
