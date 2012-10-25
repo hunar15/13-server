@@ -53,6 +53,15 @@
 			</div>
 
 			<div id ="transactioncontent">
+				<div id="date-selector">
+					<form class="form-inline">
+					<label for="from">Select range of dates from</label>
+					<input type="text" id="from" name="from" />
+					<label for="to">to</label>
+					<input type="text" id="to" name="to" />
+					<a class="btn" id="submit-date">Select</a><span id="submit-msg"></span>
+					</form>
+				</div>			
 				<div id="tablecontent"></div>
 				<div class="pagination">
 					<ul><!--Should be generated with Javascript-->
