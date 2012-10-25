@@ -28,6 +28,7 @@
 		<script src="js/editablegrid_utils.js" ></script>
 		<script src="js/editablegrid_charts.js" ></script>
 		<script src="js/product.js"></script>
+		<script src="js/demo.js"></script>
 		<!--<script src="js/controller.js"></script>-->
 		<link rel="stylesheet" href="css/editablegrid.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
@@ -58,17 +59,40 @@
 				</div>
 			</div>
 			<div id ="productcontent">
-				<div class="" id="producttablecontent"></div>
-				<div class="pagination">
-					<ul><!--Should be generated with Javascript-->
-						<li><a href="#">Prev</a></li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">Next</a></li>
-					</ul>
+				<div id="pagecontrol">
+					<div class="form-inline right" align="right">
+						<label for="pagecontrol">Rows per page: </label>
+						<select id="pagesize" name="pagesize" class="span1">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="15">15</option>
+							<option value="20">20</option>
+							<option value="25">25</option>
+							<option value="30">30</option>
+							<option value="40">40</option>
+							<option value="50">50</option>
+						</select>
+						&nbsp;&nbsp;
+						<label for="barcount">Bars in chart: </label>
+						<select id="barcount" name="barcount" class="span1">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="15">15</option>
+							<option value="20">20</option>
+							<option value="25">25</option>
+							<option value="30">30</option>
+							<option value="40">40</option>
+							<option value="50">50</option>
+						</select>	
+					</div>
 				</div>
+				<form class="form-search">
+					<label for="filter">Filter :</label>
+					<input class="span4" type="text" id="filter" placeholder="Enter product barcodes or any of its details"/>
+				</form>
+				<div id="producttablecontent" align="center"></div>
+			<!-- Paginator control -->
+			<div id="paginator"></div>
 			</div>
 
 			<hr />
