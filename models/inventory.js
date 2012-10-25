@@ -8,18 +8,14 @@ var connection = sql.createConnection({
 
 exports.getAllInventory = function  (callback) {
 	// body...
-	connection.connect();
-
 	var query = 'select * FROM inventory;';
 	connection.query(query, function  (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 exports.getInventory =  function(args, callback) {
 	//query
-	connection.connect();
 	var query = 'SELECT s_name, barcode, name, manufacturer, stock, min_stock' + 
 			', selling_price, cost_price FROM ' + 
 			' product INNER JOIN inventory on barcode = product_barcode' + 
@@ -37,14 +33,12 @@ exports.getInventory =  function(args, callback) {
 	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
 			' ORDER BY ' + sortBy + ' ' + order + ';';
 	connection.query( query,  function(err, rows, fields) {
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.addToInventory = function (args, callback) {
 	// body...
-	connection.connect();
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
 		stock = args.stock,
@@ -53,27 +47,23 @@ exports.addToInventory = function (args, callback) {
 	var query = 'INSERT INTO inventory VALUES('+outlet_id+','+product_barcode+','+stock+','+selling_price+','+min_stock+');';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.deleteFromInventory = function (args, callback) {
 	// body...
-	connection.connect();
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode;
 	var query = 'DELETE FROM inventory where outlet_id='+id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.updateInventory = function (args, callback) {
 	// body...
-	connection.connect();
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
 		stock = args.stock,
@@ -83,7 +73,6 @@ exports.updateInventory = function (args, callback) {
 				' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };

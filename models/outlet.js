@@ -8,20 +8,16 @@ var connection = sql.createConnection({
 
 exports.getAllOutlets = function  (callback) {
 	// body...
-	connection.connect();
 
 	var query = 'select * FROM outlet;';
 	connection.query(query, function  (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 exports.getOutlets =  function(args, callback) {
 	//query
-	connection.connect();
-	var query = 'select id,s_name, address' + 
-			' FROM outlet';
+	var query = 'select id,s_name, address FROM outlet';
 	var searchParameter = args.query;
 
 	if(searchParameter != 'none') {
@@ -35,44 +31,44 @@ exports.getOutlets =  function(args, callback) {
 	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
 			' ORDER BY ' + sortBy + ' ' + order + ';';
 	connection.query( query,  function(err, rows, fields) {
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.addOutlet = function (args, callback) {
 	// body...
-	connection.connect();
+	console.log(args);
 	var s_name = args.s_name,
 		address = args.address;
-	var query = 'INSERT INTO outlet VALUES(\''+s_name+'\','+address+');';
+	var query = 'INSERT INTO outlet(s_name,address) VALUES(\''+s_name+'\',\''+address+'\');';
+	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
+		console.log(err);
+		console.log(rows);
+		console.log(fields);
 		callback(err, rows);
 	});
 };
 
 exports.deleteOutlet = function (args, callback) {
 	// body...
-	connection.connect();
 	var id = args.id;
 	var query = 'DELETE FROM outlet where id='+id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.updateOutlet = function (args, callback) {
 	// body...
-	connection.connect();
-	var id = args.id;
+	var id = args.id,
+		s_name = args.s_name,
+		address = args.address;
 	var query = 'UPDATE outlet SET s_name=\''+s_name+'\', address=\''+address+'\' WHERE id='+id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };

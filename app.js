@@ -32,26 +32,29 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.get('/add/product',routes.addProduct);
-app.get('/add/outlet',routes.addOutlet);
-app.get('/add/inventory',routes.addToInventory);
-app.get('/add/request',routes.addRequest);
+app.post('/add/product',routes.addProduct);
+app.post('/add/outlet',function(req,res) {
+  console.log(JSON.stringify(req.body.values));
+  routes.addOutlet(req,res);
+});
+app.post('/add/inventory',routes.addToInventory);
+app.post('/add/request',routes.addRequest);
 
-app.get('/get/product',routes.getProducts);
-app.get('/get/outlet',routes.getOutlets);
-app.get('/get/inventory',routes.getInventory);
-app.get('/get/request',routes.getRequests);
+app.post('/get/product',routes.getProducts);
+app.post('/get/outlet',routes.getOutlets);
+app.post('/get/inventory',routes.getInventory);
+app.post('/get/request',routes.getRequests);
 
 
-app.get('/delete/product',routes.deleteProduct);
-app.get('/delete/outlet',routes.deleteOutlet);
-app.get('/delete/inventory',routes.deleteFromInventory);
-app.get('/delete/request',routes.deleteRequest);
+app.post('/delete/product',routes.deleteProduct);
+app.post('/delete/outlet',routes.deleteOutlet);
+app.post('/delete/inventory',routes.deleteFromInventory);
+app.post('/delete/request',routes.deleteRequest);
 
-app.get('/update/product',routes.updateProduct);
-app.get('/update/outlet',routes.updateOutlet);
-app.get('/update/inventory',routes.updateInventory);
-app.get('/update/request',routes.updateRequest);
+app.post('/update/product',routes.updateProduct);
+app.post('/update/outlet',routes.updateOutlet);
+app.post('/update/inventory',routes.updateInventory);
+app.post('/update/request',routes.updateRequest);
 
 
 app.get('/getall', routes.getall);

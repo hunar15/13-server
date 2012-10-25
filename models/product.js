@@ -8,59 +8,83 @@ var connection = sql.createConnection({
 
 exports.getProducts =  function(args, callback) {
 	//query
-	connection.connect();
-	var query = 'select s_name, barcode, name, manufacturer, stock, min_stock' + 
-			', selling_price, cost_price FROM ' + 
-			' product INNER JOIN inventory on barcode = product_barcode' + 
-			' INNER JOIN outlet ON id = outlet_id ';
-	var searchParameter = args.query;
-
-	if(searchParameter != 'none') {
-		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';
+	/*
+	{
+		query : "none",
+		sortby : "ASC/DESC",
+		pageNumber
 	}
-	var pageNumber = args.pageNumber,
+	*/
+	var query = 'SELECT barcode, name,s_name, category, manufacturer, stock, min_stock'
+		query+=', selling_price, cost_price FROM '
+		query+= 'product INNER JOIN inventory on barcode = product_barcode '
+		query+=' INNER JOIN outlet ON id = outlet_id ';
+	var searchParameter = args.query;
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string", "editable":"false"});
+	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string", "editable":"false"});
+	result['metadata'].push({"name": "s_name", "label" : "Name", "datatype" : "string", "editable":"false"});
+	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string", "editable":"true"});
+	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string", "editable":"true"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer", "editable":"true"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer", "editable":"true"});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)", "editable":"true"});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)", "editable":"true"});
+
+	/*if(searchParameter != 'none') {
+		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';
+	}*/
+	//query +=';';
+	/*var pageNumber = args.pageNumber,
 		sortBy = args.sortby,
 		resultsPerPage = args.itemperpage,
 		order = (args.asc === true) ? 'ASC' : 'DESC';
-
-	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';
+*/
+	query += ';';
+	//query +=		' ORDER BY name ' + order + ';';*/
+	//console.log(query);
 	connection.query( query,  function(err, rows, fields) {
-		connection.end();
-		callback(err, rows);
+		for (var tuple in rows) {
+			var current ={};
+			current['id'] = rows[tuple].barcode;
+			current['values'] = rows[tuple];
+			result['data'].push(current);
+		}
+		console.log(result);
+		callback(err, result);
 	});
 };
 
 exports.addProduct = function (args, callback) {
 	// body...
-	connection.connect();
 	var name = args.name,
 		category = args.category,
 		barcode = args.barcode,
 		cost_price = args.cost_price,
 		manufacturer = args.manufacturer;
-	var query = 'INSERT INTO product VALUES('+name+','+category+','+barcode+','+cost_price+','+manufacturer+');';
+	var query = 'INSERT INTO product VALUES(\''+name+'\',\''+category+'\','+barcode+','+cost_price+',\''+manufacturer+'\');';
+	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
+	//	connection.end();
+		console.log(err);
 		callback(err, rows);
 	});
 };
 
 exports.deleteProduct = function (args, callback) {
 	// body...
-	connection.connect();
 	var barcode = args.barcode;
 	var query = 'DELETE FROM product WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 exports.updateProduct = function (args, callback) {
 	// body...
-	connection.connect();
 	var name = args.name,
 		category = args.category,
 		barcode = args.barcode,
@@ -70,7 +94,6 @@ exports.updateProduct = function (args, callback) {
 				', manufacturer=\''+manufacturer+'\' WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };

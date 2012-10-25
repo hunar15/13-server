@@ -8,41 +8,36 @@ var connection = sql.createConnection({
 
 exports.getAllRequests = function  (callback) {
 	// body...
-	connection.connect();
 
 	var query = 'select * FROM request;';
 	connection.query(query, function  (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 exports.getRequests =  function(args, callback) {
 	//query
-	connection.connect();
-	var query = 'SELECT request_id, s_name, date' + 
-			' FROM outlet INNER JOIN request on id = outlet_id';
+	var query = 'SELECT request_id, s_name, date FROM outlet INNER JOIN request on id = outlet_id';
 	var searchParameter = args.query;
 
 	if(searchParameter != 'none') {
 		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' ';
 	}
-	var pageNumber = args.pageNumber,
+	query += ';';
+	/*var pageNumber = args.pageNumber,
 		sortBy = args.sortby,
 		resultsPerPage = args.itemperpage,
 		order = (args.asc === true) ? 'ASC' : 'DESC';
 
 	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';
+			' ORDER BY ' + sortBy + ' ' + order + ';';*/
 	connection.query( query,  function(err, rows, fields) {
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.addRequest = function (args, callback) {
 	// body...
-	connection.connect();
 	var outlet_id = args.outlet_id,
 		date = args.date,
 		req_details = args.req_details;
@@ -57,14 +52,12 @@ exports.addRequest = function (args, callback) {
 			var sub_query = 'INSERT INTO req_details VALUES('+req_id+','+barcode+','+quantity+');';
 			connection.query( sub_query);
 		}
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.deleteRequest = function (args, callback) {
 	// body...
-	connection.connect();
 	var request_id = args.request_id;
 	var query = 'DELETE FROM req_details where request_id='+request_id+';';
 	connection.query( query, function (err, rows, fields) {
@@ -79,7 +72,6 @@ exports.deleteRequest = function (args, callback) {
 
 exports.updateRequest = function (args, callback) {
 	// body...
-	connection.connect();
 	var barcode = args.barcode,
 		request_id = args.request_id,
 		quantity = args.quantity;
@@ -87,7 +79,6 @@ exports.updateRequest = function (args, callback) {
 				' WHERE request_id='+request_id+' AND barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
