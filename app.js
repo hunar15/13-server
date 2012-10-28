@@ -40,7 +40,7 @@ app.post('/add/outlet',function(req,res) {
 app.post('/add/inventory',routes.addToInventory);
 app.post('/add/request',routes.addRequest);
 
-app.post('/get/product',routes.getProducts);
+app.get('/get/product',routes.getProducts);
 app.post('/get/outlet',routes.getOutlets);
 app.post('/get/inventory',routes.getInventory);
 app.post('/get/request',routes.getRequests);

@@ -19,7 +19,7 @@ exports.getProducts =  function(args, callback) {
 		query+=', selling_price, cost_price FROM '
 		query+= 'product INNER JOIN inventory on barcode = product_barcode '
 		query+=' INNER JOIN outlet ON id = outlet_id ';
-	var searchParameter = args.query;
+	//var searchParameter = args.query;
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
@@ -46,9 +46,11 @@ exports.getProducts =  function(args, callback) {
 	//query +=		' ORDER BY name ' + order + ';';*/
 	//console.log(query);
 	connection.query( query,  function(err, rows, fields) {
+		var idx = 0;
 		for (var tuple in rows) {
 			var current ={};
-			current['id'] = rows[tuple].barcode;
+			current['id'] = idx; //rows[tuple].barcode;
+			idx++;
 			current['values'] = rows[tuple];
 			result['data'].push(current);
 		}
