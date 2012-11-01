@@ -73,7 +73,7 @@ exports.addProduct = function (args, callback) {
 
 exports.deleteProduct = function (args, callback) {
 	var barcode = args.barcode;
-	var query = 'DELETE FROM product WHERE barcode='+barcode+';';
+	var query = 'UPDATE inventory SET status=\'DISCONTINUE\' WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
