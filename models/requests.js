@@ -18,11 +18,11 @@ exports.getAllRequests = function  (callback) {
 exports.getRequests =  function(args, callback) {
 	//query
 	var query = 'SELECT request_id, s_name, date FROM outlet INNER JOIN request on id = outlet_id';
-	var searchParameter = args.query;
+	/*var searchParameter = args.query;
 
 	if(searchParameter != 'none') {
 		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' ';
-	}
+	}*/
 	query += ';';
 	/*var pageNumber = args.pageNumber,
 		sortBy = args.sortby,

@@ -19,7 +19,7 @@ exports.getProducts =  function(args, callback) {
 		query+=', selling_price, cost_price FROM '
 		query+= 'product INNER JOIN inventory on barcode = product_barcode '
 		query+=' INNER JOIN outlet ON id = outlet_id ';
-	var searchParameter = args.query;
+	//var searchParameter = args.query;
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
@@ -58,7 +58,6 @@ exports.getProducts =  function(args, callback) {
 };
 
 exports.addProduct = function (args, callback) {
-	// body...
 	var name = args.name,
 		category = args.category,
 		barcode = args.barcode,
@@ -67,15 +66,12 @@ exports.addProduct = function (args, callback) {
 	var query = 'INSERT INTO product VALUES(\''+name+'\',\''+category+'\','+barcode+','+cost_price+',\''+manufacturer+'\');';
 	console.log(query);
 	connection.query( query, function (err, rows, fields) {
-		// body...
-	//	connection.end();
 		console.log(err);
 		callback(err, rows);
 	});
 };
 
 exports.deleteProduct = function (args, callback) {
-	// body...
 	var barcode = args.barcode;
 	var query = 'DELETE FROM product WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {

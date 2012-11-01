@@ -14,15 +14,63 @@ exports.getAllInventory = function  (callback) {
 		callback(err, rows);
 	});
 };
+exports.getAdded = function (args, callback) {
+	// body...
+	var outlet_id = args.outletid,
+		query = 'SELECT barcode, name, category, manufacturer, stock, min_stock' +
+			', selling_price, cost_price FROM ' +
+			' product INNER JOIN inventory on barcode = product_barcode' +
+			' INNER JOIN outlet ON id = outlet_id WHERE status=\'ADDED\' AND outlet_id='+outlet_id+';';
+	var result = {};
+	connection.query( query, function (err, rows, fields) {
+		// body...
+		result['addedList'] = rows;
+		if(!err) {
+			var query2 = "UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id="+outlet_id+" AND status=\'ADDED\'";
+			connection.query(query2, function (err2, rows2, fields2) {
+				if(!err2)
+					callback(err2, result);
+				else
+					console.log(err2);
+			});
+		} else {
+			console.log(err);
+		}
+	});
+};
+
+exports.getDeleted = function (args, callback) {
+	// body...
+	var outlet_id = args.outletid,
+		query = 'SELECT barcode FROM ' +
+			' product INNER JOIN inventory on barcode = product_barcode' +
+			' INNER JOIN outlet ON id = outlet_id WHERE status=\'DISCONTINUED\' AND outlet_id='+outlet_id+';';
+	var result;
+	connection.query( query, function (err, rows, fields) {
+		// body...
+		result = rows;
+		if(!err) {
+			var query2 = "UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id="+outlet_id+" AND status=\'ADDED\'";
+			connection.query(query2, function (err2, rows2, fields2) {
+				if(!err2)
+					callback(err2, result);
+				else
+					console.log(err2);
+			});
+		} else {
+			console.log(err);
+		}
+	});
+};
 exports.getInventory =  function(args, callback) {
 	//query
-	var query = 'SELECT s_name, barcode, name, manufacturer, stock, min_stock' + 
-			', selling_price, cost_price FROM ' + 
-			' product INNER JOIN inventory on barcode = product_barcode' + 
-			' INNER JOIN outlet ON id = outlet_id ';
-	var searchParameter = args.query;
+	var query = 'SELECT s_name, barcode, name, manufacturer, stock, min_stock' +
+			', selling_price, cost_price FROM ' +
+			' product INNER JOIN inventory on barcode = product_barcode' +
+			' INNER JOIN outlet ON id = outlet_id AND status<>\'DISCONTINUED\';';
+	/*var searchParameter = args.query;
 
-	if(searchParameter != 'none') {
+	/*if(searchParameter != 'none') {
 		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';
 	}
 	var pageNumber = args.pageNumber,
@@ -31,7 +79,8 @@ exports.getInventory =  function(args, callback) {
 		order = (args.asc === true) ? 'ASC' : 'DESC';
 
 	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';
+			' ORDER BY ' + sortBy + ' ' + order + ';';*/
+
 	connection.query( query,  function(err, rows, fields) {
 		callback(err, rows);
 	});
@@ -44,7 +93,7 @@ exports.addToInventory = function (args, callback) {
 		stock = args.stock,
 		selling_price = args.selling_price,
 		min_stock = args.min_stock;
-	var query = 'INSERT INTO inventory VALUES('+outlet_id+','+product_barcode+','+stock+','+selling_price+','+min_stock+');';
+	var query = 'INSERT INTO inventory VALUES('+outlet_id+','+product_barcode+','+stock+','+selling_price+','+min_stock+',\'ADDED\');';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
@@ -55,7 +104,7 @@ exports.deleteFromInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode;
-	var query = 'DELETE FROM inventory where outlet_id='+id+' AND product_barcode='+product_barcode+';';
+	var query = 'UPDATE inventory SET status=\'DISCONTINUED\' where outlet_id='+id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
