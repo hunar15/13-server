@@ -29,6 +29,18 @@ exports.addProduct = function  (req, res) {
 exports.deleteProduct = function  (req, res) {
 	// body...
 	product.deleteProduct( req.body.values, function(err, result ) {
+		if(err) {
+			return res.send({
+				status:"error",
+				message: err
+			});
+		}
+		else {
+			res.send({
+			status: "success",
+			result: result
+			});
+		}
 		res.send(result);
 	});
 };

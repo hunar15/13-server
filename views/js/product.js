@@ -2,6 +2,8 @@ var editableGrid;
 window.onload = function() {
 	$.getJSON( "get/product", function(data){
 		init(data);
+		editableGrid.setPageIndex(0);
+		editableGrid.filter('');
 	});
 }
 
@@ -13,48 +15,114 @@ function init(data){
 		pageSize: 10,
 		maxBars: 10
 	});
+
+	$('#filter').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			editableGrid.filter($('#filter').val());
+		}		
+	});
+	
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("producttablecontent", "testgrid");
-	editableGrid.updatePaginator = function()
-	{
+	
+	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) {
+		// this action will remove the row, so first find the ID of the row containing this cell 
+		var rowId = editableGrid.getRowId(cell.rowIndex);
+		
+		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this product ? ')) { deleteProduct("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
+	}})); 
+	
+
+	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
 		var nbPages = editableGrid.getPageCount();
 		console.log(nbPages);
 
 		// get interval
-		var interval = editableGrid.getSlidingPageInterval(20);
+		var interval = editableGrid.getSlidingPageInterval(10);
 		if (interval == null) return;
 
 		// get pages in interval (with links except for the current page)
 		var pages = editableGrid.getPagesInInterval(interval, function(pageIndex, isCurrent) {
 			if (isCurrent) return "" + (pageIndex + 1);
-			return $("<a>").css("cursor", "pointer").html(pageIndex + 1).click(function(event) { editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); });
+			return $("<a>").css("cursor", "pointer")
+				.html(pageIndex + 1)
+				.click(function(event) {
+					console.log(parseInt($(this).html()) - 1);
+					//editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); 
+				});
 		});
 
 		// "first" link
-		var link = $("<a>").html("<img src='" + image("gofirst.png") + "'/>&nbsp;");
-		if (!editableGrid.canGoBack()) link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
-		else link.css("cursor", "pointer").click(function(event) { editableGrid.firstPage(); });
+		var link = $("<a>").html("<img src='images/gofirst.png'/>&nbsp;");
+		if (!editableGrid.canGoBack())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else 
+			link.css("cursor", "pointer").click(function(event) {
+				editableGrid.firstPage(); 
+				//updatePaginator();
+				});
 		paginator.append(link);
 
 		// "prev" link
-		link = $("<a>").html("<img src='" + image("prev.png") + "'/>&nbsp;");
-		if (!editableGrid.canGoBack()) link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
-		else link.css("cursor", "pointer").click(function(event) { editableGrid.prevPage(); });
+		link = $("<a>").html("<img src='images/prev.png'/>&nbsp;");
+		if (!editableGrid.canGoBack())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) { 
+				editableGrid.prevPage(); 
+				//updatePaginator()
+			});
 		paginator.append(link);
+		
 		// pages
 		for (p = 0; p < pages.length; p++) paginator.append(pages[p]).append(" | ");
 
 		// "next" link
-		link = $("<a>").html("<img src='" + image("next.png") + "'/>&nbsp;");
-		if (!editableGrid.canGoForward()) link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
-		else link.css("cursor", "pointer").click(function(event) { editableGrid.nextPage(); });
+		link = $("<a>").html("<img src='images/next.png'/>&nbsp;");
+		if (!editableGrid.canGoForward())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) {
+				editableGrid.nextPage(); 
+				//updatePaginator();
+				});
 		paginator.append(link);
 
 		// "last" link
-		link = $("<a>").html("<img src='" + image("golast.png") + "'/>&nbsp;");
-		if (!editableGrid.canGoForward()) link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
-		else link.css("cursor", "pointer").click(function(event) { editableGrid.lastPage(); });
+		link = $("<a>").html("<img src='images/golast.png'/>&nbsp;");
+		if (!editableGrid.canGoForward())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) { 
+				editableGrid.lastPage(); 
+				//updatePaginator();
+			});
 		paginator.append(link);
+
 	};
+
+	editableGrid.tableRendered = function() { this.updatePaginator(); };
+}
+
+function deleteProduct(rowIndex) {
+	var barcode = editableGrid.getRowId(rowIndex);
+	editableGrid.remove(rowIndex);	
+	$.ajax({
+		url: "/delete/product",
+		type: 'POST',
+		data: {
+			"values":{
+				"barcode": barcode
+			}
+		},
+		success: function (response) {
+			if (response.status =="success") 
+				console.log('successfully deleted'+ barcode);
+			else
+				console.log('error');
+		}
+	});
 }

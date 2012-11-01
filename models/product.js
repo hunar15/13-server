@@ -23,15 +23,16 @@ exports.getProducts =  function(args, callback) {
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
-	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string", "editable":"false"});
-	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string", "editable":"false"});
-	result['metadata'].push({"name": "s_name", "label" : "Name", "datatype" : "string", "editable":"false"});
-	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string", "editable":"true"});
-	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string", "editable":"true"});
-	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer", "editable":"true"});
-	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer", "editable":"true"});
-	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)", "editable":"true"});
-	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)", "editable":"true"});
+	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
+	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
+	result['metadata'].push({"name": "s_name", "label" : "Name", "datatype" : "string"});
+	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
+	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "delete", "label": "Delete"});
 
 	/*if(searchParameter != 'none') {
 		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';
@@ -46,11 +47,11 @@ exports.getProducts =  function(args, callback) {
 	//query +=		' ORDER BY name ' + order + ';';*/
 	//console.log(query);
 	connection.query( query,  function(err, rows, fields) {
-		var idx = 0;
+		//var idx = 0;
 		for (var tuple in rows) {
 			var current ={};
-			current['id'] = idx; //rows[tuple].barcode;
-			idx++;
+			current['id'] = rows[tuple].barcode;
+			//idx++;
 			current['values'] = rows[tuple];
 			result['data'].push(current);
 		}
@@ -82,6 +83,7 @@ exports.deleteProduct = function (args, callback) {
 	var query = 'DELETE FROM product WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
+		console.log(err);
 		callback(err, rows);
 	});
 };
