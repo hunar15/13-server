@@ -39,18 +39,18 @@ exports.getAdded = function (args, callback) {
 	});
 };
 
-exports.getDeleted = function (args, callback) {
+exports.getDiscontinued = function (args, callback) {
 	// body...
 	var outlet_id = args.outletid,
 		query = 'SELECT barcode FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
-			' INNER JOIN outlet ON id = outlet_id WHERE status=\'DISCONTINUED\' AND outlet_id='+outlet_id+';';
-	var result;
+			' INNER JOIN outlet ON id = outlet_id WHERE status=\'DISCONTINUE\' AND outlet_id='+outlet_id+';';
+	var result={};
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		result = rows;
 		if(!err) {
-			var query2 = "UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id="+outlet_id+" AND status=\'ADDED\'";
+			result['discontinueList'] = rows;
+			var query2 = "UPDATE inventory SET status=\'DISCONTINUED\' WHERE outlet_id="+outlet_id+" AND status=\'DISCONTINUE\'";
 			connection.query(query2, function (err2, rows2, fields2) {
 				if(!err2)
 					callback(err2, result);
@@ -67,7 +67,7 @@ exports.getInventory =  function(args, callback) {
 	var query = 'SELECT s_name, barcode, name, manufacturer, stock, min_stock' +
 			', selling_price, cost_price FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
-			' INNER JOIN outlet ON id = outlet_id AND status<>\'DISCONTINUED\';';
+			' INNER JOIN outlet ON id = outlet_id AND status NOT LIKE \'%DISCONTINUE%\';';
 	/*var searchParameter = args.query;
 
 	/*if(searchParameter != 'none') {

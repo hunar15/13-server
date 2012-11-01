@@ -9,11 +9,23 @@ var inventory = require('../models/inventory'),
 
 exports.index = function(req, res){
   inventory.getAllInventory( function(err, result) {
-  	res.send(result);
+	res.send(result);
   });
 };
+ 
+exports.getDiscontinued = function (req, res) {
+	// body...
+	inventory.getDiscontinued( req.body,function(err, result) {
+		res.send(result);
+	});
+};
 
-
+exports.getAdded = function (req, res) {
+	// body...
+	inventory.getAdded( req.body,function(err, result) {
+		res.send(result);
+	});
+};
 exports.getProducts = function  (req, res) {
 	// body...
 	product.getProducts( req.body.values, function(err, result ) {

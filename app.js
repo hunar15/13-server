@@ -12,7 +12,7 @@ var express = require('express'),
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 3001);
   app.set('views', __dirname + '/views');
   app.use(express.favicon());
   app.use(express.logger('dev'));
@@ -56,6 +56,8 @@ app.post('/update/outlet',routes.updateOutlet);
 app.post('/update/inventory',routes.updateInventory);
 app.post('/update/request',routes.updateRequest);
 
+app.post('/getDiscontinued', routes.getDiscontinued);
+app.post('/getAdded', routes.getAdded);
 
 app.get('/getall', routes.getall);
 
