@@ -63,7 +63,6 @@
 					<div class="form-inline right" align="right">
 						<label for="pagecontrol">Rows per page: </label>
 						<select id="pagesize" name="pagesize" class="span1">
-							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="15">15</option>
 							<option value="20">20</option>
@@ -72,27 +71,19 @@
 							<option value="40">40</option>
 							<option value="50">50</option>
 						</select>
-						&nbsp;&nbsp;
-						<label for="barcount">Bars in chart: </label>
-						<select id="barcount" name="barcount" class="span1">
-							<option value="5">5</option>
-							<option value="10">10</option>
-							<option value="15">15</option>
-							<option value="20">20</option>
-							<option value="25">25</option>
-							<option value="30">30</option>
-							<option value="40">40</option>
-							<option value="50">50</option>
-						</select>	
 					</div>
 				</div>
-				<form class="form-search">
+				<!--<form class="form-search" >-->
 					<label for="filter">Filter :</label>
 					<input class="span4" type="text" id="filter" placeholder="Enter product barcodes or any of its details"/>
-				</form>
+				<!--</form>-->
 				<div id="producttablecontent" align="center"></div>
 			<!-- Paginator control -->
-			<div id="paginator"></div>
+			<div id="paginator">
+				<!--<button class="button" id="goback">&lt;</button>&nbsp;
+				<input class="span1" type="text" id="pagenum"/>&nbsp;
+				<button class="button" id="goforward">&gt;</button>-->
+			</div>
 			</div>
 
 			<hr />
