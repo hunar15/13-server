@@ -7,6 +7,16 @@ var inventory = require('../models/inventory'),
 	product = require('../models/product'),
 	requests = require('../models/requests');
 
+exports.syncAddedRequests = function(req, res){
+  requests.syncAddedRequests( function(err, result) {
+	res.send(result);
+  });
+};
+exports.syncReceivedRequests = function(req, res){
+  requests.syncReceivedRequests( function(err, result) {
+	res.send(result);
+  });
+};
 exports.index = function(req, res){
   inventory.getAllInventory( function(err, result) {
 	res.send(result);

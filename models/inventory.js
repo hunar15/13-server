@@ -48,6 +48,8 @@ exports.getDiscontinued = function (args, callback) {
 	var result={};
 	connection.query( query, function (err, rows, fields) {
 		// body...
+		console.log("DOES THIS SHOW!???");
+		console.log(rows);
 		if(!err) {
 			result['discontinueList'] = rows;
 			var query2 = "UPDATE inventory SET status=\'DISCONTINUED\' WHERE outlet_id="+outlet_id+" AND status=\'DISCONTINUE\'";
@@ -104,7 +106,7 @@ exports.deleteFromInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode;
-	var query = 'UPDATE inventory SET status=\'DISCONTINUED\' where outlet_id='+id+' AND product_barcode='+product_barcode+';';
+	var query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
