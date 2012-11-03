@@ -15,9 +15,9 @@ exports.getProducts =  function(args, callback) {
 		pageNumber
 	}
 	*/
-	var query = 'SELECT barcode, name,s_name, category, manufacturer, stock, min_stock'
-		query+=', selling_price, cost_price FROM '
-		query+= 'product INNER JOIN inventory on barcode = product_barcode '
+	var query = 'SELECT barcode, name,s_name, category, manufacturer, stock, min_stock';
+		query+=', selling_price, cost_price FROM ';
+		query+= 'product INNER JOIN inventory on barcode = product_barcode ';
 		query+=' INNER JOIN outlet ON id = outlet_id ';
 	//var searchParameter = args.query;
 	var result = {};

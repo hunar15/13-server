@@ -8,9 +8,33 @@ var connection = sql.createConnection({
 
 exports.getAllInventory = function  (callback) {
 	// body...
-	var query = 'select * FROM inventory;';
+	var query = 'SELECT s_name, barcode, name,category, manufacturer, stock, min_stock' +
+			', selling_price, cost_price, status FROM ' +
+			' product INNER JOIN inventory on barcode = product_barcode' +
+			' INNER JOIN outlet ON id = outlet_id ;';
+
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
+	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
+	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
+	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
+		for( var i in rows) {
+			var current = {};
+			current['id'] = rows[i]['barcode'];
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}
 		callback(err, rows);
 	});
 };
@@ -66,24 +90,32 @@ exports.getDiscontinued = function (args, callback) {
 };
 exports.getInventory =  function(args, callback) {
 	//query
-	var query = 'SELECT s_name, barcode, name, manufacturer, stock, min_stock' +
-			', selling_price, cost_price FROM ' +
+	var query = 'SELECT s_name, barcode, name,category, manufacturer, stock, min_stock' +
+			', selling_price, cost_price, status FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
 			' INNER JOIN outlet ON id = outlet_id AND status NOT LIKE \'%DISCONTINUE%\';';
-	/*var searchParameter = args.query;
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
 
-	/*if(searchParameter != 'none') {
-		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';
-	}
-	var pageNumber = args.pageNumber,
-		sortBy = args.sortby,
-		resultsPerPage = args.itemperpage,
-		order = (args.asc === true) ? 'ASC' : 'DESC';
-
-	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';*/
-
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
+	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
+	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
+	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	
 	connection.query( query,  function(err, rows, fields) {
+		for( var i in rows) {
+			var current = {};
+			current['id'] = rows[i]['barcode'];
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}
 		callback(err, rows);
 	});
 };

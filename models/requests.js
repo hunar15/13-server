@@ -7,68 +7,35 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
-exports.getAllRequests = function  (callback) {
-	// body...
-
-	var query = 'select * FROM request;';
-	connection.query(query, function  (err, rows, fields) {
-		// body...
-		callback(err, rows);
-	});
-};
 exports.getRequests =  function(args, callback) {
 	//query
-	var query = 'SELECT request_id, s_name, date FROM outlet INNER JOIN request on id = outlet_id';
-	/*var searchParameter = args.query;
+	var outlet_id = args.outlet_id;
+	var query = 'SELECT s_name, request_id, date, status FROM outlet INNER JOIN request on id = outlet_id WHERE outlet_id='+outlet_id+';';
+	
+	if(outlet_id !== null) {
+		var result = {};
+		result['metadata'] = [];
+		result['data']= [];
 
-	if(searchParameter != 'none') {
-		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' ';
-	}*/
-	query += ';';
-	/*var pageNumber = args.pageNumber,
-		sortBy = args.sortby,
-		resultsPerPage = args.itemperpage,
-		order = (args.asc === true) ? 'ASC' : 'DESC';
+		result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+		result['metadata'].push({"name": "request_id", "label" : "Request ID", "datatype" : "integer"});
+		result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
+		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 
-	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';*/
-	connection.query( query,  function(err, rows, fields) {
-		callback(err, rows);
-	});
-};
-
-exports.addRequest = function (args, callback) {
-	// body...
-	var outlet_id = args.outlet_id,
-		date = args.date,
-		req_details = args.req_details;
-	var query = 'INSERT INTO request VALUES('+outlet_id+','+date+');';
-	connection.query( query, function (err, rows, fields) {
-		// body...
-		var req_id = rows.insertId;
-		for (var current in req_details) {
-			var barcode = current.barcode,
-				quantity = current.barcode;
-
-			var sub_query = 'INSERT INTO req_details VALUES('+req_id+','+barcode+','+quantity+');';
-			connection.query( sub_query);
-		}
-		callback(err, rows);
-	});
-};
-
-exports.deleteRequest = function (args, callback) {
-	// body...
-	var request_id = args.request_id;
-	var query = 'DELETE FROM req_details where request_id='+request_id+';';
-	connection.query( query, function (err, rows, fields) {
-		// body...
-		query = 'DELETE FROM request where request_id='+request_id+';';
-		connection.query( query, function (err, rows, fields) {
-			// body...
+		connection.query( query,  function(err, rows, fields) {
+			for( var i in rows) {
+				var current = {};
+				current['id'] = rows[i]['request_id'];
+				current['values'] = rows[i];
+				result['data'].push(current);
+			}
 			callback(err, rows);
 		});
-	});
+	} else {
+		console.log("Invalid or missing parameters");
+		callback({err : "true"}, null);
+	}
+	
 };
 
 exports.syncAddedRequests = function(args, callback) {

@@ -9,29 +9,24 @@ var connection = sql.createConnection({
 exports.getAllOutlets = function  (callback) {
 	// body...
 
-	var query = 'select * FROM outlet;';
+	var query = 'select id,s_name, address FROM outlet;';
+
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+
+	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
-		callback(err, rows);
-	});
-};
-exports.getOutlets =  function(args, callback) {
-	//query
-	var query = 'select id,s_name, address FROM outlet';
-	var searchParameter = args.query;
-
-	if(searchParameter != 'none') {
-		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR address LIKE \'%' + searchParameter + '%\' ';
-	}
-	var pageNumber = args.pageNumber,
-		sortBy = args.sortby,
-		resultsPerPage = args.itemperpage,
-		order = (args.asc === true) ? 'ASC' : 'DESC';
-
-	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';
-	connection.query( query,  function(err, rows, fields) {
-		callback(err, rows);
+		for( var i in rows) {
+			var current = {};
+			current['id'] = rows[i]['p.barcode'];
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}
+		callback(err, result);
 	});
 };
 
