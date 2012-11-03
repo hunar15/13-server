@@ -8,12 +8,12 @@ var inventory = require('../models/inventory'),
 	requests = require('../models/requests');
 
 exports.syncAddedRequests = function(req, res){
-  requests.syncAddedRequests( function(err, result) {
+  requests.syncAddedRequests(req.body, function(err, result) {
 	res.send(result);
   });
 };
 exports.syncReceivedRequests = function(req, res){
-  requests.syncReceivedRequests( function(err, result) {
+  requests.syncReceivedRequests(req.body, function(err, result) {
 	res.send(result);
   });
 };
