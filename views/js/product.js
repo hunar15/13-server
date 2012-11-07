@@ -1,10 +1,89 @@
 var editableGrid;
 window.onload = function() {
+	
 	$.getJSON( "get/product", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
+	initAddProduct();
+}
+
+function initAddProduct(){
+	$('#confirm-add-product').click(function(){
+		var barcode = $('#inputBarcode').val();
+		var name = $('#inputName').val();
+		var category = $('#inputCategory').val();
+		var manufacturer = $('#inputManufacturer').val();
+		var cost_price = $('#inputPrice').val();
+		console.log('clicked and checking');
+		if (validProductDetails(barcode, name, category, manufacturer, cost_price))
+			$.ajax({
+				url: "/add/product",
+				type: 'POST',
+				data: {
+					"values":{
+						"barcode":barcode,
+						"name": name,
+						"category": category,
+						"manufacturer": manufacturer,
+						"cost_price": cost_price
+					}
+				},
+				success: function (response) {
+				
+					if (response.status =="success"){
+						console.log('successfully added'+ barcode);
+						$('form#new-product-form :input').val("");
+						$('#addNewProduct').hide();
+					}
+					else
+						console.log('error');
+				}
+			});
+	});
+}
+
+function validProductDetails(barcode, name, category, manufacturer, cost_price){
+	var valid = true;
+	if (parseInt(barcode) > 99999999 || barcode.length == 0 || !parseInt(barcode)){ //more than 8 digits
+		console.log('invalid barcode');
+		$('label[for=inputBarcode]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputBarcode]').removeClass('invalid');
+		
+	if (name.length == 0 || name.length > 150){ //more than 8 digits
+		$('label[for=inputName]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputName]').removeClass('invalid');
+		
+	if (category.length == 0 || category.length > 100){
+		$('label[for=inputCategory]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputCategory]').removeClass('invalid');
+		
+	if (manufacturer.length == 0 || manufacturer.length > 30){
+		$('label[for=inputManufacturer]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputManufacturer]').removeClass('invalid');
+	
+	if (!parseFloat(cost_price)){
+		$('label[for=inputPrice]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputPrice]').removeClass('invalid');
+
+	return valid;
+	
 }
 
 function init(data){
@@ -109,7 +188,6 @@ function init(data){
 
 function deleteProduct(rowIndex) {
 	var barcode = editableGrid.getRowId(rowIndex);
-	editableGrid.remove(rowIndex);	
 	$.ajax({
 		url: "/delete/product",
 		type: 'POST',
@@ -119,8 +197,11 @@ function deleteProduct(rowIndex) {
 			}
 		},
 		success: function (response) {
-			if (response.status =="success") 
+			if (response.status =="success")
+			{
 				console.log('successfully deleted'+ barcode);
+				editableGrid.remove(rowIndex);	
+			}
 			else
 				console.log('error');
 		}
