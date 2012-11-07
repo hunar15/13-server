@@ -69,7 +69,7 @@ exports.getRequestDetails = function (args, callback) {
 
 	} else {
 		console.log("Invalid or missing parameters");
-		callback({err : "true"}, null);
+		callback(true, null);
 	}
 
 };

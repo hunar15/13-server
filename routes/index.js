@@ -23,7 +23,15 @@ exports.index = function(req, res){
   });
 };
 
-exports.getRequestDetails
+exports.getRequestDetails = function(req, res) {
+	requests.getRequestDetails( req.body, function(err, result) {
+		if(!err) {
+			console.log(result);
+			res.send(result);
+		} else
+			res.send(err);
+	});
+};
  
 exports.getDiscontinued = function (req, res) {
 	// body...
