@@ -37,7 +37,6 @@ exports.getProducts =  function(args, callback) {
 		resultsPerPage = args.itemperpage,
 		order = (args.asc === true) ? 'ASC' : 'DESC';
 */
-	query += ';';
 	//query +=		' ORDER BY name ' + order + ';';*/
 	//console.log(query);
 	connection.query( query,  function(err, rows, fields) {
