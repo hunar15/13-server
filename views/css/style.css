@@ -5,5 +5,5 @@ a:hover { text-decoration: underline; }
 table.testgrid { border-collapse: collapse; border: 1px solid #CCB; width: 800px; }
 table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
 table.testgrid th { background: #E5E5E5; text-align: left; }
-input.invalid { background: red; color: #FDFDFD; }
+label.invalid { color: red; }
 .container{width: 850px;}

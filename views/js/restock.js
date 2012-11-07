@@ -1,27 +1,128 @@
+var editableGrid;
 window.onload = function() {
+	$.getJSON( "get/request", function(data){
+		init(data);
+		editableGrid.setPageIndex(0);
+		editableGrid.filter('');
+	});
+}
 
-	// this approach is interesting if you need to dynamically create data in Javascript 
-	var metadata = [];
-	metadata.push({ name: "barcode", label: "Barcode", datatype: "string", editable: false});
-	metadata.push({ name: "name", label:"Name", datatype: "string", editable: false});
-	metadata.push({ name: "category", label: "Category", datatype: "string", editable: true});
-	metadata.push({ name: "manufacturer", label: "Manufacturer", datatype: "string", editable: true});
-	metadata.push({ name: "stock", label: "Stock", datatype: "integer", editable: true});
-	metadata.push({ name: "minstock", label: "Min. stock", datatype: "integer", editable: true});
-	metadata.push({ name: "sprice", label: "Selling Price", datatype: "double(2)", editable: true});
-	metadata.push({ name: "cprice", label: "Cost Price", datatype: "double(2)", editable: true});
+function init(data){
+	editableGrid = new EditableGrid("DemoGridJSON", {
+		enableSort: true, // true is the default, set it to false if you don't want sorting to be enabled
+		editmode: "absolute", // change this to "fixed" to test out editorzone, and to "static" to get the old-school mode
+		editorzoneid: "edition", // will be used only if editmode is set to "fixed"
+		pageSize: 10,
+		maxBars: 10
+	});
 
-	var data = [];
-	data.push({id: 3, values: {"barcode":"12345678","name":"Johnson's Baby Cream","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 4, values: {"barcode":"12345678","name":"Coby","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 5, values: {"barcode":"12345678","name":"Rana","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 6, values: {"barcode":"12345678","name":"Jasmine","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 7, values: {"barcode":"12345678","name":"André","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 8, values: {"barcode":"12345678","name":"Martin","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 9, values: {"barcode":"12345678","name":"Amédé","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	data.push({id: 10,values: {"barcode":"12345678","name":"Wanthus","category":"Perfume","manufacturer":"F&N","stock":54,"minstock":54,"sprice":82.50,"cprice":82.50}});
-	 
-	editableGrid = new EditableGrid("DemoGridJsData");
-	editableGrid.load({"metadata": metadata, "data": data});
-	editableGrid.renderGrid("producttablecontent", "testgrid");
-} 
+	$('#filter').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			editableGrid.filter($('#filter').val());
+		}		
+	});
+	
+	editableGrid.load({"metadata": data.metadata,"data": data.data});
+	editableGrid.renderGrid("restocktablecontent", "testgrid");
+	
+	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) {
+		// this action will remove the row, so first find the ID of the row containing this cell 
+		var rowId = editableGrid.getRowId(cell.rowIndex);
+		
+		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this product ? ')) { deleteProduct("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
+	}})); 
+	
+
+	editableGrid.updatePaginator = function () {
+		var paginator = $("#paginator").empty();
+		var nbPages = editableGrid.getPageCount();
+		console.log(nbPages);
+
+		// get interval
+		var interval = editableGrid.getSlidingPageInterval(10);
+		if (interval == null) return;
+
+		// get pages in interval (with links except for the current page)
+		var pages = editableGrid.getPagesInInterval(interval, function(pageIndex, isCurrent) {
+			if (isCurrent) return "" + (pageIndex + 1);
+			return $("<a>").css("cursor", "pointer")
+				.html(pageIndex + 1)
+				.click(function(event) {
+					console.log(parseInt($(this).html()) - 1);
+					//editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); 
+				});
+		});
+
+		// "first" link
+		var link = $("<a>").html("<img src='images/gofirst.png'/>&nbsp;");
+		if (!editableGrid.canGoBack())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else 
+			link.css("cursor", "pointer").click(function(event) {
+				editableGrid.firstPage(); 
+				//updatePaginator();
+				});
+		paginator.append(link);
+
+		// "prev" link
+		link = $("<a>").html("<img src='images/prev.png'/>&nbsp;");
+		if (!editableGrid.canGoBack())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) { 
+				editableGrid.prevPage(); 
+				//updatePaginator()
+			});
+		paginator.append(link);
+		
+		// pages
+		for (p = 0; p < pages.length; p++) paginator.append(pages[p]).append(" | ");
+
+		// "next" link
+		link = $("<a>").html("<img src='images/next.png'/>&nbsp;");
+		if (!editableGrid.canGoForward())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) {
+				editableGrid.nextPage(); 
+				//updatePaginator();
+				});
+		paginator.append(link);
+
+		// "last" link
+		link = $("<a>").html("<img src='images/golast.png'/>&nbsp;");
+		if (!editableGrid.canGoForward())
+			link.css({ opacity : 0.4, filter: "alpha(opacity=40)" });
+		else
+			link.css("cursor", "pointer").click(function(event) { 
+				editableGrid.lastPage(); 
+				//updatePaginator();
+			});
+		paginator.append(link);
+
+	};
+
+	editableGrid.tableRendered = function() { this.updatePaginator(); };
+}
+
+function deleteProduct(rowIndex) {
+	var barcode = editableGrid.getRowId(rowIndex);
+	editableGrid.remove(rowIndex);	
+	$.ajax({
+		url: "/delete/product",
+		type: 'POST',
+		data: {
+			"values":{
+				"barcode": barcode
+			}
+		},
+		success: function (response) {
+			if (response.status =="success") 
+				console.log('successfully deleted'+ barcode);
+			else
+				console.log('error');
+		}
+	});
+}
