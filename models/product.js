@@ -15,22 +15,16 @@ exports.getProducts =  function(args, callback) {
 		pageNumber
 	}
 	*/
-	var query = 'SELECT barcode, name,s_name, category, manufacturer, stock, min_stock';
-		query+=', selling_price, cost_price FROM ';
-		query+= 'product INNER JOIN inventory on barcode = product_barcode ';
-		query+=' INNER JOIN outlet ON id = outlet_id ';
+	var query = 'SELECT barcode, name, category, manufacturer, cost_price FROM ';
+		query+= 'product;';
 	//var searchParameter = args.query;
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
-	result['metadata'].push({"name": "s_name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
 	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
-	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "delete", "label": "Delete"});
 

@@ -22,6 +22,8 @@ exports.index = function(req, res){
 	res.send(result);
   });
 };
+
+exports.getRequestDetails
  
 exports.getDiscontinued = function (req, res) {
 	// body...

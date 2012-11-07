@@ -31,7 +31,7 @@ exports.getAllInventory = function  (callback) {
 		// body...
 		for( var i in rows) {
 			var current = {};
-			current['id'] = rows[i]['barcode'];
+			current['id'] = i;
 			current['values'] = rows[i];
 			result['data'].push(current);
 		}

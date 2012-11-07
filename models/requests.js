@@ -10,7 +10,7 @@ var connection = sql.createConnection({
 exports.getRequests =  function(args, callback) {
 	//query
 	var outlet_id = args.outlet_id;
-	var query = 'SELECT s_name, request_id, date, status FROM outlet INNER JOIN request on id = outlet_id WHERE outlet_id='+outlet_id+';';
+	var query = 'SELECT s_name,outlet_id, request_id, date, status FROM outlet INNER JOIN request on id = outlet_id WHERE outlet_id='+outlet_id+' AND status=\'ADDED\';';
 	
 	if(outlet_id !== null) {
 		var result = {};
@@ -18,6 +18,7 @@ exports.getRequests =  function(args, callback) {
 		result['data']= [];
 
 		result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+		result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
 		result['metadata'].push({"name": "request_id", "label" : "Request ID", "datatype" : "integer"});
 		result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
 		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
@@ -36,6 +37,41 @@ exports.getRequests =  function(args, callback) {
 		callback({err : "true"}, null);
 	}
 	
+};
+
+exports.getRequestDetails = function (args, callback) {
+	var outlet_id = args.outlet_id,
+		request_id = args.request_id;
+
+	if( outlet_id!==null && request_id!==null) {
+		var result = {},
+			query = "SELECT barcode, SUM(quantity) as quantity FROM req_details WHERE outlet_id=" + outlet_id + " AND request_id=" + request_id + " GROUP BY barcode;";
+		result['metadata'] = [];
+		result['data']= [];
+
+		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
+		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
+		
+		connection.query(query, function(err, rows, fields) {
+			if(!err) {
+				for (var i in rows) {
+					var current = {};
+					current['id'] = rows[i]['barcode'];
+					current['values'] = rows[i];
+					result['data'].push(current);
+				}
+				callback(null,result);
+			} else {
+				console.log("Error : " + err);
+				callback(true, null);
+			}
+		});
+
+	} else {
+		console.log("Invalid or missing parameters");
+		callback({err : "true"}, null);
+	}
+
 };
 
 exports.syncAddedRequests = function(args, callback) {
