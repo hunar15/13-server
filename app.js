@@ -42,7 +42,7 @@ app.post('/add/request',routes.addRequest);
 
 app.get('/get/product',routes.getProducts);
 app.post('/get/outlet',routes.getOutlets);
-app.post('/get/inventory',routes.getInventory);
+app.get('/get/inventory',routes.getInventory);
 app.post('/get/request',routes.getRequests);
 app.post('/get/requestDetails', routes.getRequestDetails);
 

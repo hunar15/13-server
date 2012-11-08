@@ -89,6 +89,28 @@
 						<button id ="confirm-add-product" class="btn btn-primary">Save changes</button>
 					</div>
 				</div>
+				<div id="addNewInventory" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addNewInventoryLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="addNewInventoryLabel">Attach Product <span id="product-barcode"></span> <span id="product-name"></span> to outlet inventory</h3>
+					</div>
+					<div class="modal-body">
+						<form id ="new-inventory-form" class="form-horizontal">
+							<div class="control-group">
+								<label class="control-label" for="inputOutlet">Outlets</label>
+								<div class="controls">
+									<select multiple="multiple" id="outlet-selector"> <!--to be generated dynamically -->
+										<option>haha</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button id ="confirm-inventory-product" class="btn btn-primary">Confirm</button>
+					</div>
+				</div>
 				<label for="filter"><br/>Filter :</label>
 				<input class="span4" type="text" id="filter" placeholder="Enter product barcodes or any of its details"/>
 
