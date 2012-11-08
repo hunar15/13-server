@@ -143,7 +143,20 @@ exports.setAsReceived = function(args, callback) {
 		connection.query(query, function(err,rows, fields) {
 			if(!err) {
 				console.log("Barcode : " + barcode + " RECEIVED");
-				callback(null,true);
+				//callback(null,true);
+
+				//check if all products in the batch have been received and update
+				var query2 ="UPDATE batch_request SET status=\'INCOMPLETE\' WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\' ;";
+
+				connection.query(query2, function(err2,rows2,fields3) {
+					if(!err2) {
+						var query3 = "UPDATE batch_request SET status=\'DISPATCHED\' WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\'"+
+							" AND NOT EXISTS( SELECT * from req)";
+					} else {
+						console.log("Error encountered : "+ err2);
+						callback(true,null);
+					}
+				});
 			} else {
 				console.log("Error encountered : " + err);
 				callback(true,null);
