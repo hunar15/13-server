@@ -26,7 +26,7 @@ exports.getProducts =  function(args, callback) {
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
 	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
-	result['metadata'].push({"name": "delete", "label": "Delete"});
+	
 
 	/*if(searchParameter != 'none') {
 		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR name LIKE \'%' + searchParameter + '%\' ';

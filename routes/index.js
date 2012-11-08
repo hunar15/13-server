@@ -24,7 +24,7 @@ exports.index = function(req, res){
 };
 
 exports.getRequestDetails = function(req, res) {
-	requests.getRequestDetails( req.body, function(err, result) {
+	requests.getBatchDetails( req.body, function(err, result) {
 		if(!err) {
 			console.log(result);
 			res.send(result);
@@ -139,7 +139,7 @@ exports.updateInventory = function  (req, res) {
 
 exports.getRequests = function  (req, res) {
 	// body...
-	requests.getRequests( req.body, function(err, result ) {
+	requests.getBatch( req.body, function(err, result ) {
 		res.send(result);
 	});
 };

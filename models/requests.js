@@ -7,26 +7,25 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
-exports.getRequests =  function(args, callback) {
+exports.getBatch =  function(args, callback) {
 	//query
-	var outlet_id = args.outlet_id;
-	var query = 'SELECT s_name,outlet_id, request_id, date, status FROM outlet INNER JOIN request on id = outlet_id WHERE outlet_id='+outlet_id+' AND status=\'ADDED\';';
+	//var outlet_id = args.outlet_id;
+	var query = 'SELECT * FROM batch_request;';
 	
 	if(outlet_id !== null) {
 		var result = {};
 		result['metadata'] = [];
 		result['data']= [];
 
-		result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
-		result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
-		result['metadata'].push({"name": "request_id", "label" : "Request ID", "datatype" : "integer"});
+		result['metadata'].push({"name": "outlet_id", "label" : "Shop Name", "datatype" : "string"});
 		result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
 		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+		result['metadata'].push({"name": "approve", "label": "Forward"});
 
 		connection.query( query,  function(err, rows, fields) {
 			for( var i in rows) {
 				var current = {};
-				current['id'] = rows[i]['request_id'];
+				current['id'] = i;
 				current['values'] = rows[i];
 				result['data'].push(current);
 			}
@@ -39,19 +38,20 @@ exports.getRequests =  function(args, callback) {
 	
 };
 
-exports.getRequestDetails = function (args, callback) {
+exports.getBatchDetails = function (args, callback) {
 	var outlet_id = args.outlet_id,
-		request_id = args.request_id;
+		date = args.date;
 
-	if( outlet_id!==null && request_id!==null) {
+	if( outlet_id!==null && date!==null) {
 		var result = {},
-			query = "SELECT barcode, SUM(quantity) as quantity FROM req_details WHERE outlet_id=" + outlet_id + " AND request_id=" + request_id + " GROUP BY barcode;";
+			query = "SELECT barcode, quantity, received FROM request_details WHERE outlet_id=" + outlet_id + " AND date=" + date + ";";
 		result['metadata'] = [];
 		result['data']= [];
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
 		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
-		
+		result['metadata'].push({"name": "received", "label" : "Received?"});
+
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				for (var i in rows) {
@@ -79,7 +79,7 @@ exports.syncAddedRequests = function(args, callback) {
 		addedList = args.addedList;
 
 	if(outlet_id !== null &&  addedList !== null) {
-		var query = "INSERT INTO request VALUES("+addedList[0]['request_id']+", "+outlet_id+",NOW(),\'ADDED\');",
+		var query = "INSERT INTO batch_request VALUES("+outlet_id+",CURDATE(),\'PENDING\');",
 			errorFlag= 0,
 			query2 = '';
 		connection.query(query, function(err, rows, fields){
@@ -87,7 +87,7 @@ exports.syncAddedRequests = function(args, callback) {
 				console.log("Adding request "+ addedList[0]['request_id'] +" from " + outlet_id);
 				for(var i in addedList) {
 					var current = addedList[i];
-					query2 +=  "INSERT INTO req_details VALUES("+current['request_id']+","+outlet_id+","+current['barcode']+","+current['quantity']+");";
+					query2 +=  "INSERT INTO request_details VALUES("+outlet_id+",CURDATE(),"+current['barcode']+","+current['quantity']+",\'false\');";
 					
 				}
 				connection.query(query2, function(err, rows, fields) {
@@ -109,6 +109,10 @@ exports.syncAddedRequests = function(args, callback) {
 	} else {
 		callback("Invalid or absent parameters");
 	}
+};
+
+exports.approveBatchRequest = function(args, callback) {
+	
 };
 
 var s_errorFlag = 0;

@@ -27,6 +27,7 @@ exports.getAllInventory = function  (callback) {
 	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	result['metadata'].push({"name": "delete", "label": "Discontinue"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		for( var i in rows) {
