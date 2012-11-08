@@ -22,23 +22,14 @@ function initAddProduct(){
 				url: "/add/product",
 				type: 'POST',
 				data: {
-					"values":{
 						"barcode":barcode,
 						"name": name,
 						"category": category,
 						"manufacturer": manufacturer,
 						"cost_price": cost_price
-					}
 				},
 				success: function (response) {
-				
-					if (response.status =="success"){
-						console.log('successfully added'+ barcode);
-						$('form#new-product-form :input').val("");
-						$('#addNewProduct').hide();
-					}
-					else
-						console.log('error');
+					console.log(response.responseText);
 				}
 			});
 	});
@@ -188,22 +179,18 @@ function init(data){
 
 function deleteProduct(rowIndex) {
 	var barcode = editableGrid.getRowId(rowIndex);
+	//global = editableGrid.getRowValues(rowIndex);
 	$.ajax({
 		url: "/delete/product",
 		type: 'POST',
 		data: {
-			"values":{
 				"barcode": barcode
-			}
 		},
 		success: function (response) {
-			if (response.status =="success")
-			{
-				console.log('successfully deleted'+ barcode);
-				editableGrid.remove(rowIndex);	
-			}
-			else
-				console.log('error');
+			
+			console.log('successfully deleted'+ barcode);
+			console.log(response);
+			editableGrid.remove(rowIndex);	
 		}
 	});
 }
