@@ -112,7 +112,22 @@ exports.syncAddedRequests = function(args, callback) {
 };
 
 exports.approveBatchRequest = function(args, callback) {
-	
+	var outlet_id = args.outlet_id,
+		date = args.date;
+
+	if( outlet_id!==null && date !== null) {
+		var query = "UPDATE batch_request SET status=\'FORWARDED\' WHERE outlet_id="+outlet_id+" AND date=" + date + ";";
+
+		connection.query(query, function(err,rows, fields) {
+			if(!err) {
+				console.log("Batch Restock Request successfully APPROVED");
+				callback(null,{ status:"APPROVED"});
+			} else {
+				console.log("Errors encountered : "+ err);
+				callback(true, null);
+			}
+		});
+	}
 };
 
 var s_errorFlag = 0;

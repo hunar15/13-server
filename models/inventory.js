@@ -150,10 +150,9 @@ exports.updateInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
-		stock = args.stock,
-		selling_price = args.selling_price,
 		min_stock = args.min_stock;
-	var query = 'UPDATE inventory SET stock='+stock+', selling_price='+selling_price+',min_stock='+min_stock+
+		
+	var query = 'UPDATE inventory SET min_stock='+min_stock+
 				' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
