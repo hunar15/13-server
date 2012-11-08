@@ -110,13 +110,14 @@ function init(data){
 }
 
 function discontinueProduct(rowIndex) {
-	var barcode = editableGrid.getRowId(rowIndex);
-	//global = editableGrid.getRowValues(rowIndex);
+	var barcode = editableGrid.getRowValues(rowIndex).barcode;
+	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
 	$.ajax({
-		url: "/delete/product",
+		url: "/delete/inventory",
 		type: 'POST',
 		data: {
-				"barcode": barcode
+				"barcode": barcode,
+				"outlet_id": outlet_id
 		},
 		success: function (response) {
 			
