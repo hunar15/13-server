@@ -131,6 +131,30 @@ exports.approveBatchRequest = function(args, callback) {
 };
 
 var s_errorFlag = 0;
+
+exports.setAsReceived = function(args, callback) {
+	var outlet_id = args.outlet_id,
+		date = args.date,
+		barcode = arg.barcode;
+
+	if(outlet_id!== null && date!==null && barcode!==null) {
+		var query = "UPDATE request_details SET received=\'true\' WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\' AND barcode="+barcode+" ;";
+
+		connection.query(query, function(err,rows, fields) {
+			if(!err) {
+				console.log("Barcode : " + barcode + " RECEIVED");
+				callback(null,true);
+			} else {
+				console.log("Error encountered : " + err);
+				callback(true,null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
+
 function callSyncReceivedRequestsQuery(query,current,outlet_id,i,len,callback) {
 	connection.query(query, function(err, rows2, fields) {
 		if(err) {
