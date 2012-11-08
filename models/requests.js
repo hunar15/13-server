@@ -21,6 +21,7 @@ exports.getBatch =  function(args, callback) {
 		result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
 		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 		result['metadata'].push({"name": "approve", "label": "Forward"});
+		result['metadata'].push({"name": "details", "label": "Details"});
 
 		connection.query( query,  function(err, rows, fields) {
 			for( var i in rows) {
