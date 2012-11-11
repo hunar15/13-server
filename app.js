@@ -61,7 +61,7 @@ app.post('/getAdded', routes.getAdded);
 app.post('/syncAddedRequests', routes.syncAddedRequests);
 app.post('/syncReceivedRequests', routes.syncReceivedRequests);
 app.get('/getall', routes.getall);
-
+app.post('/setAsReceived', routes.setAsReceived);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

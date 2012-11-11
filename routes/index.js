@@ -22,7 +22,15 @@ exports.index = function(req, res){
 	res.send(result);
   });
 };
-
+exports.setAsReceived = function(req,res) {
+	requests.setAsReceived(req.body, function (err, result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.getRequestDetails = function(req, res) {
 	requests.getBatchDetails( req.body, function(err, result) {
 		if(!err) {
