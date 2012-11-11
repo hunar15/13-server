@@ -30,6 +30,26 @@ exports.getAllOutlets = function  (callback) {
 	});
 };
 
+exports.getOutletsByProduct = function(args, callback) {
+	var barcode = args.barcode;
+
+	if(barcode !== null ) {
+		var query = "select distinct outlet_id from inventory WHERE product_barcode=" + barcode + ";";
+
+		connection.query(query,function(err,rows,fields) {
+			if(!err) {
+				console.log("Error encountered : " + err);
+				callback(true,null);
+			} else {
+				callback(null,rows);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
+
 exports.addOutlet = function (args, callback) {
 	// body...
 	console.log(args);

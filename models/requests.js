@@ -230,7 +230,7 @@ exports.updateRequest = function (args, callback) {
 		request_id = args.request_id,
 		quantity = args.quantity,
 		outlet_id = args.outlet_id;
-	var query = 'UPDATE req_details SET quantity='+quantity+
+	var query = 'UPDATE request_details SET quantity='+quantity+
 				' WHERE request_id='+request_id+' AND barcode='+barcode+' AND outlet_id='+outlet_id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...

@@ -31,6 +31,17 @@ exports.setAsReceived = function(req,res) {
 		}
 	});
 };
+
+exports.getOutletsByProduct = function (req,res) {
+	// body...
+	outlet.getOutletsByProduct(req.body, function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.getRequestDetails = function(req, res) {
 	requests.getBatchDetails( req.body, function(err, result) {
 		if(!err) {
