@@ -79,21 +79,25 @@ exports.syncAddedRequests = function(args, callback) {
 		addedList = args.addedList;
 
 	if(outlet_id !== null &&  addedList !== null) {
-		var query = "INSERT INTO batch_request VALUES("+outlet_id+",CURDATE(),\'PENDING\');",
+		/*var query = "INSERT INTO batch_request VALUES("+outlet_id+",CURDATE(),\'PENDING\');",
 			errorFlag= 0,
-			query2 = '';
-		connection.query(query, function(err, rows, fields){
+			query2 = '';*/
+		var batch_query= '',
+			detail_query='';
+		batch_query += 'INSERT INTO batch_request SELECT '+outlet_id+',CURDATE(),\'PENDING\' FROM DUAL WHERE ' +
+				'NOT EXISTS(SELECT * FROM batch_request WHERE date=CURDATE() AND outlet_id='+outlet_id+');';
+		for(var i in addedList) {
+			var current = addedList[i];
+			detail_query += "INSERT INTO request_details VALUES("+outlet_id+",CURDATE(),"+current['barcode']+","+current['quantity']+",\'false\');";
+		}
+
+		connection.query(batch_query, function(err, rows, fields){
 			if(!err) {
-				console.log("Adding request "+ addedList[0]['request_id'] +" from " + outlet_id);
-				for(var i in addedList) {
-					var current = addedList[i];
-					query2 +=  "INSERT INTO request_details VALUES("+outlet_id+",CURDATE(),"+current['barcode']+","+current['quantity']+",\'false\');";
-					
-				}
-				connection.query(query2, function(err, rows, fields) {
+				console.log("Adding request details from " + outlet_id);
+				connection.query(detail_query, function(err, rows, fields) {
 						if(err) {
 							//errorFlag = 1;
-							console("Error encountered : " + err);
+							console.log("Error encountered : " + err);
 							callback(err,{status : "ERROR"});
 						} else {
 							console.log("Requests successfully added");
