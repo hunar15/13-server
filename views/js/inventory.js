@@ -9,6 +9,14 @@ window.onload = function() {
 	initAddProduct();
 }
 
+/* TODO: 
+-Add new inventory row -> For a product, select the outlets that will sell this product
+APIs required:
+GET products details
+GET outlet details
+POST product barcode, array of outletids
+*/
+
 function init(data){
 	editableGrid = new EditableGrid("DemoGridJSON", {
 		enableSort: true, // true is the default, set it to false if you don't want sorting to be enabled

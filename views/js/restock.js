@@ -26,15 +26,24 @@ function init(data){
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("restocktablecontent", "testgrid");
 	
-	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) {
+	editableGrid.setCellRenderer("approve", new CellRenderer({render: function(cell, value) {
 		// this action will remove the row, so first find the ID of the row containing this cell 
 		var rowId = editableGrid.getRowId(cell.rowIndex);
-		
-		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this product ? ')) { deleteProduct("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
-						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
+		//##########
+		//insert if condition here to check if batch has already been approved
+		//##########
+		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to approve this batch ? ')) { approveBatch("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/approve.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
 	}})); 
 	
+	editableGrid.setCellRenderer("details", new CellRenderer({render: function(cell, value) {
+		// this action will remove the row, so first find the ID of the row containing this cell 
+		var rowId = editableGrid.getRowId(cell.rowIndex);
 
+		cell.innerHTML = "<a href=\"#restockDetails\" data-toggle=\"modal\" onclick=\"generateDetails("+cell.rowIndex+"); \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/view.png\" border=\"0\" alt=\"delete\" title=\"View details\"/></a>";
+	}})); 
+	
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
 		var nbPages = editableGrid.getPageCount();
@@ -107,11 +116,11 @@ function init(data){
 	editableGrid.tableRendered = function() { this.updatePaginator(); };
 }
 
-function deleteProduct(rowIndex) {
-	var barcode = editableGrid.getRowId(rowIndex);
-	editableGrid.remove(rowIndex);	
+function approveBatch(rowIndex) {
+	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	var date = editableGrid.getRowValues(rowIndex).date;
 	$.ajax({
-		url: "/delete/product",
+		url: "/delete/product", //change this
 		type: 'POST',
 		data: {
 			"values":{
@@ -125,4 +134,12 @@ function deleteProduct(rowIndex) {
 				console.log('error');
 		}
 	});
+}
+
+function generateDetails(rowIndex) {
+	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	var date = editableGrid.getRowValues(rowIndex).date;
+	
+	//GET batch details, generate table here.
+	
 }

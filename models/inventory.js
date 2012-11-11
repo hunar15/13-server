@@ -108,7 +108,7 @@ exports.getInventory =  function(args, callback) {
 	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
 	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
-	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	result['metadata'].push({"name": "discontinue", "label" : "Discontinue"});
 	
 	connection.query( query,  function(err, rows, fields) {
 		for( var i in rows) {
@@ -117,7 +117,7 @@ exports.getInventory =  function(args, callback) {
 			current['values'] = rows[i];
 			result['data'].push(current);
 		}
-		callback(err, rows);
+		callback(err, result);
 	});
 };
 

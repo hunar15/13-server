@@ -35,6 +35,7 @@ function initAddProduct(){
 	});
 }
 
+
 function validProductDetails(barcode, name, category, manufacturer, cost_price){
 	var valid = true;
 	if (parseInt(barcode) > 99999999 || barcode.length == 0 || !parseInt(barcode)){ //more than 8 digits
@@ -59,7 +60,7 @@ function validProductDetails(barcode, name, category, manufacturer, cost_price){
 	else
 		$('label[for=inputCategory]').removeClass('invalid');
 		
-	if (manufacturer.length == 0 || manufacturer.length > 30){
+	if (parseInt(manufacturer) > 9999 || manufacturer.length == 0 || !parseInt(manufacturer)){
 		$('label[for=inputManufacturer]').addClass('invalid');
 		valid = false;
 	}
@@ -96,14 +97,13 @@ function init(data){
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("producttablecontent", "testgrid");
 	
-	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) {
+	editableGrid.setCellRenderer("addinventory", new CellRenderer({render: function(cell, value) { //<a
 		// this action will remove the row, so first find the ID of the row containing this cell 
 		var rowId = editableGrid.getRowId(cell.rowIndex);
 		
-		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this product ? ')) { deleteProduct("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
-						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
-	}})); 
-	
+		cell.innerHTML = "<a href=\"#addNewInventory\" data-toggle=\"modal\" onclick=\"addInventory("+cell.rowIndex+"); \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/inventory.png\" border=\"0\" alt=\"delete\" title=\"add inventory row\"/></a>";
+	}})); 	
 
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
@@ -177,9 +177,20 @@ function init(data){
 	editableGrid.tableRendered = function() { this.updatePaginator(); };
 }
 
-function deleteProduct(rowIndex) {
-	var barcode = editableGrid.getRowId(rowIndex);
-	//global = editableGrid.getRowValues(rowIndex);
+function addInventory(rowIndex) {
+	var barcode = editableGrid.getRowValues(rowIndex).barcode;
+	var product_name = editableGrid.getRowValues(rowIndex).name;
+	$('#product-name').text(product_name);
+	$('#product-barcode').text(barcode);
+	initOutlet(); 
+	//$('#inventory-form').show(); 	//show the modal to select outlets
+}
+
+function initOutlet(){
+	//function call to populate outlet-selector
+}
+
+function submitInventory(){
 	$.ajax({
 		url: "/delete/product",
 		type: 'POST',
