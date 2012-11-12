@@ -37,7 +37,7 @@ exports.getOutletsByProduct = function(args, callback) {
 		var query = "select distinct outlet_id from inventory WHERE product_barcode=" + barcode + " AND status NOT LIKE \'DISCONTINUE\';";
 
 		connection.query(query,function(err,rows,fields) {
-			if(!err) {
+			if(err) {
 				console.log("Error encountered : " + err);
 				callback(true,null);
 			} else {

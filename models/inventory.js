@@ -73,8 +73,7 @@ exports.getDiscontinued = function (args, callback) {
 	var result={};
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		console.log("DOES THIS SHOW!???");
-		console.log(rows);
+
 		if(!err) {
 			result['discontinueList'] = rows;
 			var query2 = "UPDATE inventory SET status=\'DISCONTINUED\' WHERE outlet_id="+outlet_id+" AND status=\'DISCONTINUE\'";
