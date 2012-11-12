@@ -8,9 +8,38 @@ var connection = sql.createConnection({
 });
 
 exports.getBatch =  function(args, callback) {
-	//query
+	//get requests of ALL outlets
 	//var outlet_id = args.outlet_id;
 	var query = 'SELECT * FROM batch_request;';
+	
+	
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+
+	result['metadata'].push({"name": "outlet_id", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
+	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	result['metadata'].push({"name": "approve", "label": "Forward"});
+	result['metadata'].push({"name": "details", "label": "Details"});
+
+	connection.query( query,  function(err, rows, fields) {
+		for( var i in rows) {
+			var current = {};
+			current['id'] = i;
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}
+		callback(err, result);
+	});
+	
+	
+};
+
+exports.getBatchByOutlet =  function(args, callback) {
+	//get requests of a SPECIFIC outlets
+	var outlet_id = args.outlet_id,
+		query = 'SELECT * FROM batch_request WHERE outlet_id = '+outlet_id+';';
 	
 	if(outlet_id !== null) {
 		var result = {};
@@ -30,7 +59,7 @@ exports.getBatch =  function(args, callback) {
 				current['values'] = rows[i];
 				result['data'].push(current);
 			}
-			callback(err, rows);
+			callback(err, result);
 		});
 	} else {
 		console.log("Invalid or missing parameters");
