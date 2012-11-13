@@ -7,7 +7,8 @@
 		
 		<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
 		<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
-		<script src="js/inventory.js"></script>
+		<script src="js/bootstrap-modal.js"></script>
+		<!--<script src="js/outlet.js"></script>-->
 		
 		<script src="js/editablegrid.js"></script>
 		<script src="js/editablegrid_renderers.js" ></script>
@@ -36,15 +37,42 @@
 					<ul class="nav">
 					  <li id="product-link"><a href="index.html">Products</a></li>
 					  <li id="stock-link"><a href="stock.html">Stock</a></li>
-					  <li id="inventory-link" class="active"><a href="inventory.html">Inventory</a></li>
+					  <li id="inventory-link"><a href="inventory.html">Inventory</a></li>
 					  <li id="statistic-link"><a href="statistics.html">Statistics</a></li>
-					  <li id="statistic-link"><a href="outlet.html">Outlets</a></li>
+					  <li id="statistic-link" class="active"><a href="outlet.html">Outlets</a></li>
 					</ul>
 				</div>
 			</div>
 
-			<div id="inventorycontent">
-				<div id="inventorytablecontent"></div>
+			<div id="outletcontent">
+				<a href="#addNewOutlet" role="button" class="btn" data-toggle="modal">Add New Outlet</a>
+				<div id="addNewOutlet" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addNewOutletLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="addNewOutletLabel">Add New Outlet</h3>
+					</div>
+					<div class="modal-body">
+						<form id ="new-outlet-form" class="form-horizontal">
+							<div class="control-group">
+								<label class="control-label" for="inputOutletName">Outlet name</label>
+								<div class="controls">
+									<input type="text" id="inputOutletName" placeholder="">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputName">Address</label>
+								<div class="controls">
+									<input type="text" id="inputName" placeholder="">
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<button id ="confirm-add-outlet" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+				<div id="outlettablecontent"></div>
 				<div class="paginator"></div>
 			</div>
 

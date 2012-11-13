@@ -38,23 +38,21 @@ function initAddProduct(){
 
 function initAddInventory(){
 	$('#confirm-inventory-product').click(function(){
-		var barcode = $('#product-name').text();
-		var name = $('#product-barcode').text();
+		var barcode = $('#product-barcode').text();
 		var outlet_ids = $('#outlet-selector').val();
 		var selling_price = $('#inputSellingPrice').val();
 		var min_stock = $('#inputMinStock').val();
 		
 		console.log('going to add to inventory');
-		if (validProductDetails(selling_price,min_stock))
+		if (validInventoryDetails(selling_price,min_stock))
 			$.ajax({
-				url: "/add/product",
+				url: "/add/inventory",
 				type: 'POST',
 				data: {
-						"barcode":barcode,
-						"name": name,
-						"category": category,
-						"manufacturer": manufacturer,
-						"cost_price": cost_price
+						"product_barcode":barcode,
+						"outlet_ids": outlet_ids,
+						"selling_price": selling_price,
+						"min_stock": min_stock
 				},
 				success: function (response) {
 					console.log(response.responseText);

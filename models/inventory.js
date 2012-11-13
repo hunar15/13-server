@@ -135,7 +135,9 @@ exports.addToInventory = function (args, callback) {
 	for( var i  in outlet_ids) {
 		var current = outlet_ids[i];
 		query += 'INSERT INTO inventory VALUES('+current+','+product_barcode+',0,'+selling_price+','+min_stock+',\'ADDED\');';
+		
 	}
+console.log(query);	
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		if(!err) {
