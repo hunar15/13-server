@@ -122,15 +122,29 @@ exports.getInventory =  function(args, callback) {
 
 exports.addToInventory = function (args, callback) {
 	// body...
-	var outlet_id = args.outlet_id,
+	/*
+	{
+		product_barcode : "",
+	}
+	*/
+	var outlet_ids = args.outlet_ids,
 		product_barcode = args.product_barcode,
-		stock = args.stock,
 		selling_price = args.selling_price,
-		min_stock = args.min_stock;
-	var query = 'INSERT INTO inventory VALUES('+outlet_id+','+product_barcode+','+stock+','+selling_price+','+min_stock+',\'ADDED\');';
+		min_stock = args.min_stock,
+		query = '';
+	for( var i  in outlet_ids) {
+		var current = outlet_ids[i];
+		query += 'INSERT INTO inventory VALUES('+current+','+product_barcode+',0,'+selling_price+','+min_stock+',\'ADDED\');';
+	}
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		callback(err, rows);
+		if(!err) {
+			console.log("No error encountered");
+			callback(null, true);
+		} else {
+			console.log("Error encountered while ADDING to inventory");
+			callback(true, null);
+		}
 	});
 };
 
