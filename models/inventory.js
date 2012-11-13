@@ -44,7 +44,7 @@ exports.getNotSelling = function(args, callback) {
 	var barcode = args.barcode;
 
 	if(barcode!== null) {
-		var query = 'SELECT distinct id from outlet WHERE NOT EXISTS( SELECT * FROM inventory WHERE product_barcode='+barcode+' and outlet_id = id);';
+		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM inventory WHERE product_barcode='+barcode+' and outlet_id = id);';
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				console.log(rows);
