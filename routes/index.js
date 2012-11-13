@@ -12,6 +12,15 @@ exports.syncAddedRequests = function(req, res){
 	res.send(result);
   });
 };
+exports.getNotSelling = function(req,res) {
+	inventory.getNotSelling(req.body, function(err, result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.syncReceivedRequests = function(req, res){
   requests.syncReceivedRequests(req.body, function(err, result) {
 	res.send(result);
