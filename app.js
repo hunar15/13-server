@@ -48,6 +48,7 @@ app.post('/get/inventory/notSelling',routes.getNotSelling);
 app.get('/get/request/all',routes.getAllRequests);
 app.post('/get/request/byOutlet',routes.getRequestsByOutlet);
 app.post('/get/requestDetails', routes.getRequestDetails);
+app.post('/request/approve', routes.approveBatchRequest);
 
 app.post('/delete/product',routes.deleteProduct);
 app.post('/delete/outlet',routes.deleteOutlet);

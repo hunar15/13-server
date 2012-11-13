@@ -26,6 +26,17 @@ exports.syncReceivedRequests = function(req, res){
 	res.send(result);
   });
 };
+
+exports.approveBatchRequest = function(req, res) {
+	requests.approveBatchRequest(req.body, function(err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.getAllInventory = function(req, res){
   inventory.getAllInventory( function(err, result) {
 	res.send(result);
