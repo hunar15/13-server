@@ -6,16 +6,7 @@ window.onload = function() {
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
-	initAddProduct();
 }
-
-/* TODO: 
--Add new inventory row -> For a product, select the outlets that will sell this product
-APIs required:
-GET products details
-GET outlet details
-POST product barcode, array of outletids
-*/
 
 function init(data){
 	editableGrid = new EditableGrid("DemoGridJSON", {

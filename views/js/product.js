@@ -1,13 +1,16 @@
 var editableGrid;
 window.onload = function() {
-	
+	initTable();
+	initAddProduct();
+	initAddInventory();
+}
+
+function initTable(){
 	$.getJSON( "get/product", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
-	initAddProduct();
-	initAddInventory();
 }
 
 function initAddProduct(){
@@ -31,6 +34,8 @@ function initAddProduct(){
 				},
 				success: function (response) {
 					console.log(response.responseText);
+					initTable();
+					$('#addNewProduct').modal('hide');
 				}
 			});
 	});
@@ -43,7 +48,10 @@ function initAddInventory(){
 		var selling_price = $('#inputSellingPrice').val();
 		var min_stock = $('#inputMinStock').val();
 		
-		console.log('going to add to inventory');
+		console.log(barcode);
+		console.log(outlet_ids);
+		console.log(selling_price);
+		console.log(min_stock);
 		if (validInventoryDetails(selling_price,min_stock))
 			$.ajax({
 				url: "/add/inventory",
@@ -55,7 +63,8 @@ function initAddInventory(){
 						"min_stock": min_stock
 				},
 				success: function (response) {
-					console.log(response.responseText);
+					$('#addNewInventory').modal('hide');
+					document.getElementById("new-inventory-form").reset();
 				}
 			});
 	});
@@ -233,36 +242,20 @@ function addInventory(rowIndex) {
 	var product_name = editableGrid.getRowValues(rowIndex).name;
 	$('#product-name').text(product_name);
 	$('#product-barcode').text(barcode);
-	initOutlet(); 
-	fillCurrentOutlet(barcode);
-	//$('#inventory-form').show(); 	//show the modal to select outlets
+	initOutlet(barcode);
 }
 
-function initOutlet(){
-	//function call to populate outlet-selector
-	$.ajax({
-		url: "/get/outlet",
-		type: 'POST',
-		success: function (response) {
-			$('#outlet-selector').empty();
-			$.each(response.data, function(k,v){
-				
-				$('#outlet-selector').append('<option id="outlet-choice-'+v.values.id+'" value="'+v.values.id+'">'+v.values.s_name+'</option>');			
-			});
-		}
-	});
-}
-
-function fillCurrentOutlet(barcode){
+function initOutlet(barcode){
 	var product = new Object();
 	product.barcode = barcode;
 	$.ajax({
-		url: "/getOutletsByProduct",
+		url: "/get/inventory/notSelling",
 		type: 'POST',
 		data: product,
 		success: function (response) {
+			$('#outlet-selector').empty();
 			$.each(response, function(k,v){
-				$('#outlet-choice-'+v.outlet_id).attr('selected',true);			//stopped here.
+				$('#outlet-selector').append('<option id="outlet-choice-'+v.id+'" value="'+v.id+'">'+v.s_name+'</option>');	
 			});
 		}
 	});
