@@ -6,6 +6,39 @@ var inventory = require('../models/inventory'),
 	outlet = require('../models/outlet'),
 	product = require('../models/product'),
 	requests = require('../models/requests');
+var sql = require('mysql');
+var connection = sql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '',
+  database : 'hqdb'
+});
+
+exports.syncRevenue = function(req, res) {
+	var body = req.body;
+	var outlet_id = body['outlet_id'],
+		date = body['date'].split('T')[0];
+
+	if(body !== null) {
+		var query = 'INSERT INTO revenue SELECT '+outlet_id+','+body['revenue']+','+body['barcode']+',\''+
+				date + '\' FROM DUAL WHERE NOT EXISTS( SELECT * FROM revenue WHERE outlet_id='+outlet_id+' AND '+
+				' date=\''+date+'\');';
+		console.log(query);
+		connection.query(query, function(err, rows, fields) {
+			if(!err) {
+				console.log("Revenue from Outlet ID : " + outlet_id + " synced");
+				res.send({"STATUS" : "SUCCESS"});
+			} else {
+				console.log("Error encountered");
+				console.log("ERROR : " + err);
+				res.send({"STATUS" : "ERROR"});
+			}
+		});
+	} else {
+		console.log("Invalid or missing parameters");
+		res.send({"STATUS" : "ERROR"});
+	}
+};
 
 exports.syncAddedRequests = function(req, res){
   requests.syncAddedRequests(req.body, function(err, result) {
