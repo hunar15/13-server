@@ -41,7 +41,7 @@ app.post('/add/inventory',routes.addToInventory);
 app.post('/add/request',routes.addRequest);
 
 app.get('/get/product',routes.getProducts);
-app.post('/get/outlet',routes.getOutlets);
+app.get('/get/outlet',routes.getOutlets);
 app.get('/get/inventory',routes.getInventory);
 app.post('/get/inventory/notSelling',routes.getNotSelling);
 app.get('/get/request/all',routes.getAllRequests);
