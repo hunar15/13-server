@@ -124,7 +124,8 @@ function approveBatch(rowIndex) {
 		type: 'POST',
 		data: {
 			"values":{
-				"barcode": barcode
+				"outlet_id": outlet_id,
+				"date": date
 			}
 		},
 		success: function (response) {
