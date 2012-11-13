@@ -15,7 +15,7 @@ exports.getBatch =  function(args, callback) {
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "string"});
+	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
 	result['metadata'].push({"name": "s_name", "label" : "Outlet Name", "datatype" : "string"});
 	result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
@@ -25,6 +25,7 @@ exports.getBatch =  function(args, callback) {
 	connection.query( query,  function(err, rows, fields) {
 		for( var i in rows) {
 			var current = {};
+			rows[i].date = rows[i].date.toJSON().substring(0,10);
 			current['id'] = i;
 			current['values'] = rows[i];
 			result['data'].push(current);
@@ -71,16 +72,17 @@ exports.getBatchByOutlet =  function(args, callback) {
 exports.getBatchDetails = function (args, callback) {
 	var outlet_id = args.outlet_id,
 		date = args.date;
-
+	console.log(outlet_id);
+	console.log(date);
 	if( outlet_id!==null && date!==null) {
 		var result = {},
-			query = "SELECT barcode, quantity, received FROM request_details WHERE outlet_id=" + outlet_id + " AND date=" + date + ";";
+			query = "SELECT barcode, quantity, received FROM request_details WHERE outlet_id=" + outlet_id + " AND date='" + date + "';";
 		result['metadata'] = [];
 		result['data']= [];
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
 		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
-		result['metadata'].push({"name": "received", "label" : "Received?"});
+		result['metadata'].push({"name": "received", "label" : "Received", "datatype" : "integer"});
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
@@ -153,10 +155,10 @@ exports.syncAddedRequests = function(args, callback) {
 exports.approveBatchRequest = function(args, callback) {
 	var outlet_id = args.outlet_id,
 		date = args.date;
-
+	console.log(outlet_id);
+	console.log(date);
 	if( outlet_id!==null && date !== null) {
-		var query = "UPDATE batch_request SET status=\'FORWARDED\' WHERE outlet_id="+outlet_id+" AND date=" + date + ";";
-
+		var query = "UPDATE batch_request SET status=\'FORWARDED\' WHERE outlet_id="+outlet_id+" AND date='" + date + "';";
 		connection.query(query, function(err,rows, fields) {
 			if(!err) {
 				console.log("Batch Restock Request successfully APPROVED");
