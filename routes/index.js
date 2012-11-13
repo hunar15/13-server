@@ -43,6 +43,28 @@ exports.getOutletsByProduct = function (req,res) {
 		}
 	});
 };
+
+exports.getAllRequests = function (req,res) {
+	// body...
+	requests.getBatch( req.body, function(err, result) {
+		if(!err) {
+			console.log(result);
+			res.send(result);
+		} else
+			res.send(err);
+	});
+};
+exports.getRequestsByOutlet = function (req,res) {
+	// body...
+	requests.getBatchByOutlet( req.body, function(err, result) {
+		if(!err) {
+			console.log(result);
+			res.send(result);
+		} else
+			res.send(err);
+	});
+};
+
 exports.getRequestDetails = function(req, res) {
 	requests.getBatchDetails( req.body, function(err, result) {
 		if(!err) {
