@@ -17,8 +17,8 @@ exports.getAllInventory = function  (callback) {
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
@@ -28,7 +28,7 @@ exports.getAllInventory = function  (callback) {
 	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
-	result['metadata'].push({"name": "delete", "label": "Discontinue"});
+	result['metadata'].push({"name": "discontinue", "label": "Discontinue"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		for( var i in rows) {
@@ -37,7 +37,7 @@ exports.getAllInventory = function  (callback) {
 			current['values'] = rows[i];
 			result['data'].push(current);
 		}
-		callback(err, rows);
+		callback(err, current);
 	});
 };
 
@@ -113,14 +113,16 @@ exports.getDiscontinued = function (args, callback) {
 };
 exports.getInventory =  function(args, callback) {
 	//query
-	var query = 'SELECT s_name, barcode, name,category, manufacturer, stock, min_stock' +
+	var query = 'SELECT s_name, outlet_id, barcode, name,category, manufacturer, stock, min_stock' +
 			', selling_price, cost_price, status FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
 			' INNER JOIN outlet ON id = outlet_id AND status NOT LIKE \'%DISCONTINUE%\';';
+					
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
-
+	
+	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
@@ -130,7 +132,8 @@ exports.getInventory =  function(args, callback) {
 	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
 	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
-	result['metadata'].push({"name": "discontinue", "label" : "Discontinue"});
+	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	result['metadata'].push({"name": "discontinue", "label": "Discontinue"});
 	
 	connection.query( query,  function(err, rows, fields) {
 		for( var i in rows) {

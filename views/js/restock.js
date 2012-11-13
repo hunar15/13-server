@@ -1,6 +1,6 @@
 var editableGrid;
 window.onload = function() {
-	$.getJSON( "get/request", function(data){
+	$.getJSON( "get/request/all", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');

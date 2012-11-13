@@ -9,13 +9,14 @@ var connection = sql.createConnection({
 
 exports.getBatch =  function(args, callback) {
 
-	var query = 'SELECT * FROM batch_request;';
+	var query = 'SELECT outlet_id, outlet.s_name, date, status FROM batch_request, outlet WHERE batch_request.outlet_id = outlet.id;';
 	
 	var result = {};
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "outlet_id", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "string"});
+	result['metadata'].push({"name": "s_name", "label" : "Outlet Name", "datatype" : "string"});
 	result['metadata'].push({"name": "date", "label" : "Date of Request", "datatype" : "date"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 	result['metadata'].push({"name": "approve", "label": "Forward"});
