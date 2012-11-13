@@ -40,7 +40,6 @@ function init(data){
 		var paginator = $("#paginator").empty();
 		var nbPages = editableGrid.getPageCount();
 		console.log(nbPages);
-
 		// get interval
 		var interval = editableGrid.getSlidingPageInterval(10);
 		if (interval == null) return;
@@ -65,6 +64,7 @@ function init(data){
 				editableGrid.firstPage(); 
 				//updatePaginator();
 				});
+		console.log(link);
 		paginator.append(link);
 
 		// "prev" link
@@ -76,6 +76,7 @@ function init(data){
 				editableGrid.prevPage(); 
 				//updatePaginator()
 			});
+		console.log(link);
 		paginator.append(link);
 		
 		// pages
@@ -90,6 +91,7 @@ function init(data){
 				editableGrid.nextPage(); 
 				//updatePaginator();
 				});
+		console.log(link);
 		paginator.append(link);
 
 		// "last" link
@@ -101,6 +103,7 @@ function init(data){
 				editableGrid.lastPage(); 
 				//updatePaginator();
 			});
+		console.log(link);
 		paginator.append(link);
 
 	};
@@ -111,11 +114,13 @@ function init(data){
 function discontinueProduct(rowIndex) {
 	var barcode = editableGrid.getRowValues(rowIndex).barcode;
 	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	console.log(barcode);
+	console.log(outlet_id);
 	$.ajax({
 		url: "/delete/inventory",
 		type: 'POST',
 		data: {
-				"barcode": barcode,
+				"product_barcode": barcode,
 				"outlet_id": outlet_id
 		},
 		success: function (response) {

@@ -177,7 +177,7 @@ exports.deleteFromInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode;
-	var query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+id+' AND product_barcode='+product_barcode+';';
+	var query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
