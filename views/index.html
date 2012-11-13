@@ -40,6 +40,7 @@
 					  <li id="stock-link"><a href="stock.html">Stock</a></li>
 					  <li id="inventory-link"><a href="inventory.html">Inventory</a></li>
 					  <li id="statistic-link"><a href="statistics.html">Statistics</a></li>
+					  <li id="statistic-link"><a href="outlet.html">Outlets</a></li>
 					</ul>
 				</div>
 			</div>
@@ -95,7 +96,7 @@
 						<h3 id="addNewInventoryLabel">Attach Product <span id="product-barcode"></span> <span id="product-name"></span> to outlet inventory</h3>
 					</div>
 					<div class="modal-body">
-						<form id ="new-inventory-form" class="form-horizontal">
+						<form id ="new-inventory-form" class="form-horizontal" onsubmit="return false;">
 							<div class="control-group">
 								<label class="control-label" for="inputOutlet">Outlets</label>
 								<div class="controls">
@@ -103,6 +104,18 @@
 									</select>
 								</div>
 							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputSellingPrice">Selling Price</label>
+								<div class="controls">
+									<input type="text" id="inputSellingPrice" placeholder="Price in $X.XX">
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputMinStock">Min. Stock</label>
+								<div class="controls">
+									<input type="text" id="inputMinStock" placeholder="Enter in digits">
+								</div>
+							</div>						
 						</form>
 					</div>
 					<div class="modal-footer">
