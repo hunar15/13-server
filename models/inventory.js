@@ -8,7 +8,7 @@ var connection = sql.createConnection({
 
 exports.getAllInventory = function  (callback) {
 	// body...
-	var query = 'SELECT s_name, barcode, name,category, manufacturer, stock, min_stock' +
+	var query = 'SELECT s_name,outlet_id, barcode, name,category, manufacturer, stock, min_stock' +
 			', selling_price, cost_price, status FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
 			' INNER JOIN outlet ON id = outlet_id ;';
@@ -18,6 +18,7 @@ exports.getAllInventory = function  (callback) {
 	result['data']= [];
 
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
