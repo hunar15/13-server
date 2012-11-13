@@ -7,6 +7,7 @@ window.onload = function() {
 		editableGrid.filter('');
 	});
 	initAddProduct();
+	initAddInventory();
 }
 
 function initAddProduct(){
@@ -16,7 +17,7 @@ function initAddProduct(){
 		var category = $('#inputCategory').val();
 		var manufacturer = $('#inputManufacturer').val();
 		var cost_price = $('#inputPrice').val();
-		console.log('clicked and checking');
+
 		if (validProductDetails(barcode, name, category, manufacturer, cost_price))
 			$.ajax({
 				url: "/add/product",
@@ -35,7 +36,32 @@ function initAddProduct(){
 	});
 }
 
-
+function initAddInventory(){
+	$('#confirm-inventory-product').click(function(){
+		var barcode = $('#product-name').text();
+		var name = $('#product-barcode').text();
+		var outlet_ids = $('#outlet-selector').val();
+		var selling_price = $('#inputSellingPrice').val();
+		var min_stock = $('#inputMinStock').val();
+		
+		console.log('going to add to inventory');
+		if (validProductDetails(selling_price,min_stock))
+			$.ajax({
+				url: "/add/product",
+				type: 'POST',
+				data: {
+						"barcode":barcode,
+						"name": name,
+						"category": category,
+						"manufacturer": manufacturer,
+						"cost_price": cost_price
+				},
+				success: function (response) {
+					console.log(response.responseText);
+				}
+			});
+	});
+}
 function validProductDetails(barcode, name, category, manufacturer, cost_price){
 	var valid = true;
 	if (parseInt(barcode) > 99999999 || barcode.length == 0 || !parseInt(barcode)){ //more than 8 digits
@@ -75,7 +101,34 @@ function validProductDetails(barcode, name, category, manufacturer, cost_price){
 		$('label[for=inputPrice]').removeClass('invalid');
 
 	return valid;
+}
+
+function validInventoryDetails(selling_price,min_stock){
+	var valid = true;
+	var alertmsg = '';
+	if (!parseFloat(selling_price)){
+		$('label[for=inputSellingPrice]').addClass('invalid');
+		valid = false;
+		alertmsg = alertmsg + 'Selling price must be a float! ';
+	}
+	else
+		$('label[for=inputSellingPrice]').removeClass('invalid');
+		
+	if (!parseInt(min_stock)){
+		$('label[for=inputMinStock]').addClass('invalid');
+		valid = false;
+		alertmsg = alertmsg + 'Minimum stock must be an integer!';
+	}
+	else
+		$('label[for=inputMinStock]').removeClass('invalid');
 	
+	if (valid)
+		return true;
+	else
+	{
+		alert(alertmsg);
+		return false;
+	}
 }
 
 function init(data){
@@ -183,6 +236,7 @@ function addInventory(rowIndex) {
 	$('#product-name').text(product_name);
 	$('#product-barcode').text(barcode);
 	initOutlet(); 
+	fillCurrentOutlet(barcode);
 	//$('#inventory-form').show(); 	//show the modal to select outlets
 }
 
@@ -192,9 +246,10 @@ function initOutlet(){
 		url: "/get/outlet",
 		type: 'POST',
 		success: function (response) {
+			$('#outlet-selector').empty();
 			$.each(response.data, function(k,v){
-				$('#outlet-selector').remove();
-				$('#outlet-selector').append('<option id="outlet-choice-'+v.values.id+'" value="'+v.values.id+'" selected="false">'+v.values.s_name+'</option>');			
+				
+				$('#outlet-selector').append('<option id="outlet-choice-'+v.values.id+'" value="'+v.values.id+'">'+v.values.s_name+'</option>');			
 			});
 		}
 	});
@@ -208,8 +263,8 @@ function fillCurrentOutlet(barcode){
 		type: 'POST',
 		data: product,
 		success: function (response) {
-			$.each(response.data, function(k,v){
-				$('#outlet-choice-'+v.values.id).attr('selected',true);			//stopped here.
+			$.each(response, function(k,v){
+				$('#outlet-choice-'+v.outlet_id).attr('selected',true);			//stopped here.
 			});
 		}
 	});
