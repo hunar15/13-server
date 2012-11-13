@@ -43,6 +43,7 @@ app.post('/add/request',routes.addRequest);
 app.get('/get/product',routes.getProducts);
 app.get('/get/outlet',routes.getOutlets);
 app.get('/get/inventory',routes.getInventory);
+app.get('/get/inventory/all',routes.getAllInventory);
 app.post('/get/inventory/notSelling',routes.getNotSelling);
 app.get('/get/request/all',routes.getAllRequests);
 app.post('/get/request/byOutlet',routes.getRequestsByOutlet);

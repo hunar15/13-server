@@ -26,7 +26,7 @@ exports.syncReceivedRequests = function(req, res){
 	res.send(result);
   });
 };
-exports.index = function(req, res){
+exports.getAllInventory = function(req, res){
   inventory.getAllInventory( function(err, result) {
 	res.send(result);
   });
