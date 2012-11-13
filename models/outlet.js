@@ -32,12 +32,13 @@ exports.getAllOutlets = function  (callback) {
 
 exports.getOutletsByProduct = function(args, callback) {
 	var barcode = args.barcode;
-
+	console.log(barcode);
 	if(barcode !== null ) {
-		var query = "select distinct outlet_id from inventory WHERE product_barcode=" + barcode + " AND status NOT LIKE \'DISCONTINUE\';";
+		console.log('entered condition');
+		var query = "select distinct outlet_id, s_name from inventory,outlet WHERE outlet.id = inventory.outlet_id AND product_barcode=" + barcode + " AND status NOT LIKE \'DISCONTINUE\';";
 
 		connection.query(query,function(err,rows,fields) {
-			if(!err) {
+			if(err) {
 				console.log("Error encountered : " + err);
 				callback(true,null);
 			} else {

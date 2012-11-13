@@ -34,6 +34,7 @@ exports.setAsReceived = function(req,res) {
 
 exports.getOutletsByProduct = function (req,res) {
 	// body...
+	console.log(req.body);
 	outlet.getOutletsByProduct(req.body, function (err,result) {
 		if(!err) {
 			res.send(result);
@@ -105,7 +106,7 @@ exports.updateProduct = function  (req, res) {
 
 exports.getOutlets = function  (req, res) {
 	// body...
-	outlet.getOutlets( req.body, function(err, result ) {
+	outlet.getAllOutlets(function(err, result ) {
 		res.send(result);
 	});
 };

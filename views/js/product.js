@@ -188,6 +188,31 @@ function addInventory(rowIndex) {
 
 function initOutlet(){
 	//function call to populate outlet-selector
+	$.ajax({
+		url: "/get/outlet",
+		type: 'POST',
+		success: function (response) {
+			$.each(response.data, function(k,v){
+				$('#outlet-selector').remove();
+				$('#outlet-selector').append('<option id="outlet-choice-'+v.values.id+'" value="'+v.values.id+'" selected="false">'+v.values.s_name+'</option>');			
+			});
+		}
+	});
+}
+
+function fillCurrentOutlet(barcode){
+	var product = new Object();
+	product.barcode = barcode;
+	$.ajax({
+		url: "/getOutletsByProduct",
+		type: 'POST',
+		data: product,
+		success: function (response) {
+			$.each(response.data, function(k,v){
+				$('#outlet-choice-'+v.values.id).attr('selected',true);			//stopped here.
+			});
+		}
+	});
 }
 
 function submitInventory(){

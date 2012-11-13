@@ -12,7 +12,7 @@ exports.getBatch =  function(args, callback) {
 	//var outlet_id = args.outlet_id;
 	var query = 'SELECT * FROM batch_request;';
 	
-	if(outlet_id !== null) {
+	//if(outlet_id !== null) {
 		var result = {};
 		result['metadata'] = [];
 		result['data']= [];
@@ -30,12 +30,12 @@ exports.getBatch =  function(args, callback) {
 				current['values'] = rows[i];
 				result['data'].push(current);
 			}
-			callback(err, rows);
+			callback(err, result);
 		});
-	} else {
-		console.log("Invalid or missing parameters");
-		callback({err : "true"}, null);
-	}
+	//} else {
+	//	console.log("Invalid or missing parameters");
+	//	callback({err : "true"}, null);
+//}
 	
 };
 
