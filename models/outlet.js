@@ -18,11 +18,13 @@ exports.getAllOutlets = function  (callback) {
 	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "integer"});
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string"});
+	result['metadata'].push({"name": "delete", "label": "Delete"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		for( var i in rows) {
 			var current = {};
-			current['id'] = rows[i]['p.barcode'];
+			console.log(current);
+			current['id'] = rows[i]['id'];
 			current['values'] = rows[i];
 			result['data'].push(current);
 		}

@@ -39,6 +39,28 @@ exports.getAllInventory = function  (callback) {
 		callback(err, rows);
 	});
 };
+
+exports.getNotSelling = function(args, callback) {
+	var barcode = args.barcode;
+
+	if(barcode!== null) {
+		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM inventory WHERE product_barcode='+barcode+' and outlet_id = id);';
+		connection.query(query, function(err, rows, fields) {
+			if(!err) {
+				console.log(rows);
+				console.log("Query successfully executed");
+				callback(null,rows);
+			} else {
+				console.log("Error encountered : " + err);
+				callback(true,null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
+
 exports.getAdded = function (args, callback) {
 	// body...
 	var outlet_id = args.outletid,
@@ -149,6 +171,7 @@ console.log(query);
 		}
 	});
 };
+
 
 exports.deleteFromInventory = function (args, callback) {
 	// body...
