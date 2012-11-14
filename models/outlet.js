@@ -72,7 +72,8 @@ exports.addOutlet = function (args, callback) {
 exports.deleteOutlet = function (args, callback) {
 	// body...
 	var id = args.id;
-	var query = 'DELETE FROM outlet where id="'+id+'";';
+	var query = 'DELETE FROM outlet where id='+id+';';
+	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);

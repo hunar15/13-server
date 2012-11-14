@@ -1,6 +1,7 @@
 var editableGrid;
 window.onload = function() {
 	initTable();
+	initAddOutlet();
 }
 
 function initTable(){
@@ -10,6 +11,59 @@ function initTable(){
 		editableGrid.filter('');
 	});
 }
+
+function initAddOutlet(){
+	$('#confirm-add-outlet').click(function(){
+
+		var name = $('#inputOutletName').val();
+		var address = $('#inputAddress').val();
+
+		if (validOutletDetails(name,address))
+			$.ajax({
+				url: "/add/outlet",
+				type: 'POST',
+				data: {
+						"s_name": name,
+						"address": address
+				},
+				success: function (response) {
+					console.log('outlet added!');
+					initTable();
+					$('#addNewOutlet').modal('hide');
+				}
+			});
+	});
+}
+
+function validOutletDetails(name,address){
+	var errormsg = '';
+	var valid = true;
+	if (name == '' || name.length > 20)
+	{
+		errormsg = errormsg + 'Outlet name cannot be empty or more than 20 characters! ';
+		$('label[for=inputOutletName]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputOutletName]').removeClass('invalid');
+	if (address == '' || address.length > 30)
+	{
+		errormsg = errormsg + 'Outlet address cannot be empty or more than 30 characters! ';
+		$('label[for=inputAddress]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputAddress]').removeClass('invalid');
+
+	if (!valid){
+		alert(errormsg);
+		return false;
+	}
+	else
+		return true;
+
+}
+
 function init(data){
 	editableGrid = new EditableGrid("DemoGridJSON", {
 		enableSort: true, // true is the default, set it to false if you don't want sorting to be enabled

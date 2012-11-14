@@ -45,7 +45,7 @@
 			</div>
 
 			<div id="outletcontent">
-				<a href="#addNewOutlet" role="button" class="btn" data-toggle="modal">Add New Outlet</a>
+				<a href="#addNewOutlet" role="button" class="btn" data-toggle="modal">Add New Outlet</a><br />
 				<div id="addNewOutlet" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addNewOutletLabel" aria-hidden="true">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -60,9 +60,9 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label" for="inputName">Address</label>
+								<label class="control-label" for="inputAddress">Address</label>
 								<div class="controls">
-									<input type="text" id="inputName" placeholder="">
+									<input type="text" id="inputAddress" placeholder="">
 								</div>
 							</div>
 						</form>
@@ -72,6 +72,8 @@
 						<button id ="confirm-add-outlet" class="btn btn-primary">Save changes</button>
 					</div>
 				</div>
+				<label for="filter"><br/>Filter :</label>
+				<input class="span4" type="text" id="filter" placeholder="Enter any outlet details"/>
 				<div id="outlettablecontent"></div>
 				<div class="paginator"></div>
 			</div>
