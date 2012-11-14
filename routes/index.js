@@ -5,7 +5,8 @@
 var inventory = require('../models/inventory'),
 	outlet = require('../models/outlet'),
 	product = require('../models/product'),
-	requests = require('../models/requests');
+	requests = require('../models/requests'),
+	statistics = require('../models/statistics');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -14,6 +15,16 @@ var connection = sql.createConnection({
   database : 'hqdb',
   multipleStatements : true
 });
+
+exports.lastWeekPerformance = function(req,res) {
+	statistics.lastWeekPerformance(req.body, function(err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.syncAll = function(req,res) {
 	var outlet_id = req.body.outletid,
