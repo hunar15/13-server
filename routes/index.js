@@ -70,6 +70,16 @@ exports.approveBatchRequest = function(req, res) {
 	});
 };
 
+exports.syncUpdated = function(req,res) {
+	inventory.syncUpdated(req.body, function(err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.getAllInventory = function(req, res){
   inventory.getAllInventory( function(err, result) {
 	res.send(result);

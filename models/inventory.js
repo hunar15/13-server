@@ -195,11 +195,44 @@ exports.updateInventory = function (args, callback) {
 		min_stock = args.min_stock;
 		
 	var query = 'UPDATE inventory SET min_stock='+min_stock+
-				' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+				' , status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
 	});
+};
+
+exports.syncUpdated = function (args, callback) {
+	var outlet_id = args.outletid,
+		result = {};
+		
+	//result['ms_list'] = [];
+	if(outlet_id !== null) {
+		var query = 'SELECT barcode, min_stock FROM inventory where status=\'UPDATED\' AND outlet_id='+outlet_id+ ' ;';
+
+		connection.query(query, function(err, rows, fields) {
+			if(!err) {
+				result['ms_list'] = rows;
+
+				query = 'UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id=' + outlet_id + ' ;';
+
+				connection.query( query, function( err2, rows2, fields2) {
+					if(!err2) {
+						callback(null,result);
+					} else {
+						console.log("ERROR encountered : " + err2);
+						callback(true,null);
+					}
+				});
+			} else {
+				console.log("ERROR encountered : " + err);
+				callback(true,null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
 };
 
 
