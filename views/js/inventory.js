@@ -1,6 +1,9 @@
 var editableGrid;
 window.onload = function() {
-	
+	initTable();
+}
+
+function initTable(){
 	$.getJSON( "get/inventory", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
