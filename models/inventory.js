@@ -37,7 +37,7 @@ exports.getAllInventory = function  (callback) {
 			current['values'] = rows[i];
 			result['data'].push(current);
 		}
-		callback(err, current);
+		callback(err, result);
 	});
 };
 
@@ -198,7 +198,12 @@ exports.updateInventory = function (args, callback) {
 				' , status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		callback(err, rows);
+		if(!err) {
+			callback(null,true);
+		} else {
+			console.log("ERROR encountered : " + err);
+			callback(true,null);
+		}
 	});
 };
 
@@ -208,7 +213,7 @@ exports.syncUpdated = function (args, callback) {
 		
 	//result['ms_list'] = [];
 	if(outlet_id !== null) {
-		var query = 'SELECT barcode, min_stock FROM inventory where status=\'UPDATED\' AND outlet_id='+outlet_id+ ' ;';
+		var query = 'SELECT product_barcode as barcode, min_stock FROM inventory where status=\'UPDATED\' AND outlet_id='+outlet_id+ ' ;';
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
