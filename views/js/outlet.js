@@ -1,10 +1,67 @@
 var editableGrid;
 window.onload = function() {
+	initTable();
+	initAddOutlet();
+}
+
+function initTable(){
 	$.getJSON( "get/outlet", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
+}
+
+function initAddOutlet(){
+	$('#confirm-add-outlet').click(function(){
+
+		var name = $('#inputOutletName').val();
+		var address = $('#inputAddress').val();
+
+		if (validOutletDetails(name,address))
+			$.ajax({
+				url: "/add/outlet",
+				type: 'POST',
+				data: {
+						"s_name": name,
+						"address": address
+				},
+				success: function (response) {
+					console.log('outlet added!');
+					initTable();
+					$('#addNewOutlet').modal('hide');
+				}
+			});
+	});
+}
+
+function validOutletDetails(name,address){
+	var errormsg = '';
+	var valid = true;
+	if (name == '' || name.length > 20)
+	{
+		errormsg = errormsg + 'Outlet name cannot be empty or more than 20 characters! ';
+		$('label[for=inputOutletName]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputOutletName]').removeClass('invalid');
+	if (address == '' || address.length > 30)
+	{
+		errormsg = errormsg + 'Outlet address cannot be empty or more than 30 characters! ';
+		$('label[for=inputAddress]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputAddress]').removeClass('invalid');
+
+	if (!valid){
+		alert(errormsg);
+		return false;
+	}
+	else
+		return true;
+
 }
 
 function init(data){
@@ -26,6 +83,13 @@ function init(data){
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("outlettablecontent", "testgrid");
 	
+	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) { //<a
+		// this action will remove the row, so first find the ID of the row containing this cell 
+		var rowId = editableGrid.getRowId(cell.rowIndex);
+		
+		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this outlet ? ')) { deleteOutlet("+rowId+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete outlet\"/></a>";
+	}})); 	
 	
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
@@ -97,4 +161,21 @@ function init(data){
 	};
 
 	editableGrid.tableRendered = function() { this.updatePaginator(); };
+}
+
+function deleteOutlet(rowId){
+	console.log('going to delete: '+rowId);
+	$.ajax({
+		url: "/delete/outlet",
+		type: 'POST',
+		data: {
+				"id": rowId
+		},
+		success: function (response) {
+
+			console.log('successfully deleted outlet'+ rowId);
+			console.log(response);
+			initTable();
+		}
+	});
 }

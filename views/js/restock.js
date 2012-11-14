@@ -1,6 +1,8 @@
 var editableGrid;
+var global;
 window.onload = function() {
 	initTable();
+	initSetReceived();
 }
 
 function initTable(){
@@ -11,9 +13,46 @@ function initTable(){
 	});
 }
 
+function initSetReceived(){
+	$('#confirm-checked-product').click(function(){
+		var batch_received=[];
+		$('.received-check').each(function(k,v){
+			if ($(v).attr('checked')=='checked')
+				batch_received.push($(v).attr('id').substring(6));
+		});
+
+		var outlet_id = $('#outlet-id').text();
+		var date = $('#restock-date').text();
+		
+		if (batch_received.length == 0)
+			$('#restockDetails').modal('hide');
+			
+		$.each(batch_received, function(k,v){
+			
+			$.ajax({
+				url: "/setAsReceived",
+				type: 'POST',
+				data: {
+					"outlet_id": outlet_id,
+					"date": date,
+					"barcode": v
+				},
+				success: function (response) {
+					if (k==(batch_received.length - 1)){
+						initTable();
+						$('#restockDetails').modal('hide');
+					}
+				}
+			});
+		});
+
+		
+	});	
+}
+
 function init(data){
 	editableGrid = new EditableGrid("DemoGridJSON", {
-		enableSort: true, // true is the default, set it to false if you don't want sorting to be enabled
+		enableSort: false, // true is the default, set it to false if you don't want sorting to be enabled
 		editmode: "absolute", // change this to "fixed" to test out editorzone, and to "static" to get the old-school mode
 		editorzoneid: "edition", // will be used only if editmode is set to "fixed"
 		pageSize: 10,
@@ -36,14 +75,21 @@ function init(data){
 		//##########
 		//insert if condition here to check if batch has already been approved
 		//##########
-		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to approve this batch ? ')) { approveBatch("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
-						 "<img src=\"images/approve.png\" border=\"0\" alt=\"delete\" title=\"Approve row\"/></a>";
+		var status = editableGrid.getRowValues(rowId).status;
+		if (status == "FORWARDED")
+			cell.innerHTML = "<img src=\"images/approved.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
+		else if (status == "DISPATCHED")
+			cell.innerHTML = "<img src=\"images/dispatched.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
+		else
+			cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to approve this batch ? ')) { approveBatch("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/approve.png\" border=\"0\" title=\"Approve row\"/></a>";
 	}})); 
 	
 	editableGrid.setCellRenderer("details", new CellRenderer({render: function(cell, value) {
-		// this action will remove the row, so first find the ID of the row containing this cell 
 		var rowId = editableGrid.getRowId(cell.rowIndex);
 
+		var status = editableGrid.getRowValues(rowId).status;
+		
 		cell.innerHTML = "<a href=\"#restockDetails\" data-toggle=\"modal\" onclick=\"generateDetails("+cell.rowIndex+"); \" style=\"cursor:pointer\">" +
 						 "<img src=\"images/view.png\" border=\"0\" alt=\"delete\" title=\"View details\"/></a>";
 	}})); 
@@ -143,7 +189,9 @@ function initDetail(data){
 		// this action will remove the row, so first find the ID of the row containing this cell 
 		var rowId = detailedEditableGrid.getRowId(cell.rowIndex);
 		if (value==0)
-			cell.innerHTML = "<input type='checkbox' onclick=''/>";
+			cell.innerHTML = "<input class='received-check' id='check-"+rowId+"' type='checkbox'/>";
+		else
+			cell.innerHTML = "<input type='checkbox' checked='true' disabled='true'/>";
 	}})); 
 	
 	detailedEditableGrid.updatePaginator = function () {
@@ -237,7 +285,14 @@ function approveBatch(rowIndex) {
 
 function generateDetails(rowIndex) {
 	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	var outlet_name = editableGrid.getRowValues(rowIndex).s_name;
 	var date = editableGrid.getRowValues(rowIndex).date;
+	var status = editableGrid.getRowValues(rowIndex).status;
+	if (status != "FORWARDED" && status != "DISPATCHED")
+		$('#confirm-checked-product').attr("disabled",true);
+	else
+		$('#confirm-checked-product').attr("disabled",false);
+		
 	console.log(outlet_id);
 	console.log(date);
 	$.ajax({
@@ -248,9 +303,12 @@ function generateDetails(rowIndex) {
 			"date": date
 		},
 		success: function (response) {
-		initDetail(response);
-		detailedEditableGrid.setPageIndex(0);
-		detailedEditableGrid.filter('');
+			initDetail(response);
+			detailedEditableGrid.setPageIndex(0);
+			detailedEditableGrid.filter('');
+			$('#outlet-id').text(outlet_id);
+			$('#outlet-name').text(outlet_name);
+			$('#restock-date').text(date);
 			$('#restockDetails').modal('show');
 		}
 	});	
