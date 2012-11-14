@@ -3,7 +3,8 @@ var connection = sql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'hqdb'
+  database : 'hqdb',
+  multipleStatements : true
 });
 
 exports.getAllInventory = function  (callback) {
