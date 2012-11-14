@@ -5,15 +5,55 @@
 var inventory = require('../models/inventory'),
 	outlet = require('../models/outlet'),
 	product = require('../models/product'),
-	requests = require('../models/requests');
+	requests = require('../models/requests'),
+	statistics = require('../models/statistics');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'hqdb'
+  database : 'hqdb',
+  multipleStatements : true
 });
 
+exports.lastWeekPerformance = function(req,res) {
+	statistics.lastWeekPerformance(req.body, function(err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.syncAll = function(req,res) {
+	var outlet_id = req.body.outletid,
+		list = req.body.inventory;
+
+	if(list!==null  && outlet_id !== null) {
+		var query = '';
+
+		for(var i in list) {
+			var current = list[i];
+
+			query += 'UPDATE inventory SET stock='+current['stock']+', selling_price='+current['selling_price']+
+					' WHERE product_barcode='+current['barcode'] + ' AND outlet_id=' +outlet_id+' ;';
+		}
+
+		connection.query(query, function(err,rows,fields) {
+			if(!err) {
+				console.log("Inventory of Outlet ID : " + outlet_id + " synced");
+				res.send({"STATUS" : "SUCCESS"});
+			} else {
+				console.log("Error encountered : " + err);
+				res.send({"STATUS" : "ERROR"});
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		res.send({"STATUS" : "ERROR"});
+	}
+};
 exports.syncRevenue = function(req, res) {
 	var body = req.body;
 	var outlet_id = body['outlet_id'],
