@@ -29,3 +29,19 @@ exports.lastWeekPerformance = function (args, callback) {
 		callback(true,null);
 	}
 };
+
+exports.allOutletsRevenue = function(args,callback) {
+	var query = 'SELECT o.s_name as name, r.revenue as revenue, (r.revenue / t.total)*100 as percent'+
+				' from outlet o,revenue r,(SELECT SUM(revenue) as total from revenue where date=SUBDATE(CURDATE(),1)) t '+
+				' where o.id=r.outlet_id;';
+
+	connection.query(query, function(err,rows,fields) {
+		if(!err) {
+			console.log("Retrieval successful!");
+			callback(null,rows);
+		} else {
+			console.log("ERROR encountered : " + err);
+			callback(true,null);
+		}
+	});
+};
