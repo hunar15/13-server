@@ -31,7 +31,7 @@ exports.lastWeekPerformance = function (args, callback) {
 };
 
 exports.allOutletsRevenue = function(args,callback) {
-	var query = 'SELECT o.s_name as name, r.revenue as revenue, (r.revenue / t.total)*100 as percent'+
+	var query = 'SELECT o.s_name as name, r.revenue as revenue, FORMAT((r.revenue / t.total)*100,0) as percent'+
 				' from outlet o,revenue r,(SELECT SUM(revenue) as total from revenue where date=SUBDATE(CURDATE(),1)) t '+
 				' where o.id=r.outlet_id;';
 
