@@ -67,6 +67,7 @@ app.post('/syncRevenue',routes.syncRevenue);
 app.post('/getDiscontinued', routes.getDiscontinued);
 app.post('/getAdded', routes.getAdded);
 app.post('/syncUpdated',routes.syncUpdated);
+app.post('/syncDispatchedRequests',routes.syncDispatchedRequests);
 app.post('/syncAddedRequests', routes.syncAddedRequests);
 app.post('/syncReceivedRequests', routes.syncReceivedRequests);
 app.get('/getall', routes.getall);

@@ -16,6 +16,16 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.syncDispatchedRequests = function(req,res) {
+	// body...
+	requests.syncDispatchedRequests(req.body, function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.allOutletsRevenue = function(req,res) {
 	statistics.allOutletsRevenue(req.body, function(err,result) {

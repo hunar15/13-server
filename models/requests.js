@@ -270,4 +270,26 @@ exports.updateRequest = function (args, callback) {
 	});
 };
 
+exports.syncDispatchedRequests = function (args, callback) {
+	var outlet_id = args.outletid;
 
+	if(outlet_id !== null) {
+		var query = 'SELECT date from batch_request WHERE outlet_id=' + outlet_id + ' AND status=\'DISPATCHED\';';
+		var result = {};
+		result['dp_list'] = [];
+		result['STATUS'] = "SUCCESS";
+		connection.query(query, function( err, rows, fields ) {
+			console.log(err);
+			if(!err) {
+				result['dp_list'] = rows;
+				callback(null,result);
+			} else {
+				console.log("ERROR : " + err);
+				callback(true,null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
