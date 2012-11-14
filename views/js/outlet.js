@@ -1,12 +1,15 @@
 var editableGrid;
 window.onload = function() {
+	initTable();
+}
+
+function initTable(){
 	$.getJSON( "get/outlet", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
 }
-
 function init(data){
 	editableGrid = new EditableGrid("DemoGridJSON", {
 		enableSort: true, // true is the default, set it to false if you don't want sorting to be enabled
@@ -26,6 +29,13 @@ function init(data){
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("outlettablecontent", "testgrid");
 	
+	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) { //<a
+		// this action will remove the row, so first find the ID of the row containing this cell 
+		var rowId = editableGrid.getRowId(cell.rowIndex);
+		
+		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this outlet ? ')) { deleteOutlet("+rowId+");} \" style=\"cursor:pointer\">" +
+						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete outlet\"/></a>";
+	}})); 	
 	
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
@@ -97,4 +107,21 @@ function init(data){
 	};
 
 	editableGrid.tableRendered = function() { this.updatePaginator(); };
+}
+
+function deleteOutlet(rowId){
+	console.log('going to delete: '+rowId);
+	$.ajax({
+		url: "/delete/outlet",
+		type: 'POST',
+		data: {
+				"id": rowId
+		},
+		success: function (response) {
+
+			console.log('successfully deleted outlet'+ rowId);
+			console.log(response);
+			initTable();
+		}
+	});
 }

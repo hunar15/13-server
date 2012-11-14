@@ -1,6 +1,8 @@
 var editableGrid;
+var global;
 window.onload = function() {
 	initTable();
+	initSetReceived();
 }
 
 function initTable(){
@@ -9,6 +11,35 @@ function initTable(){
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
+}
+
+function initSetReceived(){
+	$('#confirm-checked-product').click(function(){
+		var batch_received=[];
+		$('.received-check').each(function(k,v){
+			if ($(v).attr('checked')=='checked')
+				batch_received.push($(v).attr('id').substring(6));
+		});
+
+		var outlet_id = $('#outlet-id').text();
+		var date = $('#restock-date').text();	
+		$.each(batch_received, function(k,v){
+			$.ajax({
+				url: "/setAsReceived",
+				type: 'POST',
+				data: {
+					"outlet_id": outlet_id,
+					"date": date,
+					"barcode": v
+				},
+				success: function (response) {
+				}
+			});
+		});
+		initTable();
+		$('#restockDetails').modal('hide');
+		
+	});	
 }
 
 function init(data){
@@ -143,7 +174,9 @@ function initDetail(data){
 		// this action will remove the row, so first find the ID of the row containing this cell 
 		var rowId = detailedEditableGrid.getRowId(cell.rowIndex);
 		if (value==0)
-			cell.innerHTML = "<input type='checkbox' onclick=''/>";
+			cell.innerHTML = "<input class='received-check' id='check-"+rowId+"' type='checkbox'/>";
+		else
+			cell.innerHTML = "<input type='checkbox' checked='true' disabled='true'/>";
 	}})); 
 	
 	detailedEditableGrid.updatePaginator = function () {
@@ -237,6 +270,7 @@ function approveBatch(rowIndex) {
 
 function generateDetails(rowIndex) {
 	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	var outlet_name = editableGrid.getRowValues(rowIndex).s_name;
 	var date = editableGrid.getRowValues(rowIndex).date;
 	console.log(outlet_id);
 	console.log(date);
@@ -248,9 +282,12 @@ function generateDetails(rowIndex) {
 			"date": date
 		},
 		success: function (response) {
-		initDetail(response);
-		detailedEditableGrid.setPageIndex(0);
-		detailedEditableGrid.filter('');
+			initDetail(response);
+			detailedEditableGrid.setPageIndex(0);
+			detailedEditableGrid.filter('');
+			$('#outlet-id').text(outlet_id);
+			$('#outlet-name').text(outlet_name);
+			$('#restock-date').text(date);
 			$('#restockDetails').modal('show');
 		}
 	});	
