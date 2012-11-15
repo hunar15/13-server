@@ -10,8 +10,8 @@ var connection = sql.createConnection({
 
 exports.lastWeekPerformance = function (args, callback) {
 	var outlet_id = args.outlet_id;
-
-	if(outlet_id!==null) {
+	console.log(outlet_id);
+	if(outlet_id!=null) {
 		var query = 'SELECT p.name as name, r.revenue as revenue, r.date as date from revenue r inner join product p on p.barcode'+
 					' = r.barcode WHERE r.outlet_id=' +outlet_id+' AND r.date>=SUBDATE(CURDATE(),7);';
 
