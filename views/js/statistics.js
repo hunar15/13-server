@@ -1,63 +1,45 @@
 $(function(){
-
+	console.log('magic must happen');
 	var options = {
 		chart: {
 			renderTo: 'statcontent',
-			defaultSeriesType: 'column'
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false
 		},
 		title: {
 			text: 'Outlets performance'
 		},
-		xAxis: {
-			categories: []
+		tooltip: {
+			pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+			percentageDecimals: 1
 		},
-		yAxis: {
-			title: {
-				text: 'Units'
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				cursor: 'pointer',
+				dataLabels: {
+					enabled: false
+				},
+				showInLegend: true
 			}
 		},
 		series: []
 	};
 	
-	$.get('data.csv', function(data) {
-		var chart = {
-			renderTo: 'container',
-			plotBackgroundColor: null,
-			plotBorderWidth: null,
-			plotShadow: false
+	$.get('js/allOutletsRevenue.json', function(data) {
+		
+		var series = {
+			type: 'pie',
+			name: 'Outlet revenue share',
+			data: []
 		};
-		
-		
-		
-		// Iterate over the lines and add categories or series
-		$.each(lines, function(lineNo, line) {
-			var items = line.split(',');
-			
-			// header line containes categories
-			if (lineNo == 0) {
-				$.each(items, function(itemNo, item) {
-					if (itemNo > 0) options.xAxis.categories.push(item);
-				});
-			}
-			
-			// the rest of the lines contain data with their name in the first position
-			else {
-				var series = {
-					data: []
-				};
-				$.each(items, function(itemNo, item) {
-					if (itemNo == 0) {
-						series.name = item;
-					} else {
-						series.data.push(parseFloat(item));
-					}
-				});
-				
-				options.series.push(series);
-		
-			}
-			
+		console.log(series);
+		$.each(data, function(idx, item) {
+			series.data.push([item.name,item.percent]);
 		});
+		
+		options.series.push(series);
 		
 		// Create the chart
 		var chart = new Highcharts.Chart(options);
