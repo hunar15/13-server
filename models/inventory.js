@@ -102,8 +102,9 @@ exports.getDiscontinued = function (args, callback) {
 			result['discontinueList'] = rows;
 			var query2 = "UPDATE inventory SET status=\'DISCONTINUED\' WHERE outlet_id="+outlet_id+" AND status=\'DISCONTINUE\'";
 			connection.query(query2, function (err2, rows2, fields2) {
-				if(!err2)
+				if(!err2) {
 					callback(err2, result);
+				}
 				else
 					console.log(err2);
 			});
@@ -220,7 +221,7 @@ exports.syncUpdated = function (args, callback) {
 			if(!err) {
 				result['ms_list'] = rows;
 
-				query = 'UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id=' + outlet_id + ' ;';
+				query = 'UPDATE inventory SET status=\'NORMAL\' WHERE outlet_id=' + outlet_id + ' AND status=\'UPDATED\';';
 
 				connection.query( query, function( err2, rows2, fields2) {
 					if(!err2) {

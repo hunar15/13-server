@@ -1,4 +1,4 @@
-app
+
 /**
  * Module dependencies.
  */
@@ -60,12 +60,14 @@ app.post('/update/outlet',routes.updateOutlet);
 app.post('/update/inventory',routes.updateInventory);
 app.post('/update/request',routes.updateRequest);
 
+app.get('/allOutletsRevenue',routes.allOutletsRevenue);
 app.post('/syncAll', routes.syncAll);
 app.post('/getLastWeeksPerformance',routes.lastWeekPerformance);
 app.post('/syncRevenue',routes.syncRevenue);
 app.post('/getDiscontinued', routes.getDiscontinued);
 app.post('/getAdded', routes.getAdded);
 app.post('/syncUpdated',routes.syncUpdated);
+app.post('/syncDispatchedRequests',routes.syncDispatchedRequests);
 app.post('/syncAddedRequests', routes.syncAddedRequests);
 app.post('/syncReceivedRequests', routes.syncReceivedRequests);
 app.get('/getall', routes.getall);
