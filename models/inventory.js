@@ -194,10 +194,11 @@ exports.updateInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
-		min_stock = args.min_stock;
+		min_stock = args.min_stock,
+		selling_price = args.selling_price;
 		
 	var query = 'UPDATE inventory SET min_stock='+min_stock+
-				' , status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+				' , selling_price='+selling_price+', status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		if(!err) {

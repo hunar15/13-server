@@ -70,6 +70,7 @@ app.post('/syncUpdated',routes.syncUpdated);
 app.post('/syncDispatchedRequests',routes.syncDispatchedRequests);
 app.post('/syncAddedRequests', routes.syncAddedRequests);
 app.post('/syncReceivedRequests', routes.syncReceivedRequests);
+app.post('/syncIncompleteRequests', routes.syncIncompleteRequests);
 app.get('/getall', routes.getall);
 app.post('/setAsReceived', routes.setAsReceived);
 app.post('/getOutletsByProduct',routes.getOutletsByProduct);

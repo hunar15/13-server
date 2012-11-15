@@ -27,6 +27,15 @@ exports.syncDispatchedRequests = function(req,res) {
 	});
 };
 
+exports.syncIncompleteRequests = function (req,res) {
+	requests.syncIncompleteRequests(req.body,function (err, result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.allOutletsRevenue = function(req,res) {
 	statistics.allOutletsRevenue(req.body, function(err,result) {
 		if(!err) {

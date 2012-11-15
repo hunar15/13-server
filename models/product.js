@@ -57,15 +57,28 @@ exports.getProducts =  function(args, callback) {
 exports.addProduct = function (args, callback) {
 	var name = args.name,
 		category = args.category,
-		barcode = args.barcode,
+		barcode = '',
 		cost_price = args.cost_price,
 		manufacturer = args.manufacturer;
-	var query = 'INSERT INTO product VALUES(\''+name+'\',\''+category+'\','+barcode+','+cost_price+',\''+manufacturer+'\');';
-	console.log(query);
-	connection.query( query, function (err, rows, fields) {
-		console.log(err);
-		callback(err, rows);
+
+	var barcode_query = 'select p.barcode+1 as barcode from product p where NOT exists '+
+					' (select * from product where barcode = p.barcode+1) and p.barcode >= 10000000 limit 1;';
+
+	connection.query(barcode_query, function( err2, rows2, fields2) {
+		if(!err2) {
+			barcode = rows2[0]['barcode'];
+			var query = 'INSERT INTO product VALUES(\''+name+'\',\''+category+'\','+barcode+','+cost_price+',\''+manufacturer+'\');';
+			console.log(query);
+			connection.query( query, function (err, rows, fields) {
+				console.log(err);
+				callback(err, rows);
+			});
+		} else {
+			console.log("ERROR : " + err2);
+			callback(true,null);
+		}
 	});
+	
 };
 
 exports.deleteProduct = function (args, callback) {

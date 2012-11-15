@@ -76,13 +76,12 @@ exports.getBatchDetails = function (args, callback) {
 	console.log(date);
 	if( outlet_id!==null && date!==null) {
 		var result = {},
-			query = "SELECT barcode, quantity, received FROM request_details WHERE outlet_id=" + outlet_id + " AND date='" + date + "';";
+			query = "SELECT barcode, quantity FROM request_details WHERE outlet_id=" + outlet_id + " AND date='" + date + "';";
 		result['metadata'] = [];
 		result['data']= [];
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
 		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
-		result['metadata'].push({"name": "received", "label" : "Received", "datatype" : "integer"});
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
@@ -158,7 +157,7 @@ exports.approveBatchRequest = function(args, callback) {
 	console.log(outlet_id);
 	console.log(date);
 	if( outlet_id!==null && date !== null) {
-		var query = "UPDATE batch_request SET status=\'FORWARDED\' WHERE outlet_id="+outlet_id+" AND date='" + date + "';";
+		var query = "UPDATE batch_request SET status=\'DISPATCHED\' WHERE outlet_id="+outlet_id+" AND date='" + date + "';";
 		connection.query(query, function(err,rows, fields) {
 			if(!err) {
 				console.log("Batch Restock Request successfully APPROVED");
@@ -173,52 +172,7 @@ exports.approveBatchRequest = function(args, callback) {
 
 var s_errorFlag = 0;
 
-exports.setAsReceived = function(args, callback) {
-	var outlet_id = args.outlet_id,
-		date = args.date,
-		barcode = args.barcode;
 
-	if(outlet_id!== null && date!==null && barcode!==null) {
-		var query = "UPDATE request_details SET received=true WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\' AND barcode="+barcode+" ;";
-
-		connection.query(query, function(err,rows, fields) {
-			if(!err) {
-				console.log(query);
-				console.log("Barcode : " + barcode + " RECEIVED");
-				//callback(null,true);
-
-				//check if all products in the batch have been received and update
-				var query2 ="UPDATE batch_request SET status=\'INCOMPLETE\' WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\' ;";
-
-				connection.query(query2, function(err2,rows2,fields2) {
-					if(!err2) {
-						var query3 = "UPDATE batch_request SET status=\'DISPATCHED\' WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\'"+
-							" AND NOT EXISTS( SELECT * from request_details WHERE outlet_id="+outlet_id+" AND date=\'"+date+"\' AND received=\'false\')";
-
-						connection.query(query3, function(err3, rows3, fields3) {
-							if(!err3) {
-								console.log("Batch Request COMPLETED");
-								callback(null,true);
-							} else {
-								console.log("Error encountered : " + err3);
-								callback(true,null);
-							}
-						});
-					} else {
-						console.log("Error encountered : "+ err2);
-						callback(true,null);
-					}
-				});
-			} else {
-				console.log("Error encountered : " + err);
-				callback(true,null);
-			}
-		});
-	} else {
-		console.log("Invalid or absent parameters");
-		callback(true,null);
-	}
-};
 
 exports.syncReceivedRequests =  function(args, callback) {
 	var outlet_id = args.outletid,
@@ -228,7 +182,7 @@ exports.syncReceivedRequests =  function(args, callback) {
 	if( outlet_id !== null && receivedList !== null ) {
 		console.log("Incoming Sync Request from outlet : " + outlet_id);
 		if(receivedList.length === 0) {
-			console.log("Nothing to sync");
+			console.log("No RECEIVED requests to sync");
 			callback(null,{status : "COMPLETED"});
 		} else {
 			var query='';
@@ -236,6 +190,7 @@ exports.syncReceivedRequests =  function(args, callback) {
 				var current = receivedList[i];
 				console.log(current['date']);
 				query += "UPDATE batch_request SET status=\'COMPLETED\' WHERE outlet_id="+outlet_id+" AND date=\"" + current['date'].split("T")[0]+"\";";
+				query += "UPDATE request_details SET received=\'true\' WHERE outlet_id="+outlet_id+" AND date=\"" + current['date'].split("T")[0]+"\";";
 			}
 			//callSyncReceivedRequestsQuery(query,current,outlet_id,i,receivedList.length,callback);
 			connection.query(query, function(err,rows,fields) {
@@ -270,6 +225,40 @@ exports.updateRequest = function (args, callback) {
 	});
 };
 
+exports.syncIncompleteRequests = function (args, callback) {
+	var outlet_id = args.outletid,
+		incompleteList = args.incompleteList;
+
+	if(outlet_id !== null && incompleteList !== null) {
+		var query = '',
+			query2 = '';
+		
+		if(incompleteList.length !== 0) {
+
+			for(var i in incompleteList) {
+				var current = incompleteList[i];
+				query += 'UPDATE batch_request set status=\'INCOMPLETE\' WHERE outlet_id='+outlet_id+' AND date=\''+current['date']+'\';';
+				query += 'UPDATE request_details set received=\''+current['received']+'\' WHERE outlet_id='+outlet_id+' AND barcode='+current['barcode']+' AND date=\''+current['date']+'\';';
+			}
+			connection.query(query, function( err, rows, fields ) {
+				console.log(err);
+				if(!err) {
+					console.log("INCOMPLETE Requests from Outlet ID : " + outlet_id + " synced");
+					callback(null,{status : "COMPLETED"});
+				} else {
+					console.log("ERROR : " + err);
+					callback(true,null);
+				}
+			});
+		} else {
+			console.log("No INCOMPLETE requests to be synced");
+			callback(null,{status : "COMPLETED"});
+		}
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
 exports.syncDispatchedRequests = function (args, callback) {
 	var outlet_id = args.outletid;
 
