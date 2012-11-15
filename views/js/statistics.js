@@ -1,5 +1,4 @@
 $(function(){
-	console.log('magic must happen');
 	var options = {
 		chart: {
 			renderTo: 'statcontent',
@@ -34,7 +33,6 @@ $(function(){
 			name: 'Outlet revenue share',
 			data: []
 		};
-		console.log(series);
 		$.each(data, function(idx, item) {
 			series.data.push([item.name,item.percent]);
 		});
@@ -44,4 +42,14 @@ $(function(){
 		// Create the chart
 		var chart = new Highcharts.Chart(options);
 	});
+	
+	$.getJSON( "get/outlet", function(response){
+		$.each(response.data, function(idx, item){
+			$('#show-outlet').append('<option id="outlet-'+item.id+'">'+item.values.s_name+'</option>');
+		});
+	});
 });
+
+function changeOutlet(){
+	console.log($('#show-outlet').val());
+}
