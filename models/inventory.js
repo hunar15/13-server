@@ -131,8 +131,8 @@ exports.getInventory =  function(args, callback) {
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
 	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
 	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer( , 0, dot, comma, 0, n/a)", "editable": true});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double($, 2, dot, , 0, n/a)", "editable": true});
 	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 	result['metadata'].push({"name": "discontinue", "label": "Discontinue"});

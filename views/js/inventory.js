@@ -38,7 +38,33 @@ function init(data){
 						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete row\"/></a>";
 	}})); 
 	
+	editableGrid.modelChanged = function(rowIndex, columnIndex, oldValue, newValue) {
+		console.log(editableGrid.getRowValues(rowIndex).outlet_id);
+		console.log(editableGrid.getRowValues(rowIndex).barcode);
+		console.log(editableGrid.getRowValues(rowIndex).min_stock);
+		console.log(editableGrid.getRowValues(rowIndex).selling_price);
+		$.ajax({
+			url: "/update/inventory",
+			type: 'POST',
+			data: {
+				"outlet_id": editableGrid.getRowValues(rowIndex).outlet_id,
+				"product_barcode": editableGrid.getRowValues(rowIndex).barcode,
+				"min_stock": editableGrid.getRowValues(rowIndex).min_stock,
+				"selling_price": editableGrid.getRowValues(rowIndex).selling_price
+			},
 
+			success: function (response) {
+				console.log(response);
+				//if (response != "ok") editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
+			},
+
+			error: function(XMLHttpRequest, textStatus, exception) {
+				alert(XMLHttpRequest.responseText);
+			}
+		});
+	};
+	
+	
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
 		var nbPages = editableGrid.getPageCount();

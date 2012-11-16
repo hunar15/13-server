@@ -15,18 +15,16 @@ function initTable(){
 
 function initAddProduct(){
 	$('#confirm-add-product').click(function(){
-		var barcode = $('#inputBarcode').val();
 		var name = $('#inputName').val();
 		var category = $('#inputCategory').val();
 		var manufacturer = $('#inputManufacturer').val();
 		var cost_price = $('#inputPrice').val();
 
-		if (validProductDetails(barcode, name, category, manufacturer, cost_price))
+		if (validProductDetails(name, category, manufacturer, cost_price))
 			$.ajax({
 				url: "/add/product",
 				type: 'POST',
 				data: {
-						"barcode":barcode,
 						"name": name,
 						"category": category,
 						"manufacturer": manufacturer,
@@ -69,15 +67,8 @@ function initAddInventory(){
 			});
 	});
 }
-function validProductDetails(barcode, name, category, manufacturer, cost_price){
+function validProductDetails(name, category, manufacturer, cost_price){
 	var valid = true;
-	if (parseInt(barcode) > 99999999 || barcode.length == 0 || !parseInt(barcode)){ //more than 8 digits
-		console.log('invalid barcode');
-		$('label[for=inputBarcode]').addClass('invalid');
-		valid = false;
-	}
-	else
-		$('label[for=inputBarcode]').removeClass('invalid');
 		
 	if (name.length == 0 || name.length > 150){ //more than 8 digits
 		$('label[for=inputName]').addClass('invalid');

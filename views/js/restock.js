@@ -185,14 +185,13 @@ function initDetail(data){
 	detailedEditableGrid.load({"metadata": data.metadata,"data": data.data});
 	detailedEditableGrid.renderGrid("restockdetailstablecontent", "detailgrid");
 	
-	detailedEditableGrid.setCellRenderer("received", new CellRenderer({render: function(cell, value) {
-		// this action will remove the row, so first find the ID of the row containing this cell 
-		var rowId = detailedEditableGrid.getRowId(cell.rowIndex);
-		if (value==0)
-			cell.innerHTML = "<input class='received-check' id='check-"+rowId+"' type='checkbox'/>";
-		else
-			cell.innerHTML = "<input type='checkbox' checked='true' disabled='true'/>";
-	}})); 
+	// detailedEditableGrid.setCellRenderer("received", new CellRenderer({render: function(cell, value) {
+		// var rowId = detailedEditableGrid.getRowId(cell.rowIndex);
+		// if (value==0)
+			// cell.innerHTML = "<input class='received-check' id='check-"+rowId+"' type='checkbox'/>";
+		// else
+			// cell.innerHTML = "<input type='checkbox' checked='true' disabled='true'/>";
+	// }})); 
 	
 	detailedEditableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
