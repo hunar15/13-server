@@ -55,6 +55,7 @@ function init(data){
 
 			success: function (response) {
 				console.log(response);
+				initTable();
 				//if (response != "ok") editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
 			},
 
