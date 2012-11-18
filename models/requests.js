@@ -81,7 +81,7 @@ exports.getBatchDetails = function (args, callback) {
 		result['data']= [];
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
-		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
+		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "string"});
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
