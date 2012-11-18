@@ -112,7 +112,7 @@ exports.getInventory =  function(args, callback) {
 	var query = 'SELECT s_name, outlet_id, barcode, name,category, manufacturer, stock, min_stock' +
 			', selling_price, cost_price, status FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
-			' INNER JOIN outlet ON id = outlet_id AND status NOT LIKE \'%DISCONTINUE%\';';
+			' INNER JOIN outlet ON id = outlet_id;';
 					
 	var result = {};
 	result['metadata'] = [];
