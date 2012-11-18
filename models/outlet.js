@@ -10,7 +10,7 @@ exports.getAllOutlets = function  (callback) {
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "string"});
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string"});
 	result['metadata'].push({"name": "delete", "label": "Delete"});

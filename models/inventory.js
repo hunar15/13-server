@@ -12,16 +12,16 @@ exports.getAllInventory = function  (callback) {
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "outlet_id", "label" : "Outlet ID", "datatype" : "string"});
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
 	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
-	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "string"});
-	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double(2)"});
-	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "double(,0,dot,comma,1,n/a)"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "double(,0,dot,comma,1,n/a)"});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double($,2,dot,comma,1,n/a)"});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double($,2,dot,comma,1,n/a)"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 	result['metadata'].push({"name": "discontinue", "label": "Discontinue"});
 	connection.query(query, function  (err, rows, fields) {
@@ -124,10 +124,10 @@ exports.getInventory =  function(args, callback) {
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
 	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
-	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "integer"});
-	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "integer( , 0, dot, comma, 0, n/a)", "editable": true});
-	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double($, 2, dot, , 0, n/a)", "editable": true});
-	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double(2)"});
+	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "double(,0,dot,comma,1,n/a)"});
+	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "double(,0,dot,comma,1,n/a)", "editable": true});
+	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double($, 2, dot,comma, 0, n/a)", "editable": true});
+	result['metadata'].push({"name": "cost_price", "label" : "Cost Price", "datatype" : "double($,2,dot,comma,1,n/a)"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
 	result['metadata'].push({"name": "discontinue", "label": "Discontinue"});
 	
