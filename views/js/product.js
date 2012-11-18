@@ -233,6 +233,7 @@ function addInventory(rowIndex) {
 	var product_name = editableGrid.getRowValues(rowIndex).name;
 	$('#product-name').text(product_name);
 	$('#product-barcode').text(barcode);
+	$('#helper-text').text('Cost price: '+ editableGrid.getRowValues(rowIndex).cost_price);
 	initOutlet(barcode);
 }
 
