@@ -1,11 +1,5 @@
-var sql = require('mysql');
-var connection = sql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'hqdb',
-  multipleStatements : true
-});
+var config = require('../config/config'),
+	connection = config.connection;
 
 exports.getAllInventory = function  (callback) {
 	// body...
