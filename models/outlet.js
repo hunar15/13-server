@@ -58,7 +58,7 @@ exports.addOutlet = function (args, callback) {
 	console.log(args);
 	var s_name = args.s_name,
 		address = args.address;
-	var query = 'INSERT INTO outlet(s_name,address) VALUES(\''+s_name+'\',\''+address+'\');';
+	var query = 'INSERT INTO outlet(s_name,address) VALUES('+connection.escape(s_name)+','+connection.escape(address)+');';
 	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
@@ -85,7 +85,7 @@ exports.updateOutlet = function (args, callback) {
 	var id = args.id,
 		s_name = args.s_name,
 		address = args.address;
-	var query = 'UPDATE outlet SET s_name=\''+s_name+'\', address=\''+address+'\' WHERE id='+id+';';
+	var query = 'UPDATE outlet SET s_name='+connection.escape(s_name)+', address='+connection.escape(address)+' WHERE id='+id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);

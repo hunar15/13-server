@@ -216,7 +216,7 @@ exports.syncUpdated = function (args, callback) {
 		
 	//result['ms_list'] = [];
 	if(outlet_id !== null) {
-		var query = 'SELECT product_barcode as barcode, min_stock FROM inventory where status=\'UPDATED\' AND outlet_id='+outlet_id+ ' ;';
+		var query = 'SELECT product_barcode as barcode, min_stock, selling_price FROM inventory where status=\'UPDATED\' AND outlet_id='+outlet_id+ ' ;';
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {

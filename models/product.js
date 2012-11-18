@@ -67,7 +67,8 @@ exports.addProduct = function (args, callback) {
 	connection.query(barcode_query, function( err2, rows2, fields2) {
 		if(!err2) {
 			barcode = rows2[0]['barcode'];
-			var query = 'INSERT INTO product VALUES(\''+name+'\',\''+category+'\','+barcode+','+cost_price+',\''+manufacturer+'\');';
+			var query = 'INSERT INTO product VALUES('+connection.escape(name)+','+connection.escape(category)+
+					','+barcode+','+cost_price+','+connection.escape(manufacturer)+');';
 			console.log(query);
 			connection.query( query, function (err, rows, fields) {
 				console.log(err);
@@ -97,8 +98,8 @@ exports.updateProduct = function (args, callback) {
 		barcode = args.barcode,
 		cost_price = args.cost_price,
 		manufacturer = args.manufacturer;
-	var query = 'UPDATE product SET name=\''+name+'\', category =\''+category+'\', cost_price='+cost_price+
-				', manufacturer=\''+manufacturer+'\' WHERE barcode='+barcode+';';
+	var query = 'UPDATE product SET name='+connection.escape(name)+', category ='+connection.escape(category)+', cost_price='+cost_price+
+				', manufacturer='+connection.escape(manufacturer)+' WHERE barcode='+barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
