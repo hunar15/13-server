@@ -1,78 +1,88 @@
-var sql = require('mysql');
-var connection = sql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'hqdb'
-});
+var config = require('../config/config'),
+	connection = config.connection;
 
 exports.getAllOutlets = function  (callback) {
 	// body...
-	connection.connect();
 
-	var query = 'select * FROM outlet;';
+	var query = 'select id,s_name, address FROM outlet;';
+
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+
+	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "string"});
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
+	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string"});
+	result['metadata'].push({"name": "delete", "label": "Delete"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
-		connection.end();
-		callback(err, rows);
+		for( var i in rows) {
+			var current = {};
+			console.log(current);
+			current['id'] = rows[i]['id'];
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}
+		callback(err, result);
 	});
 };
-exports.getOutlets =  function(args, callback) {
-	//query
-	connection.connect();
-	var query = 'select id,s_name, address' + 
-			' FROM outlet';
-	var searchParameter = args.query;
 
-	if(searchParameter != 'none') {
-		query += ' WHERE s_name LIKE \'%' + searchParameter + '%\' OR address LIKE \'%' + searchParameter + '%\' ';
+exports.getOutletsByProduct = function(args, callback) {
+	var barcode = args.barcode;
+	console.log(barcode);
+	if(barcode !== null ) {
+		console.log('entered condition');
+		var query = "select distinct outlet_id, s_name from inventory,outlet WHERE outlet.id = inventory.outlet_id AND product_barcode=" + barcode + " AND status NOT LIKE \'DISCONTINUE\';";
+
+		connection.query(query,function(err,rows,fields) {
+			if(err) {
+				console.log("Error encountered : " + err);
+				callback(true,null);
+			} else {
+				callback(null,rows);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
 	}
-	var pageNumber = args.pageNumber,
-		sortBy = args.sortby,
-		resultsPerPage = args.itemperpage,
-		order = (args.asc === true) ? 'ASC' : 'DESC';
-
-	query += 'LIMIT ' + pageNumber*resultsPerPage + ', ' + resultsPerPage +
-			' ORDER BY ' + sortBy + ' ' + order + ';';
-	connection.query( query,  function(err, rows, fields) {
-		connection.end();
-		callback(err, rows);
-	});
 };
 
 exports.addOutlet = function (args, callback) {
 	// body...
-	connection.connect();
+	console.log(args);
 	var s_name = args.s_name,
 		address = args.address;
-	var query = 'INSERT INTO outlet VALUES(\''+s_name+'\','+address+');';
+	var query = 'INSERT INTO outlet(s_name,address) VALUES('+connection.escape(s_name)+','+connection.escape(address)+');';
+	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
+		console.log(err);
+		console.log(rows);
+		console.log(fields);
 		callback(err, rows);
 	});
 };
 
 exports.deleteOutlet = function (args, callback) {
 	// body...
-	connection.connect();
 	var id = args.id;
 	var query = 'DELETE FROM outlet where id='+id+';';
+	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
 
 exports.updateOutlet = function (args, callback) {
 	// body...
-	connection.connect();
-	var id = args.id;
-	var query = 'UPDATE outlet SET s_name=\''+s_name+'\', address=\''+address+'\' WHERE id='+id+';';
+	var id = args.id,
+		s_name = args.s_name,
+		address = args.address;
+	var query = 'UPDATE outlet SET s_name='+connection.escape(s_name)+', address='+connection.escape(address)+' WHERE id='+id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
-		connection.end();
 		callback(err, rows);
 	});
 };
