@@ -117,7 +117,10 @@ exports.syncAddedRequests = function(args, callback) {
 		} else {
 			for(var i in addedList) {
 				var current = addedList[i];
-				detail_query += "INSERT INTO request_details VALUES("+outlet_id+",CURDATE(),"+current['barcode']+","+current['quantity']+",\'false\');";
+				detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
+							current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
+							"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
+							" AND barcode="+current['barcode']+" );";
 			}
 
 			connection.query(batch_query, function(err, rows, fields){
