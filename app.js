@@ -74,7 +74,7 @@ app.post('/syncIncompleteRequests', routes.syncIncompleteRequests);
 app.get('/getall', routes.getall);
 app.post('/setAsReceived', routes.setAsReceived);
 app.post('/getOutletsByProduct',routes.getOutletsByProduct);
-console.log("lets go!!");
+console.log("lets go!!!");
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
