@@ -76,9 +76,7 @@ function init(data){
 		//insert if condition here to check if batch has already been approved
 		//##########
 		var status = editableGrid.getRowValues(rowId).status;
-		if (status == "FORWARDED")
-			cell.innerHTML = "<img src=\"images/approved.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
-		else if (status == "DISPATCHED")
+		if (status != "PENDING")
 			cell.innerHTML = "<img src=\"images/dispatched.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
 		else
 			cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to approve this batch ? ')) { approveBatch("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
