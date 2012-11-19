@@ -76,9 +76,7 @@ function init(data){
 		//insert if condition here to check if batch has already been approved
 		//##########
 		var status = editableGrid.getRowValues(rowId).status;
-		if (status == "FORWARDED")
-			cell.innerHTML = "<img src=\"images/approved.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
-		else if (status == "DISPATCHED")
+		if (status != "PENDING")
 			cell.innerHTML = "<img src=\"images/dispatched.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
 		else
 			cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to approve this batch ? ')) { approveBatch("+cell.rowIndex+");} \" style=\"cursor:pointer\">" +
@@ -109,8 +107,7 @@ function init(data){
 			return $("<a>").css("cursor", "pointer")
 				.html(pageIndex + 1)
 				.click(function(event) {
-					console.log(parseInt($(this).html()) - 1);
-					//editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); 
+					editableGrid.setPageIndex(parseInt($(this).html()) - 1); 
 				});
 		});
 
@@ -194,7 +191,7 @@ function initDetail(data){
 	// }})); 
 	
 	detailedEditableGrid.updatePaginator = function () {
-		var paginator = $("#paginator").empty();
+		var paginator = $("#paginator2").empty();
 		var nbPages = detailedEditableGrid.getPageCount();
 		console.log(nbPages);
 
@@ -208,8 +205,7 @@ function initDetail(data){
 			return $("<a>").css("cursor", "pointer")
 				.html(pageIndex + 1)
 				.click(function(event) {
-					console.log(parseInt($(this).html()) - 1);
-					//editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); 
+					editableGrid.setPageIndex(parseInt($(this).html()) - 1); 
 				});
 		});
 

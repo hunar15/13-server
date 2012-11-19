@@ -171,8 +171,7 @@ function init(data){
 			return $("<a>").css("cursor", "pointer")
 				.html(pageIndex + 1)
 				.click(function(event) {
-					console.log(parseInt($(this).html()) - 1);
-					//editableGrid.setPageIndex(parseInt($(editableGrid).html()) - 1); 
+					editableGrid.setPageIndex(parseInt($(this).html()) - 1); 
 				});
 		});
 
