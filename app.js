@@ -60,7 +60,11 @@ app.post('/update/outlet',routes.updateOutlet);
 app.post('/update/inventory',routes.updateInventory);
 app.post('/update/request',routes.updateRequest);
 
+app.get('/transaction/outlets',routes.viewTransactionByOutlets);
+app.post('/transactions',routes.viewTransactions);
+app.post('/transaction/details',routes.viewTransactionDetails);
 app.get('/allOutletsRevenue',routes.allOutletsRevenue);
+app.post('/syncTransactions',routes.syncTransactions);
 app.post('/syncAll', routes.syncAll);
 app.post('/getLastWeeksPerformance',routes.lastWeekPerformance);
 app.post('/syncRevenue',routes.syncRevenue);

@@ -7,6 +7,7 @@ var inventory = require('../models/inventory'),
 	product = require('../models/product'),
 	requests = require('../models/requests'),
 	statistics = require('../models/statistics');
+	transaction = require('../models/transaction');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -15,6 +16,48 @@ var connection = sql.createConnection({
   database : 'hqdb',
   multipleStatements : true
 });
+
+exports.viewTransactionByOutlets = function(req,res) {
+	// body...
+	transaction.viewOutlets( function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.viewTransactions = function(req,res) {
+	// body...
+	transaction.viewTransactions(req.body, function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.viewTransactionDetails = function(req,res) {
+	// body...
+	transaction.viewTransactionDetails(req.body, function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.syncTransactions = function(req,res) {
+	// body...
+	transaction.syncTransactions(req.body, function (err,result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.syncDispatchedRequests = function(req,res) {
 	// body...
