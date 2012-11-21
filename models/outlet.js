@@ -11,8 +11,8 @@ exports.getAllOutlets = function  (callback) {
 	result['data']= [];
 
 	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "string"});
-	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string"});
-	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string"});
+	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string", editable: "true"});
+	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string", editable: "true"});
 	result['metadata'].push({"name": "delete", "label": "Delete"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...

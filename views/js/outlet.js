@@ -90,6 +90,31 @@ function init(data){
 		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this outlet ? ')) { deleteOutlet("+rowId+");} \" style=\"cursor:pointer\">" +
 						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete outlet\"/></a>";
 	}})); 	
+
+	editableGrid.modelChanged = function(rowIndex, columnIndex, oldValue, newValue) {
+		console.log(editableGrid.getRowValues(rowIndex).id);
+		console.log(editableGrid.getRowValues(rowIndex).s_name);
+		console.log(editableGrid.getRowValues(rowIndex).address);
+		$.ajax({
+			url: "/update/outlet",
+			type: 'POST',
+			data: {
+				"id": editableGrid.getRowValues(rowIndex).id,
+				"s_name": editableGrid.getRowValues(rowIndex).s_name,
+				"address": editableGrid.getRowValues(rowIndex).address
+			},
+
+			success: function (response) {
+				console.log(response);
+				initTable();
+				//if (response != "ok") editableGrid.setValueAt(rowIndex, columnIndex, oldValue);
+			},
+
+			error: function(XMLHttpRequest, textStatus, exception) {
+				alert(XMLHttpRequest.responseText);
+			}
+		});
+	};	
 	
 	editableGrid.updatePaginator = function () {
 		var paginator = $("#paginator").empty();
