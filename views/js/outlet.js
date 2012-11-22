@@ -82,14 +82,7 @@ function init(data){
 	
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
 	editableGrid.renderGrid("outlettablecontent", "testgrid");
-	
-	editableGrid.setCellRenderer("delete", new CellRenderer({render: function(cell, value) { //<a
-		// this action will remove the row, so first find the ID of the row containing this cell 
-		var rowId = editableGrid.getRowId(cell.rowIndex);
-		
-		cell.innerHTML = "<a onclick=\"if (confirm('Are you sure you want to delete this outlet ? ')) { deleteOutlet("+rowId+");} \" style=\"cursor:pointer\">" +
-						 "<img src=\"images/delete.png\" border=\"0\" alt=\"delete\" title=\"Delete outlet\"/></a>";
-	}})); 	
+
 
 	editableGrid.modelChanged = function(rowIndex, columnIndex, oldValue, newValue) {
 		console.log(editableGrid.getRowValues(rowIndex).id);
