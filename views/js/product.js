@@ -91,7 +91,17 @@ function validProductDetails(name, category, manufacturer, cost_price){
 	else
 		$('label[for=inputManufacturer]').removeClass('invalid');
 	
-	if (!parseFloat(cost_price)){
+	var cp = parseFloat(cost_price)
+	
+	if (!cp){
+		alert('Price must be a float!');
+		$('label[for=inputPrice]').addClass('invalid');
+		valid = false;
+	}
+	else
+		$('label[for=inputPrice]').removeClass('invalid');
+	if (cp < 0){
+		alert('Cost price cannot be negative');
 		$('label[for=inputPrice]').addClass('invalid');
 		valid = false;
 	}
@@ -104,21 +114,40 @@ function validProductDetails(name, category, manufacturer, cost_price){
 function validInventoryDetails(selling_price,min_stock){
 	var valid = true;
 	var alertmsg = '';
-	if (!parseFloat(selling_price)){
+	var sp = parseFloat(selling_price);
+	var ms = parseInt(min_stock);
+	if (!sp){
 		$('label[for=inputSellingPrice]').addClass('invalid');
 		valid = false;
 		alertmsg = alertmsg + 'Selling price must be a float! ';
 	}
 	else
 		$('label[for=inputSellingPrice]').removeClass('invalid');
+
+	if (sp < 0){
+		$('label[for=inputSellingPrice]').addClass('invalid');
+		valid = false;
+		alertmsg = alertmsg + 'Selling price must be positive! ';
+	}
+	else
+		$('label[for=inputSellingPrice]').removeClass('invalid');		
 		
-	if (!parseInt(min_stock)){
+	if (!ms){
 		$('label[for=inputMinStock]').addClass('invalid');
 		valid = false;
 		alertmsg = alertmsg + 'Minimum stock must be an integer!';
 	}
 	else
 		$('label[for=inputMinStock]').removeClass('invalid');
+		
+		
+	if (ms < 0){
+		$('label[for=inputMinStock]').addClass('invalid');
+		valid = false;
+		alertmsg = alertmsg + 'Minimum stock must be positive!';
+	}
+	else
+		$('label[for=inputMinStock]').removeClass('invalid');		
 	
 	if (valid)
 		return true;
