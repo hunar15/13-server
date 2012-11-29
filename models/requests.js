@@ -76,7 +76,9 @@ exports.getBatchDetails = function (args, callback) {
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
 		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "string"});
-
+		if(outlet_id == config.onlineid) {
+			result['metadata'].push({"name":"received","label":"Received"});
+		}
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				for (var i in rows) {
