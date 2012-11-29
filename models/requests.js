@@ -41,9 +41,9 @@ exports.setAsReceived = function (args, callback) {
 			'date='+connection.escape(date)+' and barcode='+barcode+';';
 
 		query += ' UPDATE inventory set stock=stock+'+quantity+' where outlet_id='+outlet_id+' AND product_barcode='+barcode+' ;';
-		query += ' UPDATE batch_request set status=\'INCOMPLETE\' where outlet_id='+outlet_id+' AND date='+date+' ;';
-		query += ' UPDATE batch_request set status=\'COMPLETED\' WHERE outlet_id='+outlet_id+' AND date='+date+
-				' AND WHERE NOT EXISTS( select * from request_details r where r.outlet_id='+outlet_id+' AND date='+date+' AND received=0);';
+		query += ' UPDATE batch_request set status=\'INCOMPLETE\' where outlet_id='+outlet_id+' AND date='+connection.escape(date)+' ;';
+		query += ' UPDATE batch_request set status=\'COMPLETED\' WHERE outlet_id='+outlet_id+' AND date='+connection.escape(date)+
+				' AND NOT EXISTS( select * from request_details r where r.outlet_id='+outlet_id+' AND r.date='+connection.escape(date)+' AND received=0);';
 
 		connection.query(query, function (err,rows,fields) {
 			// body...
