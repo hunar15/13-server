@@ -129,7 +129,7 @@ function computeAndSyncRestockRequests(callback) {
 		if(!err) {
 			if(rows.length !== 0) {
 				console.log("This should'nt appear for the second time");
-				var batch_query = 'insert into batch_request select '+onlineid+', CURDATE(), \'SENT\' FROM DUAL '+
+				var batch_query = 'insert into batch_request select '+onlineid+', CURDATE(), \'PENDING\' FROM DUAL '+
 						' WHERE NOT EXISTS( select * from batch_request where outlet_id='+onlineid+' and date=CURDATE());';
 
 				for(var i in rows) {

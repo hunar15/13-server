@@ -4,8 +4,8 @@ var config = require('../../config/config'),
 
 exports.getAllInventory = function  (callback) {
 	// body...
-	var query = 'SELECT name,category, manufacturer, stock' +
-			', selling_price FROM ' +
+	var query = 'SELECT barcode,name,category, manufacturer, stock' +
+			', selling_price, image FROM ' +
 			' product INNER JOIN inventory on barcode = product_barcode' +
 			' INNER JOIN outlet ON id = outlet_id WHERE id=4 and stock > 0;';
 
