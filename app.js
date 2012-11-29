@@ -79,6 +79,9 @@ app.get('/getall', routes.getall);
 app.post('/setAsReceived', routes.setAsReceived);
 app.post('/getOutletsByProduct',routes.getOutletsByProduct);
 //console.log("lets go!!!");
+
+//website routes
+app.get('/website/viewProducts',routes.website_viewProducts);
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });

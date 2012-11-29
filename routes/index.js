@@ -6,8 +6,9 @@ var inventory = require('../models/inventory'),
 	outlet = require('../models/outlet'),
 	product = require('../models/product'),
 	requests = require('../models/requests'),
-	statistics = require('../models/statistics');
-	transaction = require('../models/transaction');
+	statistics = require('../models/statistics'),
+	transaction = require('../models/transaction'),
+	website = require('../models/website/inventory');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -17,6 +18,17 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_viewProducts = function  (req,res) {
+	// body...
+	website.getAllInventory( function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.viewTransactionByOutlets = function(req,res) {
 	// body...
 	transaction.viewOutlets( function (err,result) {
