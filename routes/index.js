@@ -8,7 +8,8 @@ var inventory = require('../models/inventory'),
 	requests = require('../models/requests'),
 	statistics = require('../models/statistics'),
 	transaction = require('../models/transaction'),
-	website = require('../models/website/inventory');
+	website_inventory = require('../models/website/inventory');
+	website_transaction = require('../models/website/transaction');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -18,9 +19,20 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_processTransaction = function  (req,res) {
+	// body...
+	website_transaction.processTransaction( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.website_viewProducts = function  (req,res) {
 	// body...
-	website.getAllInventory( function  (err,result) {
+	website_inventory.getAllInventory( function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
