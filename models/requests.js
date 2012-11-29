@@ -29,7 +29,38 @@ exports.getBatch =  function(args, callback) {
 	
 	
 };
+exports.setAsReceived = function (args, callback) {
+	// body...
+	var outlet_id = args.outlet_id,
+		date = args.date,
+		barcode = args.barcode,
+		quantity = args.quantity;
 
+	if(outlet_id !== undefined && date !== undefined && barcode !== undefined && outlet_id == config.onlineid) {
+		var query = 'UPDATE request_details set received=1 where outlet_id='+outlet_id+' AND '+
+			'date='+connection.escape(date)+' and barcode='+barcode+';';
+
+		query += ' UPDATE inventory set stock=stock+'+quantity+' where outlet_id='+outlet_id+' AND product_barcode='+barcode+' ;';
+		query += ' UPDATE batch_request set status=\'INCOMPLETE\' where outlet_id='+outlet_id+' AND date='+date+' ;';
+		query += ' UPDATE batch_request set status=\'COMPLETED\' WHERE outlet_id='+outlet_id+' AND date='+date+
+				' AND WHERE NOT EXISTS( select * from request_details r where r.outlet_id='+outlet_id+' AND date='+date+' AND received=0);';
+
+		connection.query(query, function (err,rows,fields) {
+			// body...
+			if(!err) {
+				console.log("Successfully set as RECEIVED");
+				callback(null,true);
+			} else {
+				console.log("ERROR : " + err);
+				callback(true,null);
+			}
+		});
+		 
+	} else {
+		console.log("Invalid or missing parameters");
+		callback({err : "true"}, null);
+	}
+};
 exports.getBatchByOutlet =  function(args, callback) {
 	//get requests of a SPECIFIC outlets
 	var outlet_id = args.outlet_id,
