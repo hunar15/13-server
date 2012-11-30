@@ -8,8 +8,9 @@ var inventory = require('../models/inventory'),
 	requests = require('../models/requests'),
 	statistics = require('../models/statistics'),
 	transaction = require('../models/transaction'),
-	website_inventory = require('../models/website/inventory');
-	website_transaction = require('../models/website/transaction');
+	website_inventory = require('../models/website/inventory'),
+	website_transaction = require('../models/website/transaction'),
+	website_account = require('../models/website/account');
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -19,9 +20,31 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
-exports.website_viewTransactions = function  (req,res) {
+exports.website_updateAccountPhone = function  (req,res) {
 	// body...
-	website_transaction.viewTransactions( req.body, function  (err,result) {
+	website_account.updatePhone( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_updateAccountAddress = function  (req,res) {
+	// body...
+	website_account.updateAddress( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_getAccountDetails = function  (req,res) {
+	// body...
+	website_account.getDetails( req.body, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
