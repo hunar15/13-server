@@ -19,6 +19,29 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_viewTransactions = function  (req,res) {
+	// body...
+	website_transaction.viewTransactions( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.website_viewTransactionDetails = function  (req,res) {
+	// body...
+	website_transaction.viewTransactionDetails( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.website_processTransaction = function  (req,res) {
 	// body...

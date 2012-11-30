@@ -28,6 +28,7 @@ exports.viewTransactions = function (args, callback) {
 					current['values']=rows[i];
 					result['data'].push(current);
 				}
+				console.log(result);
 				callback(null,result);
 			} else {
 				callback(err,true);
@@ -39,7 +40,7 @@ exports.viewTransactions = function (args, callback) {
 	}
 };
 
-exports.viewTransactionDetaiks = function (args, callback) {
+exports.viewTransactionDetails = function (args, callback) {
 	// body..
 	var id = args.id;
 
@@ -64,6 +65,7 @@ exports.viewTransactionDetaiks = function (args, callback) {
 					current['values']=rows[i];
 					result['data'].push(current);
 				}
+				console.log(result);
 				callback(null,result);
 			} else {
 				callback(err,true);
