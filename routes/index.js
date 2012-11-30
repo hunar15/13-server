@@ -28,6 +28,19 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+
+exports.website_productInformation = function (req,res) {
+	// body...
+	website_inventory.getProductInformation(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.website_dispatchTransaction = function (req,res) {
 	website_transaction.dispatchTransaction(req.body,function(err,result){
 		if(!err) {

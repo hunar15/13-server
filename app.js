@@ -117,6 +117,7 @@ app.get('/sendTestMail',routes.sendEmail);
 //testing routes
 app.post('/website/findOrCreateUser',routes.website_findOrCreate);
 app.post('/website/findUserById',routes.website_findUserById);
+app.post('/website/productInformation',routes.website_productInformation);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
