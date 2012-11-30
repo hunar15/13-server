@@ -11,7 +11,7 @@ var conf = require('../../config/auth').auth;
 
 everyauth.debug = true;
 everyauth.everymodule.findUserById( function (userId, callback) {
-//  db.findUserById(userId, callback);
+  db.findUserById(userId, callback);
 });
 
 //fb
@@ -33,7 +33,7 @@ everyauth.facebook
     console.log(user);
 
 
-    /*
+    
     db.findOrCreateUser(user, function(err, result){
       if (err) {
         console.log(err);
@@ -41,13 +41,13 @@ everyauth.facebook
       } else {
         return promise.fulfill(user);
       }
-    });*/
+    });
     return promise;
   })
   .scope('email')
   .entryPath('/auth/facebook')
   .callbackPath('/auth/facebook/callback')
-  .redirectPath('/main');
+  .redirectPath('/');
 
 /*
 everyauth.google

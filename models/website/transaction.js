@@ -1,7 +1,14 @@
 var config = require('../../config/config'),
 	connection = config.connection,
 	onlineid = config.onlineid,
-	transaction = require('../transaction');
+	transaction = require('../transaction'),
+	email = require('emailjs'),
+	server  = email.server.connect({
+		user:    "13cg3002",
+		password:"gmailsync",
+		host:    "smtp.gmail.com",
+		ssl:     true
+	});
 
 exports.viewTransactions = function (args, callback) {
 	var fbid = args.fbid;
@@ -160,9 +167,9 @@ function computeAndSyncRestockRequests(callback) {
 		}
 	});
 }
-exports.processTransaction = function (args ,callback) {
+exports.processTransaction = function (user, args ,callback) {
 	// body...
-	var fbid = args.fbid,
+	var fbid = user.fbid,
 		address = args.address,
 		list = args.list;
 
@@ -228,6 +235,10 @@ exports.processTransaction = function (args ,callback) {
 											if(!err3) {
 												console.log("Transaction with ID : " +rows4.insertId + " processed and added" );
 												console.log("Computing Restock Requests...");
+
+												console.log("Send email to the user..");
+
+												// 
 												computeAndSyncRestockRequests(callback);
 											} else {
 												console.log("Error : "+err3);

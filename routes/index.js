@@ -29,7 +29,8 @@ var connection = sql.createConnection({
 });
 
 exports.sendEmail = function (req,res) {
-	server.send({
+	console.log(JSON.stringify(req.user));
+	/*server.send({
 		text:    "i hope this works",
 		from:    "<13cg3002@gmail.com>",
 		to:      "Hunar Khanna <hunur.khanna@gmail.com>",
@@ -40,12 +41,33 @@ exports.sendEmail = function (req,res) {
 			res.send({"STATUS" : "SUCCESS"});
 		else
 			res.send({"STATUS" : "ERROR"});
+	});*/
+};
+exports.website_findOrCreate = function  (req,res) {
+	// body...
+	website_account.findOrCreateUser( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
 	});
 };
-
+exports.website_findUserById = function  (req,res) {
+	// body...
+	website_account.findUserById( req.body.id, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.website_updateAccountPhone = function  (req,res) {
 	// body...
-	website_account.updatePhone( req.body, function  (err,result) {
+	website_account.updatePhone(req.user, req.body, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
@@ -56,7 +78,7 @@ exports.website_updateAccountPhone = function  (req,res) {
 };
 exports.website_updateAccountAddress = function  (req,res) {
 	// body...
-	website_account.updateAddress( req.body, function  (err,result) {
+	website_account.updateAddress(req.user, req.body, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
@@ -67,7 +89,8 @@ exports.website_updateAccountAddress = function  (req,res) {
 };
 exports.website_getAccountDetails = function  (req,res) {
 	// body...
-	website_account.getDetails( req.body, function  (err,result) {
+	console.log(req.user);
+	website_account.getDetails( req.user, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
@@ -79,7 +102,7 @@ exports.website_getAccountDetails = function  (req,res) {
 
 exports.website_viewTransactions = function  (req,res) {
 	// body...
-	website_transaction.viewTransactions( req.body, function  (err,result) {
+	website_transaction.viewTransactions( req.user, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);
@@ -102,7 +125,7 @@ exports.website_viewTransactionDetails = function  (req,res) {
 
 exports.website_processTransaction = function  (req,res) {
 	// body...
-	website_transaction.processTransaction( req.body, function  (err,result) {
+	website_transaction.processTransaction(req.user, req.body, function  (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);

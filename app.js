@@ -19,6 +19,7 @@ var app = express();
 app.configure(function(){
   app.set('port', process.env.PORT || 3001);
   app.set('views', __dirname + '/views');
+  app.engine('html', require('ejs').renderFile);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -38,7 +39,6 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.static(path.join(__dirname, 'views')));
-  app.engine('html', require('ejs').renderFile);
 });
 
 
@@ -48,6 +48,9 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/testIndex', function (req,res){
+  res.sendFile("views/index.html");
+});
 
 app.post('/add/product',routes.addProduct);
 app.post('/add/outlet',function(req,res) {
@@ -100,15 +103,19 @@ app.post('/getOutletsByProduct',routes.getOutletsByProduct);
 //website routes
 app.get('/website/viewProducts',routes.website_viewProducts);
 app.post('/website/processTransaction', routes.website_processTransaction);
-app.post('/website/viewTransactions', routes.website_viewTransactions);
+app.get('/website/viewTransactions', routes.website_viewTransactions);
 app.post('/website/viewTransactionDetails', routes.website_viewTransactionDetails);
 app.post('/website/searchInventory',routes.website_searchInventory);
-app.post('/website/getAccountDetails',routes.website_getAccountDetails);
+app.get('/website/getAccountDetails',routes.website_getAccountDetails);
 app.post('/website/updateAccountPhone',routes.website_updateAccountPhone);
 app.post('/website/updateAccountAddress',routes.website_updateAccountAddress);
 
 //email route
 app.get('/sendTestMail',routes.sendEmail);
+
+//testing routes
+app.post('/website/findOrCreateUser',routes.website_findOrCreate);
+app.post('/website/findUserById',routes.website_findUserById);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
