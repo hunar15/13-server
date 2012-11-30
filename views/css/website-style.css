@@ -15,3 +15,17 @@ label.invalid { color: red; }
 #catalog-display{padding-left:85px;}
 #shopping-cart-wrapper{margin: 10px 10px; padding-bottom: 10px;}
 .table{padding:0px}
+.image-holder {
+	text-align: center;
+}
+.product-image {
+	max-width: 168px;
+	max-height: 126px;
+}
+#catalog-paginator{
+	clear:left;
+}
+.change{
+font-weight:normal;
+font-size:0.8em;
+}

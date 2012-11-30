@@ -1,13 +1,14 @@
-var numItems=0;
+var numItems=0; //number of items in the shopping cart
+var cList;
 var global;
 var fbid="aaa";
 var totalPrice=0;
 var editableGrid;
+var disabledItems = []; //keeps track of which products are already added into shopping cart
 
 $().ready(function(){
 
 	renderCatalog();
-	renderOrderHistory();
 	initCheckout();
 	initToolbar();
 	initAlert();
@@ -45,17 +46,89 @@ function initToolbar(){
 		$('.display').hide();
 		$('#store-display').show();
 	});
+	$('#account-link').click(function(){
+		$('.tb-link').removeClass('active');
+		$('#account-link').addClass('active');
+		renderAccount();
+		$('.display').hide();
+		$('#account-display').show();
+	});
 }
 
-function renderCatalog(){	
-	$.getJSON('/website/viewProducts', function(data){catalogGenerator(data)});
-	$('#catalog-display').append('</ul>');	
+function disableSelectedItems(){
+	$.each(disabledItems, function(k,v){
+		$('#btn-'+v).attr('disabled','disabled');
+	});
 }
 
-function catalogGenerator(data){
-	$('#catalog-display').empty();
-	$('#catalog-display').append('<input style="margin:18px;" class="span7" type="text" id="search-catalog" placeholder="Search by product name or category"/>'
-		+'<select class="span2"><option>&lt;Sort by&gt;</option><option>Product name</option><option>Category</option><option>Price</option></select><ul id="catalog-list" class="thumbnails">');
+function renderAccount(){
+	$.ajax({
+		url: "/website/getAccountDetails",
+		type: 'POST',
+		data: {
+				"fbid": fbid
+		},
+		success: function (response) {
+			var data = response[0];
+			$('#account-display').empty();
+			$('#account-display').append('<h3>Account Information</h3><table>'
+				+'<tr><td>Name: </td><td><h4> '+data.name+'</h4></td></tr>'
+				+'<tr><td>Address: </td><td id="address"><h4> '+data.address+' &nbsp;&nbsp;<a class="change" id="change-address">change</a></h4></td></tr>'
+				+'<tr><td>Contact: </td><td id="phone"><h4> '+data.phone+' &nbsp;&nbsp;<a class="change" id="change-phone">change</a></h4></td></tr>'
+				+'<tr><td>Email: </td><td><h4> '+data.email+'</h4></td></tr>'
+				+'</table>');
+			initAccountChange();
+		}
+	});
+}
+
+function initAccountChange(){
+	$('#change-address').click(function(){
+		$('#address').empty();
+		$('#address').append('<input type="text" placeholder="Press enter to confirm" id="inputAddress" style="height:10px; font-size:0.8em; width: 450px; margin:0px;"></input> &nbsp;&nbsp;<a onclick="renderAccount();">cancel</a>');
+		$('#inputAddress').bind('keypress',function(e){
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if(code == 13) {
+				$.ajax({
+					url: "/website/updateAccountAddress",
+					type: 'POST',
+					data: {
+						"fbid": fbid,
+						"address": $('#inputAddress').val()
+					},
+					success: function (response) {
+						renderAccount();
+					}
+				});
+			}		
+		});			
+	});
+	$('#change-phone').click(function(){
+		$('#phone').empty();
+		$('#phone').append('<input type="text" value="" id="inputPhone" class="small-input-field" style="height:10px; font-size:0.8em; width: 90px; margin:0px;"></input> &nbsp;&nbsp;<a onclick="renderAccount();">cancel</a>');
+		$('#inputPhone').bind('keypress',function(e){
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if(code == 13) {
+				$.ajax({
+					url: "/website/updateAccountPhone",
+					type: 'POST',
+					data: {
+						"fbid": fbid,
+						"phone": $('#inputPhone').val()
+					},
+					success: function (response) {
+						renderAccount();
+					}
+				});
+			}		
+		});	
+	});
+}
+
+function renderCatalog(){
+	$('#search-catalog').remove();
+	$('#catalog-display').append('<input class="span7" type="text" id="search-catalog" placeholder="Search by product name or category"/>'
+		+'<ul id="catalog-list" class="thumbnails">');
 	$('#search-catalog').bind('keypress',function(e){
 		var code = (e.keyCode ? e.keyCode : e.which);
 		if(code == 13) {
@@ -66,23 +139,42 @@ function catalogGenerator(data){
 						"para": $('#search-catalog').val()
 				},
 				success: function (response) {
-					catalogGenerator(response);
+					catalogGenerator(response,0);
+					disableSelectedItems();
 					$('#search-catalog').val('');
 				}
 			});
 		}		
-	});	
+	});			
+	$.getJSON('/website/viewProducts', function(data){catalogGenerator(data,0)});
+}
+
+function catalogGenerator(data,startIndex){
+	console.log('cat');
+	cList = data;
+	var maxIndex = data.length;
+	$('#catalog-display li').remove();
+	$('#catalog-paginator').remove();
 	$.each(data,function(k,v){
-		$('#catalog-display').append('<li class="span3" style="padding-bottom: 20px;"><div class="thumbnail">'
-		+'<a href="#">'
-			+'<img src="'+v.image+'" alt="">'
-		+'</a>'
-		+'<div class="caption"><h3>'+v.name+'</h3>'
-		+'<p>Price: $'+v.selling_price+'<br/>Category: '+v.category+'<br/>Stock Availability: '+v.stock+'</p>'
+		if (k>= startIndex && k < startIndex + 9)
+		$('#catalog-display').append('<li class="span3" style="padding-bottom: 20px;"><div class="thumbnail" style="height:330px;">'
+		+'<div class="image-holder"><a href="#">'
+			+'<img class="product-image" src="'+v.image+'" alt="">'
+		+'</a></div>'
+		+'<div class="caption"><h3 style="height:81px;">'+v.name+'</h3><hr style="margin:0px;">'
+		+'<p style="height:44px;">Price: $'+v.selling_price+'<br/>Category: '+v.category+'<br/>Stock Availability: '+v.stock+'</p>'
 		+'Qty: <input type="text" value="1" id="qty-'+v.barcode+'" style="height:10px; font-size:0.8em; width: 40px; margin:0px;"></input>'
 		+'&nbsp;<button id="btn-'+v.barcode+'" onclick="addToShoppingCart(\''+v.barcode+'\',\''+v.name+'\','+v.selling_price+','+v.stock+')" class="btn btn-mini"><i class="icon-shopping-cart"></i></button></div>'
 		+'</div></li>');
+					
 	});
+	$('#catalog-display').append('</ul><div id="catalog-paginator">'
+		+'<button id="prev" class="btn" onclick="catalogGenerator(cList,'+(startIndex-9)+');disableSelectedItems();">&lt; Prev</button>&nbsp;'
+		+'<button id="next" class="btn" onclick="catalogGenerator(cList,'+(startIndex+9)+');disableSelectedItems();">Next &gt;</button></div>');
+	if (startIndex-9 <0)
+		$('#prev').attr('disabled','disabled');
+	if (startIndex+9 >maxIndex)
+		$('#next').attr('disabled','disabled');
 }
 
 function renderOrderHistory(){
@@ -125,7 +217,7 @@ function initOrderTable(data){
 	editableGrid.setCellRenderer("detail", new CellRenderer({render: function(cell, value) {
 		var rowId = editableGrid.getRowId(cell.rowIndex);
 		
-		cell.innerHTML = "<a href=\"#restockDetails\" data-toggle=\"modal\" onclick=\"generateDetails("+rowId+"); \" style=\"cursor:pointer\">" +
+		cell.innerHTML = "<a data-toggle=\"modal\" onclick=\"generateDetails("+rowId+"); \" style=\"cursor:pointer\">" +
 						 "<img src=\"images/view.png\" border=\"0\" alt=\"delete\" title=\"View details\"/></a>";
 	}})); 
 	
@@ -207,14 +299,33 @@ function initCheckout(){
 		$('#confirm-cart').append($('#shopping-cart').children().clone());
 		$('#total-confirm-price').text(totalPrice);
 		$('#confirm-cart tbody td.removeItem').remove();
+		$.ajax({
+			url: "/website/getAccountDetails",
+			type: 'POST',
+			data: {
+					"fbid": fbid
+			},
+			success: function (response) {
+				$('#inputDeliveryAddress').val(response[0].address);
+			}
+		});
 	});
 	
 	$('#confirm-add-order').click(function(){
-		var address = $('#inputAddress').val();
+		$('#confirm-add-order').attr('disabled','disabled');
+		var address = $('#inputDeliveryAddress').val();
 		if (address == ''){
 			alert('Please fill in delivery address!');
 			return;
 		}
+		$.ajax({
+			url: "/website/updateAccountAddress",
+			type: 'POST',
+			data: {
+				"fbid": fbid,
+				"address": $('#inputDeliveryAddress').val()
+			}
+		});
 		var list = [];
 		$.each($('#confirm-cart tbody').children(),function(k,v){
 			var id = $(v).attr('id');
@@ -239,6 +350,7 @@ function initCheckout(){
 				console.log(response.responseText);
 				renderCatalog();
 				clearAll();
+				$('#confirm-add-order').removeAttr('disabled');
 				$('.alert').show();
 				$('#addNewOrder').modal('hide');
 			}
@@ -252,6 +364,7 @@ function clearAll(){
 		var id = $(v).attr('id');
 		removeFromShoppingList(id);
 	});
+	disabledItems = [];
 }
 
 function addToShoppingCart(barcode,name,price,stock){
@@ -267,7 +380,10 @@ function addToShoppingCart(barcode,name,price,stock){
 		return;
 	}
 	else
+	{
+		disabledItems.push(barcode);
 		appendShoppingList(barcode,name,price,qty);
+	}
 }
 
 function appendShoppingList(barcode,name,price,qty){
@@ -289,9 +405,12 @@ function removeFromShoppingList(barcode){
 	changePrice(-1*price*qty);
 	$('#'+barcode).remove();
 	$('#btn-'+barcode).removeAttr('disabled');
+	var index = disabledItems.indexOf(''+barcode);
+	disabledItems.splice(index,1);
 	numItems--;
 	if (numItems == 0){
 		$('#empty-msg').show();
+		$('.sc-opt').attr('disabled','disabled');
 		$('#shopping-cart-container').hide();
 	}
 }
