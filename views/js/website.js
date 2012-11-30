@@ -4,10 +4,29 @@ var fbid="12345";
 
 $().ready(function(){
 	renderCatalog();
+	renderOrderHistory();
 	initCheckout();
+	initToolbar();
 })
 
+function initToolbar(){
+	$('#catalog-link').click(function(){
+		$('#order-link').removeAttr('class','active');
+		$('#catalog-link').attr('class','active');
+		renderCatalog();
+	});
+	
+	$('#order-link').click(function(){
+		$('#order-link').attr('class','active');
+		$('#catalog-link').removeAttr('class','active');
+		renderOrderHistory();
+		$('#catalog-display').hide();
+		$('#order-display').show();
+	});	
+}
+
 function renderCatalog(){
+	$('#catalog-display').empty();
 	$('#catalog-display').append('<ul id="catalog-list" class="thumbnails">');
 
 	$.getJSON('/website/viewProducts', function(data){
@@ -22,8 +41,15 @@ function renderCatalog(){
 			+'&nbsp;<button id="btn-'+v.barcode+'" onclick="addToShoppingCart(\''+v.barcode+'\',\''+v.name+'\','+v.selling_price+','+v.stock+')" class="btn btn-mini"><i class="icon-shopping-cart"></i></button></div>'
 			+'</div></li>');
 		});
+		$('#catalog-display').show();
+		$('#order-display').hide();
 	});
 	$('#catalog-display').append('</ul>');	
+}
+
+function renderOrderHistory(){
+	$('#order-display').empty();
+	//append items to order history here
 }
 
 function initCheckout(){
