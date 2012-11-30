@@ -23,7 +23,7 @@ exports.viewTransactions = function (args, callback) {
 			// body...
 			if(!err) {
 				for ( var i in rows) {
-					var current = {};		
+					var current = {};
 					current['id']=rows[i]['id'];
 					current['values']=rows[i];
 					result['data'].push(current);
@@ -59,7 +59,7 @@ exports.viewTransactionDetaiks = function (args, callback) {
 			// body...
 			if(!err) {
 				for ( var i in rows) {
-					var current = {};		
+					var current = {};
 					current['id']=rows[i]['barcode'];
 					current['values']=rows[i];
 					result['data'].push(current);
@@ -69,7 +69,7 @@ exports.viewTransactionDetaiks = function (args, callback) {
 				callback(err,true);
 			}
 		});
-	} else { 
+	} else {
 		console.log("Invalid or absent parameers");
 		callback(true,null);
 	}
@@ -92,7 +92,7 @@ exports.dispatchTransaction = function (args, callback) {
 				callback(err,true);
 			}
 		});
-	} else { 
+	} else {
 		console.log("Invalid or absent parameers");
 		callback(true,null);
 	}
@@ -114,7 +114,7 @@ exports.setAsReceived = function (args, callback) {
 				callback(err,true);
 			}
 		});
-	} else { 
+	} else {
 		console.log("Invalid or absent parameers");
 		callback(true,null);
 	}
@@ -167,7 +167,7 @@ exports.processTransaction = function (args ,callback) {
 	console.log("Arguments : "+fbid+"," + address + ","+ list);
 	if( fbid !== undefined &&  address!== undefined &&  list!== undefined) {
 		if(list.length !== 0) {
-			//validate a transaction first 
+			//validate a transaction first
 			var valid_query = '';
 			var create_query = 'INSERT INTO online_transaction(address,fbid) VALUES('+connection.escape(address)+','+connection.escape(fbid)+');';
 			for( var i in list) {
@@ -210,7 +210,7 @@ exports.processTransaction = function (args ,callback) {
 									// body...
 									/*
 									
-									TRANSACTION SHOULD ALSO CONSEQUENTLY PUSH STOCK REQUESTS AFTER 
+									TRANSACTION SHOULD ALSO CONSEQUENTLY PUSH STOCK REQUESTS AFTER
 									RESTOCK CHECK
 
 									MAKE RELEVANT CHANGES AFTER THIS STEP
@@ -225,7 +225,7 @@ exports.processTransaction = function (args ,callback) {
 											if(!err3) {
 												console.log("Transaction with ID : " +rows4.insertId + " processed and added" );
 												console.log("Computing Restock Requests...");
-												computeAndSyncRestockRequests(callback);		
+												computeAndSyncRestockRequests(callback);
 											} else {
 												console.log("Error : "+err3);
 												callback(err3,true);
@@ -234,7 +234,7 @@ exports.processTransaction = function (args ,callback) {
 									} else {
 										callback(err,true);
 									}
-								});	
+								});
 							} else {
 								callback(err,true);
 							}
@@ -253,7 +253,7 @@ exports.processTransaction = function (args ,callback) {
 			callback(true,null);
 		}
 		
-	} else { 
+	} else {
 		console.log("Invalid or absent parameters");
 		callback(true,null);
 	}

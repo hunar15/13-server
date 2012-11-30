@@ -31,6 +31,18 @@ exports.website_processTransaction = function  (req,res) {
 		}
 	});
 };
+exports.website_searchInventory = function  (req,res) {
+	// body...
+	website_inventory.searchInventory(req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			console.log(result);
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.website_viewProducts = function  (req,res) {
 	// body...
 	website_inventory.getAllInventory( function  (err,result) {
