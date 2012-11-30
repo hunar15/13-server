@@ -54,7 +54,8 @@ exports.addProduct = function (args, callback) {
 		category = args.category,
 		barcode = '',
 		cost_price = args.cost_price,
-		manufacturer = args.manufacturer;
+		manufacturer = args.manufacturer,
+		image = args.image;
 
 	var barcode_query = 'select p.barcode+1 as barcode from product p where NOT exists '+
 					' (select * from product where barcode = p.barcode+1) and p.barcode >= 10000000 limit 1;';
@@ -63,7 +64,7 @@ exports.addProduct = function (args, callback) {
 		if(!err2) {
 			barcode = rows2[0]['barcode'];
 			var query = 'INSERT INTO product VALUES('+connection.escape(name)+','+connection.escape(category)+
-					','+barcode+','+cost_price+','+connection.escape(manufacturer)+');';
+					','+barcode+','+cost_price+','+connection.escape(manufacturer)+','+connection.escape(image)+');';
 			console.log(query);
 			connection.query( query, function (err, rows, fields) {
 				console.log(err);
