@@ -86,7 +86,7 @@ exports.viewTransactionDetails = function (args, callback) {
 	
 };
 
-exports.dispatchTransaction = function (args, callback) {
+exports.dispatchTransaction = function ( args, callback) {
 	// body...
 	var id = args.id;
 
@@ -97,7 +97,30 @@ exports.dispatchTransaction = function (args, callback) {
 			// body...
 			if(!err) {
 				console.log("Online Transaction ID : " +id+ " DISPATCHED");
-				callback(null,true);
+				var query2 = 'SELECT barcode, quantity,price FROM online_transaction_details where id='+id+' ;';
+
+				connection.query(query2, function (err2, rows2, fields2) {
+					// body...
+					if(!err2) {
+
+						var query3 = "SELECT a.name as name,a.email as email from account a " +
+							" inner join online_transaction t on t.fbid = a.fbid WHERE t.id= " + id + " ;";
+
+						connection.query(query3, function  (err3, rows3,fields3) {
+							// body...
+							if(!err3) {
+								console.log(rows2);
+								sendProcessEmail(rows3[0],rows2,id,"DISPATCHED");
+								callback(null,true);
+							} else {
+								console.log("ERROR : " + err3);
+								callback(err2,true);
+							}
+						});
+					} else {
+						callback(err2,true);
+					}
+				});
 			} else {
 				callback(err,true);
 			}
@@ -168,6 +191,40 @@ function computeAndSyncRestockRequests(callback) {
 		}
 	});
 }
+
+function sendProcessEmail(user,list,t_id,type) {
+	var email_text = '',
+		email_sub = '';
+
+	switch(type) {
+		case "CONFIRMED" :
+			email_sub = 'TRANSACTION CONFIRMATION';
+			break;
+		case "DISPATCHED":
+			email_sub = 'ORDER DISPATCHED';
+			break;
+	}
+	email_text += 'Dear '+ user.name+',\n';
+	email_text += 'This is to inform you that your ORDER of the following products has been '+type+'.\n';
+	email_text += 'No.\t\tBarcode\t\tQuantity\t\tPrice\n';
+	for(var i in list) {
+		var current = list[i];
+		email_text += i+'\t\t'+current.barcode+'\t\t'+current.quantity+'\t\t'+current.price+'\n';
+	}
+	email_text +='Your Transaction ID is '+t_id+'\n';
+	email_text += 'Best Regards,\n';
+	email_text += 'CG3002 Team 13';
+	server.send({
+		text:    email_text,
+		from:    "<13cg3002@gmail.com>",
+		to:      user.email,
+		subject: email_sub
+	}, function(err, message) {
+		console.log(err || message);
+	});
+}
+
+
 exports.processTransaction = function (user, args ,callback) {
 	// body...
 	var fbid = user.fbid,
@@ -239,7 +296,9 @@ exports.processTransaction = function (user, args ,callback) {
 
 												console.log("Send email to the user..");
 
-												// 
+												// Compose Email text
+												sendProcessEmail(user,list,rows4.insertId,"CONFIRMED");
+												
 												computeAndSyncRestockRequests(callback);
 											} else {
 												console.log("Error : "+err3);

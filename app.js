@@ -105,6 +105,7 @@ app.get('/website/viewProducts',routes.website_viewProducts);
 app.post('/website/processTransaction', routes.website_processTransaction);
 app.get('/website/viewTransactions', routes.website_viewTransactions);
 app.post('/website/viewTransactionDetails', routes.website_viewTransactionDetails);
+app.post('/website/dispatchTransaction',routes.website_dispatchTransaction);
 app.post('/website/searchInventory',routes.website_searchInventory);
 app.get('/website/getAccountDetails',routes.website_getAccountDetails);
 app.post('/website/updateAccountPhone',routes.website_updateAccountPhone);

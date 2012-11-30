@@ -28,6 +28,16 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_dispatchTransaction = function (req,res) {
+	website_transaction.dispatchTransaction(req.body,function(err,result){
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.sendEmail = function (req,res) {
 	console.log(JSON.stringify(req.user));
 	/*server.send({
@@ -102,6 +112,7 @@ exports.website_getAccountDetails = function  (req,res) {
 
 exports.website_viewTransactions = function  (req,res) {
 	// body...
+	console.log(req.user);
 	website_transaction.viewTransactions( req.user, function  (err,result) {
 		// body...
 		if(!err) {
