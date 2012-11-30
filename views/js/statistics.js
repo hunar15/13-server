@@ -34,7 +34,6 @@ $(function(){
 			data: []
 		};
 		$.each(data, function(idx, item) {
-			alert(JSON.stringify(item));
 			series.data.push([item["name"],parseFloat(item["percent"])]);
 		});
 		
@@ -52,5 +51,5 @@ $(function(){
 });
 
 function changeOutlet(){
-	console.log($('#show-outlet').val());
+	console.log($('#show-outlet'));
 }
