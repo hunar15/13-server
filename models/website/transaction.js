@@ -172,13 +172,14 @@ exports.processTransaction = function (args ,callback) {
 			//validate a transaction first
 			var valid_query = '';
 			var create_query = 'INSERT INTO online_transaction(address,fbid) VALUES('+connection.escape(address)+','+connection.escape(fbid)+');';
+			console.log(create_query);
 			for( var i in list) {
 				var current= list[i];
 
 				valid_query += 'SELECT stock-'+current.quantity+' as quantity FROM inventory WHERE ' +
 					' outlet_id='+onlineid+' and product_barcode='+current.barcode+' ;';
 			}
-
+			console.log(valid_query);
 			connection.query(valid_query, function (err, rows, fields) {
 				// body...
 				if(!err) {
