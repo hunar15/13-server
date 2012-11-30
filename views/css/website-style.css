@@ -12,5 +12,6 @@ label.invalid { color: red; }
 .container-fluid{width: 1150px; margin-left:auto;margin-right:auto;}
 
 #sc-panel{border-left: 4px solid black; border-bottom: 1px solid lightgrey; padding-bottom: 7px;}
-#shopping-cart{margin: 10px 10px; padding-bottom: 10px;}
 #catalog-display{padding-left:85px;}
+#shopping-cart-wrapper{margin: 10px 10px; padding-bottom: 10px;}
+.table{padding:0px}
