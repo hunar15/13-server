@@ -1,6 +1,7 @@
 var numItems=0;
 var global;
 var fbid="aaa";
+var totalPrice=0;
 
 $().ready(function(){
 
@@ -21,19 +22,25 @@ function initAlert(){
 
 function initToolbar(){
 	$('#catalog-link').click(function(){
-		$('#order-link').removeAttr('class','active');
-		$('#catalog-link').attr('class','active');
+		$('.tb-link').removeClass('active');
+		$('#catalog-link').addClass('active');
+		$('.display').hide();
 		$('#catalog-display').show();
-		$('#order-display').hide();
 	});
 	
 	$('#order-link').click(function(){
-		$('#order-link').attr('class','active');
-		$('#catalog-link').removeAttr('class','active');
+		$('.tb-link').removeClass('active');
+		$('#order-link').addClass('active');
 		renderOrderHistory();
-		$('#catalog-display').hide();
+		$('.display').hide();
 		$('#order-display').show();
 	});	
+	$('#store-link').click(function(){
+		$('.tb-link').removeClass('active');
+		$('#store-link').addClass('active');
+		$('.display').hide();
+		$('#store-display').show();
+	});
 }
 
 function renderCatalog(){
@@ -67,7 +74,10 @@ function initCheckout(){
 		$('#addNewOrder').modal('show');
 		$('#confirm-cart').empty();
 		$('#confirm-cart').append($('#shopping-cart').children().clone());
+		$('#total-confirm-price').text(totalPrice);
+		$('#confirm-cart tbody td.removeItem').remove();
 	});
+	
 	$('#confirm-add-order').click(function(){
 		var address = $('#inputAddress').val();
 		if (address == ''){
@@ -85,7 +95,7 @@ function initCheckout(){
 				"price":price
 			});
 		});
-		console.log(list);
+		recalculateTotalPrice(list);
 		$.ajax({
 			url: "/website/processTransaction",
 			type: 'POST',
@@ -132,21 +142,43 @@ function addToShoppingCart(barcode,name,price,stock){
 function appendShoppingList(barcode,name,price,qty){
 	if (numItems == 0){
 		$('#empty-msg').hide();
-		$('#shopping-cart').show();
+		$('#shopping-cart-container').show();
 	}
 	$('#shopping-cart').append('<tr id="'+barcode+'"><td><b>'+name+'</b></td><td id="price-'+barcode+'">S$'+price+'</td><td id="finalqty-'+barcode+'">'+qty+'</td>'
-	+'<td><a onclick="removeFromShoppingList('+barcode+')"><i class="icon-remove-sign hover-only"></i></a></td></tr>');
+	+'<td class="removeItem"><a onclick="removeFromShoppingList('+barcode+')"><i class="icon-remove-sign hover-only"></i></a></td></tr>');
 	numItems++;
+	changePrice(parseInt(price)*parseInt(qty));	
 	$('.sc-opt').removeAttr('disabled');
 	$('#btn-'+barcode).attr('disabled','disabled');
 }
 
 function removeFromShoppingList(barcode){
+	var price=parseInt($('#price-'+barcode).text().substring(2));
+	var qty=parseInt($('#finalqty-'+barcode).text());
+	changePrice(-1*price*qty);
 	$('#'+barcode).remove();
 	$('#btn-'+barcode).removeAttr('disabled');
 	numItems--;
 	if (numItems == 0){
 		$('#empty-msg').show();
-		$('#shopping-cart').hide();
+		$('#shopping-cart-container').hide();
 	}
+}
+function changePrice(amount){
+	totalPrice += amount;
+	$('#total-price').text(totalPrice);
+}
+
+function recalculateTotalPrice(list){
+	var subtotal=0;
+	if (list.length == 0){
+		totalPrice = 0;
+		$('#total-price').text(totalPrice);
+		return;
+	}
+	$.each(list, function(k,v){
+		subtotal += v.qty * v.price;
+	});
+	totalPrice = subtotal;
+	$('#total-price').text(totalPrice);
 }
