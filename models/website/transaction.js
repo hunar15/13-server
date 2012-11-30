@@ -25,6 +25,7 @@ exports.viewTransactions = function (args, callback) {
 		result['metadata'].push({"name": "address", "label" : "Delivery Address", "datatype" : "string"});
 		result['metadata'].push({"name": "timestamp", "label" : "Time and Date", "datatype" : "string"});
 		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+		result['metadata'].push({"name": "detail", "label" : "Details"});
 		
 		connection.query(query, function (err, rows, fields) {
 			// body...
