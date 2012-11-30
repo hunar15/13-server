@@ -10,6 +10,8 @@
     "jade": "*",
     "ejs":"*",
     "mysql" : "*",
-    "forever": "*"
+    "forever": "*",
+    "everyauth": "*",
+    "connect-redis":"*"
   }
 }

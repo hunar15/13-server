@@ -7,8 +7,12 @@ var express = require('express'),
    routes = require('./routes'),
    user = require('./routes/user'),
    http = require('http'),
-   path = require('path');
-
+   path = require('path'),
+   everyauth = require('everyauth');
+var _ = require('underscore');
+var redis = _.find( process.argv, function( arg ){
+  return arg === "--noredis";
+});
 var app = express();
 
 app.configure(function(){
@@ -18,6 +22,18 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.cookieParser('#%$^&BLAabkkajnsd'));
+  if (redis) {
+    app.use(express.session());
+  } else {
+    var Redisstore = require('connect-redis')(express);
+    var sessionstore = new Redisstore();
+    app.use(express.session({
+      store: sessionstore,
+      cookie: {maxAge: 1000 * 60 * 60 * 24 * 14}
+    }));
+  }
+  app.use(everyauth.middleware());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.static(path.join(__dirname, 'views')));
