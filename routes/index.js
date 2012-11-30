@@ -31,7 +31,7 @@ var connection = sql.createConnection({
 
 exports.website_productInformation = function (req,res) {
 	// body...
-	website_inventory.getProductInformation(req.body, function (err,result) {
+	website_inventory.getProductInformation(req.param('barcode'), function (err,result) {
 		// body...
 		if(!err) {
 			res.send(result);

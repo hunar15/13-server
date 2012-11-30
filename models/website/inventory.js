@@ -56,7 +56,7 @@ exports.recomputePrice = function (callback) {
 };
 
 exports.getProductInformation = function(args, callback) {
-	var barcode = args.barcode;
+	var barcode = args;
 
 	if(barcode !== undefined) {
 		var query = 'SELECT name,category,manufacturer, image, stock, selling_price from '+
