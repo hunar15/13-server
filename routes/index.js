@@ -10,7 +10,15 @@ var inventory = require('../models/inventory'),
 	transaction = require('../models/transaction'),
 	website_inventory = require('../models/website/inventory'),
 	website_transaction = require('../models/website/transaction'),
-	website_account = require('../models/website/account');
+	website_account = require('../models/website/account'),
+	email = require('emailjs'),
+	server  = email.server.connect({
+		user:    "13cg3002",
+		password:"gmailsync",
+		host:    "smtp.gmail.com",
+		ssl:     true
+	});
+
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -19,6 +27,21 @@ var connection = sql.createConnection({
   database : 'hqdb',
   multipleStatements : true
 });
+
+exports.sendEmail = function (req,res) {
+	server.send({
+		text:    "i hope this works",
+		from:    "<13cg3002@gmail.com>",
+		to:      "Hunar Khanna <hunur.khanna@gmail.com>",
+		subject: "testing emailjs"
+	}, function(err, message) {
+		console.log(err || message);
+		if(!err)
+			res.send({"STATUS" : "SUCCESS"});
+		else
+			res.send({"STATUS" : "ERROR"});
+	});
+};
 
 exports.website_updateAccountPhone = function  (req,res) {
 	// body...
@@ -54,6 +77,17 @@ exports.website_getAccountDetails = function  (req,res) {
 	});
 };
 
+exports.website_viewTransactions = function  (req,res) {
+	// body...
+	website_transaction.viewTransactions( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.website_viewTransactionDetails = function  (req,res) {
 	// body...
 	website_transaction.viewTransactionDetails( req.body, function  (err,result) {

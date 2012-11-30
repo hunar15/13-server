@@ -90,6 +90,9 @@ app.post('/website/getAccountDetails',routes.website_getAccountDetails);
 app.post('/website/updateAccountPhone',routes.website_updateAccountPhone);
 app.post('/website/updateAccountAddress',routes.website_updateAccountAddress);
 
+//email route
+app.get('/sendTestMail',routes.sendEmail);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });

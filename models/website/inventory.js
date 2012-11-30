@@ -52,5 +52,5 @@ exports.searchInventory = function  (args,callback) {
 };
 
 exports.recomputePrice = function (callback) {
-
+	
 };
