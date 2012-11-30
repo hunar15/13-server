@@ -19,6 +19,7 @@ function initAddProduct(){
 		var category = $('#inputCategory').val();
 		var manufacturer = $('#inputManufacturer').val();
 		var cost_price = $('#inputPrice').val();
+		var image = $('#inputImage').val();
 
 		if (validProductDetails(name, category, manufacturer, cost_price))
 			$.ajax({
@@ -28,7 +29,8 @@ function initAddProduct(){
 						"name": name,
 						"category": category,
 						"manufacturer": manufacturer,
-						"cost_price": cost_price
+						"cost_price": cost_price,
+						"image":image
 				},
 				success: function (response) {
 					console.log(response.responseText);
