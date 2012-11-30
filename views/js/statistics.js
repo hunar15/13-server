@@ -26,7 +26,7 @@ $(function(){
 		series: []
 	};
 	
-	$.get('js/allOutletsRevenue.json', function(data) {
+	$.get('../allOutletsRevenue', function(data) {
 		
 		var series = {
 			type: 'pie',

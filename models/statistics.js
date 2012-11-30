@@ -6,13 +6,18 @@ exports.lastWeekPerformance = function (args, callback) {
 	var outlet_id = args.outlet_id;
 	console.log(outlet_id);
 	if(outlet_id!==null) {
-		var query = 'SELECT p.name as name, r.revenue as revenue, DATE_FORMAT(r.date,\'%Y-%m-%d\') as date from revenue r inner join product p on p.barcode'+
-					' = r.barcode WHERE r.outlet_id=' +outlet_id+' AND r.date>=SUBDATE(CURDATE(),7);';
+		var query = 'select DATE_FORMAT(a.date,\'%Y-%m-%d\') as date, p.name as name, FORMAT(a.revenue,2) as revenue from product p,'+
+			'(select t.date as date,d.barcode as barcode, d.price*d.quantity ' +
+			'as revenue from transaction t inner join transaction_details d on '+
+			'd.id=t.id where t.outlet_id='+outlet_id+' and t.date>=subdate(curdate(),7)) a where a.revenue >= ALL(select '+
+			'd1.price*d1.quantity from transaction t1 inner join transaction_details '+
+			'd1 on d1.id=t1.id where t1.date=a.date and t1.outlet_id='+outlet_id+' and t1.date>=subdate(curdate(),7)) '+
+			' and p.barcode=a.barcode;';
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				console.log("Retrieval successful!");
-				console.log(rows);
+				console.log(JSON.stringify(rows));
 				callback(null,rows);
 			} else {
 				console.log("ERROR encountered : " + err);
@@ -26,9 +31,11 @@ exports.lastWeekPerformance = function (args, callback) {
 };
 
 exports.allOutletsRevenue = function(args,callback) {
-	var query = 'SELECT o.s_name as name, r.revenue as revenue, FORMAT((r.revenue / t.total)*100,0) as percent'+
-				' from outlet o,revenue r,(SELECT SUM(revenue) as total from revenue where date=SUBDATE(CURDATE(),1)) t '+
-				' where o.id=r.outlet_id and r.date=SUBDATE(CURDATE(),1) ;';
+	var query =  'Select  o.s_name as name, FORMAT(100*SUM(a.total)/b.t, 2) as percent, FORMAT(SUM(a.total),2) as revenue '+
+		'from outlet o, (SELECT t.outlet_id as id, (d.price*d.quantity) as total '+
+		'from transaction t inner join transaction_details d on t.id=d.id where t.date>=subdate(curdate(),7)) a, (SELECT  SUM(d1.price*d1.quantity) as t '+
+		'from transaction t1 inner join transaction_details d1 on t1.id=d1.id where t1.date>=subdate(curdate(),7)) b where o.id=a.id '+
+		'group by o.s_name;';
 
 	connection.query(query, function(err,rows,fields) {
 		if(!err) {
