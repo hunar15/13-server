@@ -2,12 +2,12 @@ var config = require('../../config/config'),
 	connection = config.connection;
 
 var everyauth = require('everyauth');
-var db = require('../models/db');
-var conf = require('../../config/auth').auth();
+//var db = require('../models/db');
+var conf = require('../../config/auth').auth;
 
 everyauth.debug = true;
 everyauth.everymodule.findUserById( function (userId, callback) {
-  db.findUserById(userId, callback);
+//  db.findUserById(userId, callback);
 });
 
 //fb
@@ -26,6 +26,8 @@ everyauth.facebook
     //expects promise
     currentAccessToken = accessToken;
     var promise = new this.Promise();
+    console.log(user);
+    /*
     db.findOrCreateUser(user, function(err, result){
       if (err) {
         console.log(err);
@@ -33,7 +35,7 @@ everyauth.facebook
       } else {
         return promise.fulfill(user);
       }
-    });
+    });*/
     return promise;
   })
   .scope('email')
@@ -41,6 +43,7 @@ everyauth.facebook
   .callbackPath('/auth/facebook/callback')
   .redirectPath('/main');
 
+/*
 everyauth.google
   .appId(conf.google.appId)
   .appSecret(conf.google.appSecret)
@@ -71,5 +74,5 @@ everyauth.everymodule.handleLogout( function (req, res) {
   // The logout method is added for you by everyauth, too
   req.logout();
   return res.redirect('/');
-});
+});*/
 
