@@ -8,6 +8,7 @@ var express = require('express'),
    user = require('./routes/user'),
    http = require('http'),
    path = require('path'),
+   auth = require('./models/auth/auth'),
    everyauth = require('everyauth');
 var _ = require('underscore');
 var redis = _.find( process.argv, function( arg ){
