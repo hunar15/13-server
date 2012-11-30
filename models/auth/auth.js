@@ -2,7 +2,7 @@ var config = require('../../config/config'),
 	connection = config.connection;
 
 var everyauth = require('everyauth');
-var db = require('../models/db');
+var db = require('../website/account');
 var conf = require('../../config/auth').auth();
 
 everyauth.debug = true;
@@ -26,6 +26,7 @@ everyauth.facebook
     //expects promise
     currentAccessToken = accessToken;
     var promise = new this.Promise();
+    console.log(user);
     db.findOrCreateUser(user, function(err, result){
       if (err) {
         console.log(err);

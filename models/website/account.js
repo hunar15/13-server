@@ -2,6 +2,25 @@ var config = require('../../config/config'),
 	connection = config.connection,
 	onlineid = config.onlineid;
 
+exports.findUserById = function (args, callback) {
+	var fbid = args;
+
+	if(fbid !== undefined) {
+
+	} else {
+		 
+	}
+};
+
+exports.findOrCreateUser = function (args, callback) {
+	var fbid = args;
+
+	if(fbid !== undefined) {
+
+	} else {
+		 
+	}
+};
 
 exports.getDetails = function (args, callback) {
 	// body...
