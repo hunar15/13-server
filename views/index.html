@@ -11,7 +11,12 @@
 		<script src="js/bootstrap-modal.js"></script>
 		<script src="js/bootstrap-alert.js"></script>
 		<script src="js/website.js"></script>
-		
+
+		<script src="js/editablegrid.js"></script>
+		<script src="js/editablegrid_renderers.js" ></script>
+		<script src="js/editablegrid_editors.js" ></script>
+		<script src="js/editablegrid_validators.js" ></script>
+		<script src="js/editablegrid_utils.js" ></script>		
 		<link rel="stylesheet" href="css/editablegrid.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap-responsive.css" type="text/css" media="screen">
@@ -51,8 +56,11 @@
 					</div>
 					
 					<div id="order-display" class="display">
+						<label for="filter"><br/>Filter :</label>
+						<input class="span4" type="text" id="filter" placeholder="Filter by any transaction details"/>
+						<div id="ordertablecontent"></div>
+						<div id="paginator"></div>
 					</div>
-					
 					<div id="store-display" class="display">
 					</div>
 				</div>
@@ -94,6 +102,21 @@
 							</div>
 						</div>
 					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+					<button id ="confirm-add-order" class="btn btn-success">Confirm Checkout</button>
+				</div>
+			</div>
+			<div id="transaction-detail-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="tdlabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="tdlabel">Transaction details</h3>
+				</div>
+				<div class="modal-body">
+					<input class="span4" type="text" id="filter2" placeholder="Filter by any transaction details"/>
+					<div id="tdtablecontent"></div>
+					<div id="paginator2"></div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
