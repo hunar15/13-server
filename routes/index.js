@@ -8,8 +8,17 @@ var inventory = require('../models/inventory'),
 	requests = require('../models/requests'),
 	statistics = require('../models/statistics'),
 	transaction = require('../models/transaction'),
-	website_inventory = require('../models/website/inventory');
-	website_transaction = require('../models/website/transaction');
+	website_inventory = require('../models/website/inventory'),
+	website_transaction = require('../models/website/transaction'),
+	website_account = require('../models/website/account'),
+	email = require('emailjs'),
+	server  = email.server.connect({
+		user:    "13cg3002",
+		password:"gmailsync",
+		host:    "smtp.gmail.com",
+		ssl:     true
+	});
+
 var sql = require('mysql');
 var connection = sql.createConnection({
   host     : 'localhost',
@@ -19,12 +28,95 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.sendEmail = function (req,res) {
+	server.send({
+		text:    "i hope this works",
+		from:    "<13cg3002@gmail.com>",
+		to:      "Hunar Khanna <hunur.khanna@gmail.com>",
+		subject: "testing emailjs"
+	}, function(err, message) {
+		console.log(err || message);
+		if(!err)
+			res.send({"STATUS" : "SUCCESS"});
+		else
+			res.send({"STATUS" : "ERROR"});
+	});
+};
+
+exports.website_updateAccountPhone = function  (req,res) {
+	// body...
+	website_account.updatePhone( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_updateAccountAddress = function  (req,res) {
+	// body...
+	website_account.updateAddress( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_getAccountDetails = function  (req,res) {
+	// body...
+	website_account.getDetails( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.website_viewTransactions = function  (req,res) {
+	// body...
+	website_transaction.viewTransactions( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_viewTransactionDetails = function  (req,res) {
+	// body...
+	website_transaction.viewTransactionDetails( req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.website_processTransaction = function  (req,res) {
 	// body...
 	website_transaction.processTransaction( req.body, function  (err,result) {
 		// body...
 		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.website_searchInventory = function  (req,res) {
+	// body...
+	website_inventory.searchInventory(req.body, function  (err,result) {
+		// body...
+		if(!err) {
+			console.log(result);
 			res.send(result);
 		} else {
 			res.send(err);
