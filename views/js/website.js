@@ -13,6 +13,7 @@ $().ready(function(){
 	initToolbar();
 	initAlert();
 	loadMapScript();
+	$('#search-catalog').focus();
 })
 
 function initAlert(){
@@ -102,7 +103,8 @@ function initAccountChange(){
 					}
 				});
 			}		
-		});			
+		});
+		$('#inputAddress').focus();
 	});
 	$('#change-phone').click(function(){
 		$('#phone').empty();
@@ -123,6 +125,7 @@ function initAccountChange(){
 				});
 			}		
 		});	
+		$('#inputPhone').focus();
 	});
 }
 
@@ -564,9 +567,9 @@ function initializeMap()
 {	
 	console.log("initialize map");
 	var mapObj = [];
-	$.getJSON( "http://eatwif.me/api.php/meals/" + mealID + '/' + fb_id, function(data){
+	//$.getJSON( "http://eatwif.me/api.php/meals/" + mealID + '/' + fb_id, function(data){
 		
-		var position = new google.maps.LatLng(data.longitude, data.latitude);
+		var position = new google.maps.LatLng(1.254358, 103.823257);
 
 		var map = new google.maps.Map(document.getElementById('googleMap'), {  
 			zoom: 18,
@@ -578,5 +581,5 @@ function initializeMap()
 			map: map
 		});
 		google.maps.event.addDomListener(window, 'load', initializeMap);
-	});
+	//});
 }
