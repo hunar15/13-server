@@ -6,7 +6,7 @@ exports.lastWeekPerformance = function (args, callback) {
 	var outlet_id = args.outlet_id;
 	console.log(outlet_id);
 	if(outlet_id!==null) {
-		var query = 'select DATE_FORMAT(a.date,\'%Y-%m-%d\') as date, p.name as name, FORMAT(a.revenue,2) as revenue from product p,'+
+		var query = 'select DATE_FORMAT(a.date,\'%Y-%m-%d\') as date, p.name as name, a.revenue as revenue from product p,'+
 			'(select t.date as date,d.barcode as barcode, d.price*d.quantity ' +
 			'as revenue from transaction t inner join transaction_details d on '+
 			'd.id=t.id where t.outlet_id='+outlet_id+' and t.date>=subdate(curdate(),7)) a where a.revenue >= ALL(select '+

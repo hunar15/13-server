@@ -25,7 +25,7 @@ $(function(){
 		},
 		series: []
 	};
-	
+
 	$.get('../allOutletsRevenue', function(data) {
 		
 		var series = {
@@ -51,5 +51,53 @@ $(function(){
 });
 
 function changeOutlet(){
-	console.log($('#show-outlet'));
+	var arr = {};
+	var outlet_id = $('#show-outlet option:selected').val();
+
+	var option_line = {
+		chart: {
+                renderTo: 'outletcontent',
+                type: 'column'
+        },
+        title: {
+                text: 'Last Week\'s Performance'
+		},
+		xAxis: {
+                categories: []
+        },
+        yAxis: {
+                min: 0,
+                title: {
+                    text: 'Revenue'
+                }
+        },
+        tooltip: {
+                formatter: function() {
+                    return arr[this.x]+' : $'+this.y;
+                }
+            },
+        series :[]
+	};
+
+	$.post('../getLastWeeksPerformance', { outlet_id : outlet_id }, function (data) {
+		// body...
+		var series = {
+			type: 'column',
+			name: 'Top Products of ' + $('#show-outlet option:selected').html(),
+			data: []
+		};
+		var categories = [];
+		$.each(data, function(idx, item) {
+			series.data.push(Math.round(parseFloat(item["revenue"])*100)/100);
+			arr[item['date']] = item['name'];
+			categories.push(item['date']);
+		});
+		alert(JSON.stringify(arr));
+		option_line.series.push(series);
+		option_line.xAxis.categories = categories;
+		//alert(JSON.stringify(categories));
+		
+		// Create the chart
+		var chart2 = new Highcharts.Chart(option_line);
+	});
 }
