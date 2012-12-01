@@ -554,29 +554,89 @@ function login(){
 }
 function loadMapScript()
 {
-	console.log("load map script");
 	var script = document.createElement("script");
 	script.type = "text/javascript";
 	script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBLMdDYv64FO14c7wMQBeqNfH5mSduQcEQ&sensor=false&callback=initializeMap"; 
 	document.body.appendChild(script);
 }
-function initializeMap()
-{	
-	console.log("initialize map");
-	var mapObj = [];
-	//$.getJSON( "http://eatwif.me/api.php/meals/" + mealID + '/' + fb_id, function(data){
-		
-		var position = new google.maps.LatLng(1.254358, 103.823257);
 
-		var map = new google.maps.Map(document.getElementById('googleMap'), {  
-			zoom: 18,
-			center: position,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
+var currentLatLng;
+var directionsDisplay;
+var directionsService;
+var geocoder;
+function initializeMap(){
+	createMap(1.367,103.75);
+	$('#origin').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			codeAddress();
+		}		
+	});
+}
+
+function createMap(latitude, longitude)
+{	
+	var mapObj = [];
+	geocoder = new google.maps.Geocoder();
+	directionsService = new google.maps.DirectionsService()
+	currentLatLng = new google.maps.LatLng(latitude,longitude);
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	
+	var map = new google.maps.Map(document.getElementById('googleMap'), {  
+		zoom: 17,
+		center: currentLatLng,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	});	
+	directionsDisplay.setMap(map);
+
+	var infowindow = new google.maps.InfoWindow({
+		content: 'hello!'
+	});	
+	$('.outlet-listing').remove();
+	$.getJSON( "/get/outlet/nometa", function(data){
+		$.each(data,function(k,v){
+			var position = new google.maps.LatLng(v.latitude, v.longitude);
+
+			var marker = new google.maps.Marker({
+				position: position, 
+				map: map
+			});
+
+			google.maps.event.addListener(marker, 'click', function() {
+				infowindow.close();
+				infowindow.setContent('<h4>'+v.s_name+'</h4>, '+v.address);
+				infowindow.open(map,marker);
+			});
+			appendOutletListing(v.s_name,v.address,v.latitude,v.longitude);
 		});
-		var marker = new google.maps.Marker({
-			position: position, 
-			map: map
-		});
-		google.maps.event.addDomListener(window, 'load', initializeMap);
-	//});
+	});
+}
+
+function appendOutletListing(name, address,latitude,longitude){
+	$('#outlet-info').append('<div class="outlet-listing"><button class="btn btn-small" title="Locate on map" onclick="createMap('+latitude+','+longitude+')"><i class="icon-map-marker"></i></button>'+
+		' <b> '+name+'</b>, <span>'+address+'</span></div>');
+}
+
+function codeAddress() {
+	var address = $("#origin").val();
+	geocoder.geocode( { 'address': address}, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			calcRoute(results[0].geometry.location);
+		} else {
+			alert("Geocode was not successful for the following reason: " + status);
+		}
+	});
+}
+
+function calcRoute(start) {
+	var request = {
+		origin:start,
+		destination:currentLatLng,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
+	directionsService.route(request, function(result, status) {
+	if (status == google.maps.DirectionsStatus.OK) {
+		directionsDisplay.setDirections(result);
+	}
+	});
 }
