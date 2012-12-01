@@ -12,6 +12,7 @@ $().ready(function(){
 	initCheckout();
 	initToolbar();
 	initAlert();
+	loadMapScript();
 })
 
 function initAlert(){
@@ -64,7 +65,7 @@ function disableSelectedItems(){
 function renderAccount(){
 	$.ajax({
 		url: "/website/getAccountDetails",
-		type: 'POST',
+		type: 'GET',
 		// data: {
 				// "fbid": fbid
 		// },
@@ -182,7 +183,7 @@ function renderOrderHistory(){
 	$('#order-display').append('<div id="ordertablecontent"></div><div id="paginator"></div>');
 	$.ajax({
 		url: "/website/viewTransactions",
-		type: 'POST',
+		type: 'GET',
 		// data: {
 				// "fbid": fbid
 		// },
@@ -301,7 +302,7 @@ function initCheckout(){
 		$('#confirm-cart tbody td.removeItem').remove();
 		$.ajax({
 			url: "/website/getAccountDetails",
-			type: 'POST',
+			type: 'GET',
 /* 			data: {
 					"fbid": fbid
 			}, */
@@ -548,4 +549,34 @@ function initDetail(data){
 
 function login(){
 	window.open('/auth/facebook');
+}
+
+function loadMapScript()
+{
+	console.log("load map script");
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBLMdDYv64FO14c7wMQBeqNfH5mSduQcEQ&sensor=false&callback=initializeMap"; 
+	document.body.appendChild(script);
+}
+
+function initializeMap()
+{	
+	console.log("initialize map");
+	var mapObj = [];
+	$.getJSON( "http://eatwif.me/api.php/meals/" + mealID + '/' + fb_id, function(data){
+		
+		var position = new google.maps.LatLng(data.longitude, data.latitude);
+
+		var map = new google.maps.Map(document.getElementById('googleMap'), {  
+			zoom: 18,
+			center: position,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		});
+		var marker = new google.maps.Marker({
+			position: position, 
+			map: map
+		});
+		google.maps.event.addDomListener(window, 'load', initializeMap);
+	});
 }
