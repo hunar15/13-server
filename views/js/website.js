@@ -7,12 +7,10 @@ var editableGrid;
 var disabledItems = []; //keeps track of which products are already added into shopping cart
 
 $().ready(function(){
-
 	renderCatalog();
 	initCheckout();
 	initToolbar();
 	initAlert();
-	loadMapScript();
 	$('#search-catalog').focus();
 })
 
@@ -47,6 +45,7 @@ function initToolbar(){
 		$('#store-link').addClass('active');
 		$('.display').hide();
 		$('#store-display').show();
+		loadMapScript();
 	});
 	$('#account-link').click(function(){
 		$('.tb-link').removeClass('active');
@@ -553,7 +552,6 @@ function initDetail(data){
 function login(){
 	window.open('/auth/facebook');
 }
-
 function loadMapScript()
 {
 	console.log("load map script");
@@ -562,7 +560,6 @@ function loadMapScript()
 	script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBLMdDYv64FO14c7wMQBeqNfH5mSduQcEQ&sensor=false&callback=initializeMap"; 
 	document.body.appendChild(script);
 }
-
 function initializeMap()
 {	
 	console.log("initialize map");
