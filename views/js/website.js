@@ -233,9 +233,28 @@ function renderOrderHistory(){
 }
 
 function renderProductDetail(barcode){
+	var items = [];
 	$.getJSON("/website/product/"+barcode,function(data){
-		$('#product-detail').append('<h13>'+data.details.name+'</h13>');
-		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="470" data-num-posts="2"></div>');
+		$.each(data.sameCategory, function(k,v){
+			items.push(v.name);
+		});	
+		var sameCategoryString = items.join(', ');
+		if (items.length == 0)
+			sameCategoryString = "none";
+		items = [];
+		$.each(data.outlets, function(k,v){
+			items.push(v.name);
+		});	
+		var outletString = items.join(', ');
+		if (items.length == 0)
+			outletString = "none";
+		$('#product-detail').empty();
+		$('#product-detail').append('<div class="span2"><img class="detail-image" src="'+data.details.image+'"></div><div class="span3"><h13>'+data.details.name+'</h13><br/>Category: '+data.details.category+'<br/>'
+			+'Price: '+data.details.selling_price+'<br/>Stock Availability: '+data.details.stock+'<br/>Manufacturer: '+data.details.manufacturer+'<br/>'
+			+'Similar products: '+sameCategoryString+'<br/>Outlets selling: '+outletString);
+		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="530" data-num-posts="2"></div>');
+		FB.XFBML.parse($('#product-detail').get(0));
+
 	});
 	$('#product-detail-modal').modal('show');
 }
