@@ -249,10 +249,17 @@ exports.processTransaction = function (user, args ,callback) {
 				// body...
 				if(!err) {
 					var error = 0;
+					console.log("Rows : " + JSON.stringify(rows));
+					console.log("Length : " + list.length);
 					for(var i in list) {
 						var current = list[i];
-						if(rows[i][0].quantity < 0)
-							error = 1;
+						if(rows.length == 1) {
+							if(rows[0].quantity < 0)
+								error = 1;
+						} else {
+							if(rows[i][0].quantity < 0)
+								error = 1;
+						}
 					}
 					if(error === 0) {
 						connection.query(create_query, function (err4, rows4, fields4) {
@@ -262,9 +269,6 @@ exports.processTransaction = function (user, args ,callback) {
 								for(var i in list) {
 									var current = list[i];
 									list[i].id = rows4.insertId;
-									if(rows[i][0].quantity < 0)
-										error = 1;
-									console.log(" Quantity of barcode : "+current.barcode+" after transaction = " + rows[i][0].quantity);
 									query2 += 'INSERT INTO online_transaction_details VALUES('+rows4.insertId+','+current.barcode+
 												','+current.quantity+','+current.price+');';
 									//modify query in next line

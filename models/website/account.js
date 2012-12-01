@@ -64,6 +64,7 @@ exports.getDetails = function (args, callback) {
 				console.log(rows);
 				callback(null,rows);
 			} else {
+				console.log("Error : " + err);
 				callback(err,true);
 			}
 		});
