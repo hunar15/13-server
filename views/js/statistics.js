@@ -50,6 +50,7 @@ $(function(){
 	});
 });
 
+
 function changeOutlet(){
 	var arr = {};
 	var outlet_id = $('#show-outlet option:selected').val();
@@ -92,7 +93,6 @@ function changeOutlet(){
 			arr[item['date']] = item['name'];
 			categories.push(item['date']);
 		});
-		alert(JSON.stringify(arr));
 		option_line.series.push(series);
 		option_line.xAxis.categories = categories;
 		//alert(JSON.stringify(categories));
