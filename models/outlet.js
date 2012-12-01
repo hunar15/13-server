@@ -87,8 +87,16 @@ exports.addOutlet = function (args, callback) {
 		address = args.address,
 		latitude = args.latitude,
 		longitude = args.longitude;
-	var query = 'INSERT INTO outlet(s_name,address,longitude,latitude) VALUES('+connection.escape(s_name)+
+
+	var query = '';
+	if( latitude != undefined && longitude != undefined) {
+		query ='INSERT INTO outlet(s_name,address,longitude,latitude) VALUES('+connection.escape(s_name)+
 			','+connection.escape(address)+','+longitude+','+latitude+');';
+	} else {
+		query ='INSERT INTO outlet(s_name,address) VALUES('+connection.escape(s_name)+
+			','+connection.escape(address)+');';
+	}
+	
 	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
