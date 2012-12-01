@@ -26,6 +26,37 @@ exports.getAllOutlets = function  (callback) {
 	});
 };
 
+exports.getAllOutletsNoMeta = function  (callback) {
+	// body...
+
+	var query = 'select * FROM outlet;';
+
+	connection.query(query, function  (err, rows, fields) {
+		// body...
+		if(!err) {
+			for( var i in rows) {
+				var current = rows[i];
+				console.log(current);
+				if(parseFloat(current['longitude']) >= 0) {
+					current['longitude'] = parseFloat(current['longitude']) + " E";
+				} else {
+					current['longitude'] = parseFloat(current['longitude']) + " W";
+				}
+				if(parseFloat(current['latitude']) >= 0) {
+					current['latitude'] = parseFloat(current['latitude']) + " N";
+				} else {
+					current['latitude'] = parseFloat(current['latitude']) + " S";
+				}
+			}
+			callback(null, rows);
+		} else {
+			console.log("Error : " + err);
+			callback(true,null);
+		}
+		
+	});
+};
+
 exports.getOutletsByProduct = function(args, callback) {
 	var barcode = args.barcode;
 	console.log(barcode);

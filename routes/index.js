@@ -28,6 +28,17 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.getAllOutletsNoMeta = function (req,res) {
+	// body...
+	outlet.getAllOutletsNoMeta( function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 
 exports.website_productInformation = function (req,res) {
 	// body...

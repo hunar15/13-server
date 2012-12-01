@@ -62,6 +62,7 @@ app.post('/add/request',routes.addRequest);
 
 app.get('/get/product',routes.getProducts);
 app.get('/get/outlet',routes.getOutlets);
+app.get('/get/outlet/nometa', routes.getAllOutletsNoMeta); // returns longitude and latitude
 app.get('/get/inventory',routes.getInventory);
 app.get('/get/inventory/all',routes.getAllInventory);
 app.post('/get/inventory/notSelling',routes.getNotSelling);
