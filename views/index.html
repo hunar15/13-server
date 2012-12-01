@@ -30,6 +30,14 @@
 	</head>
 	
 	<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=108157856018291";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 		<div class="container-fluid">	
 			<div class="row-fluid">
 				<div class="span9">		
@@ -125,7 +133,20 @@
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
-			</div>			
+			</div>
+			<div id="product-detail-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="pdlabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="pdlabel">Product detail</h3>
+				</div>
+				<div class="modal-body">
+					<div id="product-detail">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</div>				
 			<footer>
 			<p>CG3002 Hypermarket Project AY12/13 Semester 1</p>
 			</footer>

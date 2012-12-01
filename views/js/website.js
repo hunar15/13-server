@@ -196,7 +196,7 @@ function catalogGenerator(data,startIndex){
 	$.each(data,function(k,v){
 		if (k>= startIndex && k < startIndex + 9)
 		$('#catalog-display').append('<li class="span3" style="padding-bottom: 20px;"><div class="thumbnail" style="height:330px;">'
-		+'<div class="image-holder"><a href="#">'
+		+'<div class="image-holder"><a style="cursor:pointer;" onclick="renderProductDetail('+v.barcode+')">'
 			+'<img class="product-image" src="'+v.image+'" alt="">'
 		+'</a></div>'
 		+'<div class="caption"><h3 style="height:81px;">'+v.name+'</h3><hr style="margin:0px;">'
@@ -230,6 +230,14 @@ function renderOrderHistory(){
 			editableGrid.filter('');
 		}
 	});
+}
+
+function renderProductDetail(barcode){
+	$.getJSON("/website/product/"+barcode,function(data){
+		$('#product-detail').append('<h13>'+data.details.name+'</h13>');
+		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="470" data-num-posts="2"></div>');
+	});
+	$('#product-detail-modal').modal('show');
 }
 
 function initOrderTable(data){

@@ -50,7 +50,8 @@ function init(data){
 				"outlet_id": editableGrid.getRowValues(rowIndex).outlet_id,
 				"product_barcode": editableGrid.getRowValues(rowIndex).barcode,
 				"min_stock": editableGrid.getRowValues(rowIndex).min_stock,
-				"selling_price": editableGrid.getRowValues(rowIndex).selling_price
+				"selling_price": editableGrid.getRowValues(rowIndex).selling_price,
+				"status": editableGrid.getRowValues(rowIndex).status
 			},
 
 			success: function (response) {
