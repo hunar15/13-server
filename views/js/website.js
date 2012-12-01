@@ -65,9 +65,9 @@ function renderAccount(){
 	$.ajax({
 		url: "/website/getAccountDetails",
 		type: 'POST',
-		data: {
-				"fbid": fbid
-		},
+		// data: {
+				// "fbid": fbid
+		// },
 		success: function (response) {
 			var data = response[0];
 			$('#account-display').empty();
@@ -93,7 +93,7 @@ function initAccountChange(){
 					url: "/website/updateAccountAddress",
 					type: 'POST',
 					data: {
-						"fbid": fbid,
+						//"fbid": fbid,
 						"address": $('#inputAddress').val()
 					},
 					success: function (response) {
@@ -113,7 +113,7 @@ function initAccountChange(){
 					url: "/website/updateAccountPhone",
 					type: 'POST',
 					data: {
-						"fbid": fbid,
+						//"fbid": fbid,
 						"phone": $('#inputPhone').val()
 					},
 					success: function (response) {
@@ -183,9 +183,9 @@ function renderOrderHistory(){
 	$.ajax({
 		url: "/website/viewTransactions",
 		type: 'POST',
-		data: {
-				"fbid": fbid
-		},
+		// data: {
+				// "fbid": fbid
+		// },
 		success: function (response) {
 			initOrderTable(response);
 			editableGrid.setPageIndex(0);
@@ -302,9 +302,9 @@ function initCheckout(){
 		$.ajax({
 			url: "/website/getAccountDetails",
 			type: 'POST',
-			data: {
+/* 			data: {
 					"fbid": fbid
-			},
+			}, */
 			success: function (response) {
 				$('#inputDeliveryAddress').val(response[0].address);
 			}
@@ -322,7 +322,7 @@ function initCheckout(){
 			url: "/website/updateAccountAddress",
 			type: 'POST',
 			data: {
-				"fbid": fbid,
+				//"fbid": fbid,
 				"address": $('#inputDeliveryAddress').val()
 			}
 		});
@@ -342,7 +342,7 @@ function initCheckout(){
 			url: "/website/processTransaction",
 			type: 'POST',
 			data: {
-					"fbid": fbid,
+					//"fbid": fbid,
 					"address": address,
 					"list": list
 			},
@@ -544,4 +544,8 @@ function initDetail(data){
 	};
 
 	detailedEditableGrid.tableRendered = function() { this.updatePaginator(); };	
+}
+
+function login(){
+	window.open('/auth/facebook');
 }

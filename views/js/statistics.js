@@ -45,7 +45,7 @@ $(function(){
 	
 	$.getJSON( "get/outlet", function(response){
 		$.each(response.data, function(idx, item){
-			$('#show-outlet').append('<option id="outlet-'+item.id+'">'+item.values.s_name+'</option>');
+			$('#show-outlet').append('<option id="outlet-'+item.id+'" value="'+item.id+'">'+item.values.s_name+'</option>');
 		});
 	});
 });
