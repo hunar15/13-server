@@ -114,11 +114,22 @@ app.post('/website/updateAccountAddress',routes.website_updateAccountAddress);
 
 //email route
 app.get('/sendTestMail',routes.sendEmail);
-
+app.get('/isSessionActive', function (req,res) {
+  // body...
+  if( req.user === undefined ) {
+    res.send(false);
+  } else {
+    res.send(true);
+  }
+});
 //testing routes
 app.post('/website/findOrCreateUser',routes.website_findOrCreate);
 app.post('/website/findUserById',routes.website_findUserById);
 app.get('/website/product/:barcode',routes.website_productInformation);
+/*app.get('/:barcode', function  (req,res) {
+  // body...
+  res.render('test.html');
+});*/
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

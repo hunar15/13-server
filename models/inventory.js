@@ -176,8 +176,13 @@ console.log(query);
 exports.deleteFromInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
-		product_barcode = args.product_barcode;
-	var query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+		product_barcode = args.product_barcode,
+		query = '';
+
+	if(outlet_id != config.onlineid)
+		query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+	else	//online does not require syncing!!
+		query = 'UPDATE inventory SET status=\'DISCONTINUED\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
@@ -189,10 +194,17 @@ exports.updateInventory = function (args, callback) {
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
 		min_stock = args.min_stock,
-		selling_price = args.selling_price;
+		selling_price = args.selling_price,
+		query ='';
 		
-	var query = 'UPDATE inventory SET min_stock='+min_stock+
+	if(outlet_id != config.onlineid) {
+		query = 'UPDATE inventory SET min_stock='+min_stock+
 				' , selling_price='+selling_price+', status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+	} else {
+		query = 'UPDATE inventory SET min_stock='+min_stock+
+				' , selling_price='+selling_price+' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+	}
+		
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		if(!err) {
