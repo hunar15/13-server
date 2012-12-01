@@ -69,7 +69,7 @@ function changeOutlet(){
         yAxis: {
                 min: 0,
                 title: {
-                    text: 'Revenue'
+                    text: 'Revenue from Best Selling Product'
                 }
         },
         tooltip: {
