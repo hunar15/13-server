@@ -34,7 +34,8 @@ $(function(){
 			data: []
 		};
 		$.each(data, function(idx, item) {
-			series.data.push([item.name,item.percent]);
+			alert(JSON.stringify(item));
+			series.data.push([item["name"],parseFloat(item["percent"])]);
 		});
 		
 		options.series.push(series);
