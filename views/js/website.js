@@ -8,11 +8,46 @@ var disabledItems = []; //keeps track of which products are already added into s
 
 $().ready(function(){
 	renderCatalog();
-	initCheckout();
-	initToolbar();
-	initAlert();
+	checkLogin();
 	$('#search-catalog').focus();
 })
+
+function checkLogin(){
+	$.getJSON('/website/getAccountDetails', function(data){
+		if (data[0].name != null)
+		{
+			console.log('logged in');
+			
+			$('.tb-link').show();
+			$('#sc-panel').show();
+			initCheckout();
+			initToolbar();
+			initAlert();
+			$('#login-ui').empty();
+			$('#login-ui').append('<h13>Welcome, '+data[0].name+'!</h13>&nbsp; &nbsp;<a href="/logout"><img src="images/fblogout.png"/></a>');
+			$('#catalog-display').show();
+		}
+	})
+	.error(function(){
+		console.log('not logged in');
+		$('#login-ui').empty();
+		$('#login-ui').append('<a style="cursor:pointer;" onclick="login()"><img src="images/fblogin.png"/></a>');
+		hideLoginElements();
+	});
+}
+
+function forceLogin(){
+	if(confirm('You must log in first before you can add items to the shopping cart')){
+		window.location = "/auth/facebook";
+	}
+}
+
+function hideLoginElements(){
+	$('.alert').hide();
+	$('.display').hide();
+	$('#catalog-display').show();
+	$('.tb-link').hide();
+}
 
 function initAlert(){
 	$('.alert').alert();
@@ -24,7 +59,7 @@ function initAlert(){
 
 function initToolbar(){
 	$('.display').hide();
-	$('#catalog-display').show();
+	
 
 	$('#catalog-link').click(function(){
 		$('.tb-link').removeClass('active');
@@ -166,8 +201,8 @@ function catalogGenerator(data,startIndex){
 		+'</a></div>'
 		+'<div class="caption"><h3 style="height:81px;">'+v.name+'</h3><hr style="margin:0px;">'
 		+'<p style="height:44px;">Price: $'+v.selling_price+'<br/>Category: '+v.category+'<br/>Stock Availability: '+v.stock+'</p>'
-		+'Qty: <input type="text" value="1" id="qty-'+v.barcode+'" style="height:10px; font-size:0.8em; width: 40px; margin:0px;"></input>'
-		+'&nbsp;<button id="btn-'+v.barcode+'" onclick="addToShoppingCart(\''+v.barcode+'\',\''+v.name+'\','+v.selling_price+','+v.stock+')" class="btn btn-mini"><i class="icon-shopping-cart"></i></button></div>'
+		+'<div class="shop-me">Qty: <input type="text" value="1" id="qty-'+v.barcode+'" style="height:10px; font-size:0.8em; width: 40px; margin:0px;"></input>'
+		+'&nbsp;<button id="btn-'+v.barcode+'" onclick="addToShoppingCart(\''+v.barcode+'\',\''+v.name+'\','+v.selling_price+','+v.stock+')" class="btn btn-mini"><i class="icon-shopping-cart"></i></button></div></div>'
 		+'</div></li>');
 					
 	});
@@ -371,22 +406,30 @@ function clearAll(){
 }
 
 function addToShoppingCart(barcode,name,price,stock){
-	var qty = parseInt($('#qty-'+barcode).val());
-	if (!qty)
-	{
-		alert("Invalid quantity input");
-		return;
-	}
-	else if (stock < qty)
-	{
-		alert("Insufficient stock available");
-		return;
-	}
-	else
-	{
-		disabledItems.push(barcode);
-		appendShoppingList(barcode,name,price,qty);
-	}
+	$.getJSON("/isSessionActive",function(data){
+		if (data==false){
+			forceLogin();
+			return;
+		}
+		else{
+			var qty = parseInt($('#qty-'+barcode).val());
+			if (!qty)
+			{
+				alert("Invalid quantity input");
+				return;
+			}
+			else if (stock < qty)
+			{
+				alert("Insufficient stock available");
+				return;
+			}
+			else
+			{
+				disabledItems.push(barcode);
+				appendShoppingList(barcode,name,price,qty);
+			}
+		}
+	});
 }
 
 function appendShoppingList(barcode,name,price,qty){
@@ -550,8 +593,9 @@ function initDetail(data){
 }
 
 function login(){
-	window.open('/auth/facebook');
+	window.location = "/auth/facebook";
 }
+
 function loadMapScript()
 {
 	var script = document.createElement("script");

@@ -143,6 +143,7 @@ function init(data){
 function discontinueProduct(rowIndex) {
 	var barcode = editableGrid.getRowValues(rowIndex).barcode;
 	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
+	var status = editableGrid.getRowValues(rowIndex).status;
 	console.log(barcode);
 	console.log(outlet_id);
 	$.ajax({
@@ -150,7 +151,8 @@ function discontinueProduct(rowIndex) {
 		type: 'POST',
 		data: {
 				"product_barcode": barcode,
-				"outlet_id": outlet_id
+				"outlet_id": outlet_id,
+				"status": status
 		},
 		success: function (response) {
 			
