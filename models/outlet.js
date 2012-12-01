@@ -4,7 +4,7 @@ var config = require('../config/config'),
 exports.getAllOutlets = function  (callback) {
 	// body...
 
-	var query = 'select id,s_name, address FROM outlet;';
+	var query = 'select * FROM outlet;';
 
 	var result = {};
 	result['metadata'] = [];
@@ -13,6 +13,8 @@ exports.getAllOutlets = function  (callback) {
 	result['metadata'].push({"name": "id", "label" : "Outlet ID", "datatype" : "string"});
 	result['metadata'].push({"name": "s_name", "label" : "Shop Name", "datatype" : "string", editable: "true"});
 	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string", editable: "true"});
+	result['metadata'].push({"name": "latitude", "label" : "Latitude", "datatype" : "float", editable: "true"});
+	result['metadata'].push({"name": "longitude", "label" : "Longitude", "datatype" : "float", editable: "true"});
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		for( var i in rows) {
@@ -34,10 +36,10 @@ exports.getAllOutletsNoMeta = function  (callback) {
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		if(!err) {
-			for( var i in rows) {
+			/*for( var i in rows) {
 				var current = rows[i];
 				console.log(current);
-				if(parseFloat(current['longitude']) >= 0) {
+				f(parseFloat(current['longitude']) >= 0) {
 					current['longitude'] = parseFloat(current['longitude']) + " E";
 				} else {
 					current['longitude'] = parseFloat(current['longitude']) + " W";
@@ -47,7 +49,7 @@ exports.getAllOutletsNoMeta = function  (callback) {
 				} else {
 					current['latitude'] = parseFloat(current['latitude']) + " S";
 				}
-			}
+			}*/
 			callback(null, rows);
 		} else {
 			console.log("Error : " + err);
@@ -82,8 +84,11 @@ exports.addOutlet = function (args, callback) {
 	// body...
 	console.log(args);
 	var s_name = args.s_name,
-		address = args.address;
-	var query = 'INSERT INTO outlet(s_name,address) VALUES('+connection.escape(s_name)+','+connection.escape(address)+');';
+		address = args.address,
+		latitude = args.latitude,
+		longitude = args.longitude;
+	var query = 'INSERT INTO outlet(s_name,address,longitude,latitude) VALUES('+connection.escape(s_name)+
+			','+connection.escape(address)+','+longitude+','+latitude+');';
 	console.log(query);
 	connection.query( query, function (err, rows, fields) {
 		// body...
@@ -109,8 +114,11 @@ exports.updateOutlet = function (args, callback) {
 	// body...
 	var id = args.id,
 		s_name = args.s_name,
-		address = args.address;
-	var query = 'UPDATE outlet SET s_name='+connection.escape(s_name)+', address='+connection.escape(address)+' WHERE id='+id+';';
+		address = args.address,
+		latitude = args.latitude,
+		longitude = args.longitude;
+	var query = 'UPDATE outlet SET s_name='+connection.escape(s_name)+', address='+
+			connection.escape(address)+', latitude = '+latitude+', longitude='+longitude+' WHERE id='+id+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
