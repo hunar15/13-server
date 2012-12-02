@@ -113,6 +113,7 @@ app.get('/website/getAccountDetails',routes.website_getAccountDetails);
 app.post('/website/updateAccountPhone',routes.website_updateAccountPhone);
 app.post('/website/updateAccountAddress',routes.website_updateAccountAddress);
 app.post('/isAdmin',routes.isAdmin);
+app.post('/getInventorySize',routes.getInventorySize);
 //email route
 app.get('/sendTestMail',routes.sendEmail);
 app.get('/isSessionActive', function (req,res) {

@@ -4,7 +4,9 @@ var connection = sql.createConnection({
   user     : 'root',
   password : '',
   database : 'hqdb',
-  multipleStatements : true
+  multipleStatements : true,
+  debug : true,
+  insecureAuth : true
 });
 
 function handleDisconnect(connection) {
@@ -24,6 +26,13 @@ function handleDisconnect(connection) {
     connection.connect();
   });
 }
+exports.ADDED = 1;
+exports.NORMAL = 0;
+exports.DISCONTINUE = -1;
+exports.DISCONTINUED = -2;
+exports.UPDATED = 3;
+
+
 
 handleDisconnect(connection);
 exports.connection = connection;

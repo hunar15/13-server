@@ -28,6 +28,17 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.getInventorySize = function (req,res) {
+	// body...
+	inventory.getInventorySize(req.body,function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.isAdmin = function  (req,res) {
 	// body...
 	website_account.isAdmin(req.body, function (err,result) {
@@ -365,8 +376,15 @@ exports.syncInventoryAck = function (req,res) {
 		res.send({"STATUS" : "ERROR"});
 	}
 };
+function sendRes(res,list) {
+	res.send({list : list});
+}
 exports.syncAll = function(req,res) {
-	var outlet_id = req.body.outletid;
+	var outlet_id = req.body.data.outletid,
+		index = req.body.index,
+		length = req.body.length,
+		result= {};
+		result.STATUS ='SUCCESS';
 
 	if(outlet_id !== null) {
 		var query = '',
@@ -374,10 +392,10 @@ exports.syncAll = function(req,res) {
 
 		query = 'SELECT name,category,barcode,cost_price,manufacturer,selling_price,min_stock,status '+
 			'from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
-			' AND outlet_id='+outlet_id+' LIMIT 3000;';
+			' AND outlet_id='+outlet_id+' ORDER BY barcode LIMIT '+index+', '+length+' ;';
 
 		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' '+
-			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' LIMIT 3000;';
+			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ORDER BY product_barcode LIMIT '+index+', '+length+' ;';
 
 		connection.query(query,function (err,rows,fields) {
 			// body...
@@ -388,8 +406,11 @@ exports.syncAll = function(req,res) {
 				for(var j in rows[1]) {
 					list.push(rows[1][j]);
 				}
+				result.list = list;
 				//console.log(JSON.stringify(list));
-				res.send({list : list});
+				console.log(list.length);
+				res.send(result);
+			//	sendRes(res,list);
 			} else {
 				console.log("Error in processing query : "+err);
 				res.send({"STATUS" : "ERROR"});
