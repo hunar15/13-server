@@ -28,7 +28,7 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
-exports.website_viewAllTransactions = function (argument) {
+exports.website_viewAllTransactions = function (req,res) {
 	// body...
 	website_transaction.viewAllTransactions(function (err,result) {
 		// body...
