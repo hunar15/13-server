@@ -22,8 +22,13 @@ exports.viewAllTransactions = function (callback) {
 	result['metadata'].push({"name": "address", "label" : "Delivery Address", "datatype" : "string"});
 	result['metadata'].push({"name": "timestamp", "label" : "Time and Date", "datatype" : "string"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+<<<<<<< HEAD
+	result['metadata'].push({"name": "dispatch", "label" : "Dispatch"});
+	result['metadata'].push({"name": "detail", "label" : "Details"});
+=======
 	result['metadata'].push({"name": "approve", "label" : "Approve"});
 	result['metadata'].push({"name": "details", "label" : "Details"});
+>>>>>>> 60129eebf66c6e7df59a13cd1c2ef8df573160aa
 	
 	connection.query(query, function (err, rows, fields) {
 		// body...

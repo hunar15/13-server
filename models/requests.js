@@ -204,12 +204,12 @@ var s_errorFlag = 0;
 
 
 
-exports.syncReceivedRequests =  function(args, callback) {
+exports.outletReceived =  function(args, callback) {
 	var outlet_id = args.outletid,
-		receivedList = args.receivedList,
-		errorFlag = 0;
-	s_errorFlag =0;
-	if( outlet_id !== null && receivedList !== null ) {
+		barcode = args.barcode,
+		date = args.date;
+
+	if( outlet_id !== undefined && barcode !== undefined ) {
 		console.log("Incoming Sync Request from outlet : " + outlet_id);
 		if(receivedList.length === 0) {
 			console.log("No RECEIVED requests to sync");

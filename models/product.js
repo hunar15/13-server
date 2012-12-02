@@ -61,7 +61,7 @@ exports.addProduct = function (args, callback) {
 
 	connection.query(query, function( err2, rows2, fields2) {
 		if(!err2) {
-			callback(err2, rows);
+			callback(err2, rows2);
 		} else {
 			console.log("ERROR : " + err2);
 			callback(true,null);
