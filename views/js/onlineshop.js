@@ -5,7 +5,7 @@ window.onload = function() {
 }
 
 function initTable(){
-	$.getJSON( "/website/viewTransactions", function(data){
+	$.getJSON( "/website/viewAllTransactions", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
@@ -233,23 +233,20 @@ function approveBatch(rowIndex) {
 }
 
 function generateDetails(rowIndex) {
-	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
-		
-	console.log(outlet_id);
-	console.log(date);
+	var id = editableGrid.getRowValues(rowIndex).id;
+
 	$.ajax({
 		url: "/get/requestDetails", //change this
 		type: 'POST',
 		data: {
-			"outlet_id": outlet_id,
-			"date": date
+			"id": id
 		},
 		success: function (response) {
 			initDetail(response);
 			detailedEditableGrid.setPageIndex(0);
 			detailedEditableGrid.filter('');
 
-			$('#restockDetails').modal('show');
+			$('#onlineDetails').modal('show');
 		}
 	});	
 }
