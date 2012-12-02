@@ -105,6 +105,7 @@ app.post('/getOutletsByProduct',routes.getOutletsByProduct);
 app.get('/website/viewProducts',routes.website_viewProducts);
 app.post('/website/processTransaction', routes.website_processTransaction);
 app.get('/website/viewTransactions', routes.website_viewTransactions);
+app.get('/website/viewAllTransactions', routes.website_viewAllTransactions);
 app.post('/website/viewTransactionDetails', routes.website_viewTransactionDetails);
 app.post('/website/dispatchTransaction',routes.website_dispatchTransaction);
 app.post('/website/searchInventory',routes.website_searchInventory);
