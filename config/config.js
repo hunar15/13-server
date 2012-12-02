@@ -9,3 +9,5 @@ var connection = sql.createConnection({
 
 exports.connection = connection;
 exports.onlineid = 4;
+exports.admin = 'admin';
+exports.admin_password = 'password';

@@ -351,7 +351,7 @@ exports.processTransaction = function (user, args ,callback) {
 										para.outletid = onlineid;
 										para.transaction = list;
 										console.log(para);
-										transaction.syncTransactions(para, function (err3, result3) {
+										transaction.pushTransactions(para, function (err3, result3) {
 											// body...
 											if(!err3) {
 												console.log("Transaction with ID : " +rows4.insertId + " processed and added" );

@@ -2,6 +2,16 @@ var config = require('../../config/config'),
 	connection = config.connection,
 	onlineid = config.onlineid;
 
+exports.isAdmin = function (args, callback) {
+	// body...
+	var user = args.user,
+		password = args.password;
+
+	if(user == config.admin && password == config.admin_password)
+		callback(null,true);
+	else
+		callback(null,false);
+};
 exports.findUserById = function (id, callback) {
 	var fbid = id;
 

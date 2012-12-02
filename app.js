@@ -87,20 +87,18 @@ app.get('/transaction/outlets',routes.viewTransactionByOutlets);
 app.post('/transactions',routes.viewTransactions);
 app.post('/transaction/details',routes.viewTransactionDetails);
 app.get('/allOutletsRevenue',routes.allOutletsRevenue);
-app.post('/syncTransactions',routes.syncTransactions);
+app.post('/pushTransactions',routes.pushTransactions);
 app.post('/syncAll', routes.syncAll);
 app.post('/getLastWeeksPerformance',routes.lastWeekPerformance);
-app.post('/syncRevenue',routes.syncRevenue);
 app.post('/getDiscontinued', routes.getDiscontinued);
 app.post('/getAdded', routes.getAdded);
-app.post('/syncUpdated',routes.syncUpdated);
-app.post('/syncDispatchedRequests',routes.syncDispatchedRequests);
-app.post('/syncAddedRequests', routes.syncAddedRequests);
-app.post('/syncReceivedRequests', routes.syncReceivedRequests);
-app.post('/syncIncompleteRequests', routes.syncIncompleteRequests);
+app.post('/pullDispatchedRequests',routes.pullDispatchedRequests);
+app.post('/pushNewRequests', routes.pushNewRequests);
 app.get('/getall', routes.getall);
 app.post('/setAsReceived', routes.setAsReceived);
 app.post('/getOutletsByProduct',routes.getOutletsByProduct);
+app.post('/stock/received',routes.outletReceived);
+app.post('/stock/receivedAll',routes.outletReceivedAll);
 //console.log("lets go!!!");
 
 //website routes
@@ -114,7 +112,7 @@ app.post('/website/searchInventory',routes.website_searchInventory);
 app.get('/website/getAccountDetails',routes.website_getAccountDetails);
 app.post('/website/updateAccountPhone',routes.website_updateAccountPhone);
 app.post('/website/updateAccountAddress',routes.website_updateAccountAddress);
-
+app.post('/isAdmin',routes.isAdmin);
 //email route
 app.get('/sendTestMail',routes.sendEmail);
 app.get('/isSessionActive', function (req,res) {

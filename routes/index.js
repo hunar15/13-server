@@ -28,6 +28,18 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.isAdmin = function  (req,res) {
+	// body...
+	website_account.isAdmin(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.isBarcodeValid = function  (req,res) {
 	// body...
 	product.isBarcodeValid(req.body, function (err,result) {
@@ -270,9 +282,9 @@ exports.viewTransactionDetails = function(req,res) {
 		}
 	});
 };
-exports.syncTransactions = function(req,res) {
+exports.pushTransactions = function(req,res) {
 	// body...
-	transaction.syncTransactions(req.body, function (err,result) {
+	transaction.pushTransactions(req.body, function (err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -281,9 +293,9 @@ exports.syncTransactions = function(req,res) {
 	});
 };
 
-exports.syncDispatchedRequests = function(req,res) {
+exports.pullDispatchedRequests = function(req,res) {
 	// body...
-	requests.syncDispatchedRequests(req.body, function (err,result) {
+	requests.pullDispatchedRequests(req.body, function (err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -292,8 +304,18 @@ exports.syncDispatchedRequests = function(req,res) {
 	});
 };
 
-exports.syncIncompleteRequests = function (req,res) {
-	requests.syncIncompleteRequests(req.body,function (err, result) {
+exports.outletReceived = function (req,res) {
+	requests.outletReceived(req.body,function (err, result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.outletReceivedAll = function (req,res) {
+	requests.outletReceivedAll(req.body,function (err, result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -392,34 +414,9 @@ exports.syncAll = function(req,res) {
 		res.send({"STATUS" : "ERROR"});
 	}
 };
-exports.syncRevenue = function(req, res) {
-	var body = req.body;
-	var outlet_id = body['outlet_id'],
-		date = body['date'].split('T')[0];
 
-	if(body !== null) {
-		var query = 'INSERT INTO revenue SELECT '+outlet_id+','+body['revenue']+','+body['barcode']+',\''+
-				date + '\' FROM DUAL WHERE NOT EXISTS( SELECT * FROM revenue WHERE outlet_id='+outlet_id+' AND '+
-				' date=\''+date+'\');';
-		console.log(query);
-		connection.query(query, function(err, rows, fields) {
-			if(!err) {
-				console.log("Revenue from Outlet ID : " + outlet_id + " synced");
-				res.send({"STATUS" : "SUCCESS"});
-			} else {
-				console.log("Error encountered");
-				console.log("ERROR : " + err);
-				res.send({"STATUS" : "ERROR"});
-			}
-		});
-	} else {
-		console.log("Invalid or missing parameters");
-		res.send({"STATUS" : "ERROR"});
-	}
-};
-
-exports.syncAddedRequests = function(req, res){
-  requests.syncAddedRequests(req.body, function(err, result) {
+exports.pushNewRequests = function(req, res){
+  requests.pushNewRequests(req.body, function(err, result) {
 	res.send(result);
   });
 };
@@ -432,24 +429,9 @@ exports.getNotSelling = function(req,res) {
 		}
 	});
 };
-exports.syncReceivedRequests = function(req, res){
-  requests.syncReceivedRequests(req.body, function(err, result) {
-	res.send(result);
-  });
-};
 
 exports.approveBatchRequest = function(req, res) {
 	requests.approveBatchRequest(req.body, function(err,result) {
-		if(!err) {
-			res.send(result);
-		} else {
-			res.send(err);
-		}
-	});
-};
-
-exports.syncUpdated = function(req,res) {
-	inventory.syncUpdated(req.body, function(err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -463,6 +445,7 @@ exports.getAllInventory = function(req, res){
 	res.send(result);
   });
 };
+
 exports.setAsReceived = function(req,res) {
 	requests.setAsReceived(req.body, function (err, result) {
 		if(!err) {
@@ -623,24 +606,6 @@ exports.updateInventory = function  (req, res) {
 exports.getRequests = function  (req, res) {
 	// body...
 	requests.getBatch( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.addRequest = function  (req, res) {
-	// body...
-	requests.addRequest( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.deleteRequest = function  (req, res) {
-	// body...
-	requests.deleteRequest( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.updateRequest = function  (req, res) {
-	// body...
-	requests.updateRequest( req.body, function(err, result ) {
 		res.send(result);
 	});
 };
