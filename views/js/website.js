@@ -252,7 +252,7 @@ function renderProductDetail(barcode){
 		$('#product-detail').append('<div class="span2"><img class="detail-image" src="'+data.details.image+'"></div><div class="span3"><h13>'+data.details.name+'</h13><br/>Category: '+data.details.category+'<br/>'
 			+'Price: '+data.details.selling_price+'<br/>Stock Availability: '+data.details.stock+'<br/>Manufacturer: '+data.details.manufacturer+'<br/>'
 			+'Similar products: '+sameCategoryString+'<br/>Outlets selling: '+outletString);
-		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="530" data-num-posts="2"></div>');
+		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="500" data-num-posts="2"></div>');
 		FB.XFBML.parse($('#product-detail').get(0));
 
 	});

@@ -48,13 +48,17 @@ $(function(){
 			$('#show-outlet').append('<option id="outlet-'+item.id+'" value="'+item.id+'">'+item.values.s_name+'</option>');
 		});
 	});
+	
+	changeOutlet(false);
+		
 });
 
 
-function changeOutlet(){
+function changeOutlet(scroll){
 	var arr = {};
 	var outlet_id = $('#show-outlet option:selected').val();
-
+	$('#outletcontent').empty();
+	$.post('../getLastWeeksPerformance', { outlet_id : outlet_id }, function (data) {
 	var option_line = {
 		chart: {
                 renderTo: 'outletcontent',
@@ -80,7 +84,7 @@ function changeOutlet(){
         series :[]
 	};
 
-	$.post('../getLastWeeksPerformance', { outlet_id : outlet_id }, function (data) {
+
 		// body...
 		var series = {
 			type: 'column',
@@ -99,5 +103,14 @@ function changeOutlet(){
 		
 		// Create the chart
 		var chart2 = new Highcharts.Chart(option_line);
+		if (scroll)
+			scrollBottom();
 	});
+
+}
+
+function scrollBottom(){
+	$('html, body').animate({
+		scrollTop: $(document).height()
+	},0);			
 }
