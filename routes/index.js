@@ -28,6 +28,18 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_viewAllTransactions = function (argument) {
+	// body...
+	website_transaction.viewAllTransactions(function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.website_setAsReceived = function (req,res) {
 	// body...
 	website_transaction.setAsReceived(req.body, function (err,result) {

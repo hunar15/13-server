@@ -10,6 +10,36 @@ var config = require('../../config/config'),
 		ssl:     true
 	});
 
+exports.viewAllTransactions = function (callback) {
+	
+	var query = 'SELECT id, address, timestamp, status FROM online_transaction ;';
+
+	var result = {};
+	result['metadata'] = [];
+	result['data']= [];
+
+	result['metadata'].push({"name": "id", "label" : "Transaction ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "address", "label" : "Delivery Address", "datatype" : "string"});
+	result['metadata'].push({"name": "timestamp", "label" : "Time and Date", "datatype" : "string"});
+	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+	result['metadata'].push({"name": "detail", "label" : "Details"});
+	
+	connection.query(query, function (err, rows, fields) {
+		// body...
+		if(!err) {
+			for ( var i in rows) {
+				var current = {};
+				current['id']=rows[i]['id'];
+				current['values']=rows[i];
+				result['data'].push(current);
+			}
+			console.log(result);
+			callback(null,result);
+		} else {
+			callback(err,true);
+		}
+	});
+};
 exports.viewTransactions = function (args, callback) {
 	var fbid = args.fbid;
 
