@@ -51,25 +51,35 @@ exports.getProducts =  function(args, callback) {
 
 exports.addProduct = function (args, callback) {
 	var name = args.name,
+		barcode = args.barcode,
 		category = args.category,
-		barcode = '',
 		cost_price = args.cost_price,
 		manufacturer = args.manufacturer,
 		image = args.image;
-
-	var barcode_query = 'select p.barcode+1 as barcode from product p where NOT exists '+
-					' (select * from product where barcode = p.barcode+1) and p.barcode >= 10000000 limit 1;';
-
-	connection.query(barcode_query, function( err2, rows2, fields2) {
-		if(!err2) {
-			barcode = rows2[0]['barcode'];
-			var query = 'INSERT INTO product VALUES('+connection.escape(name)+','+connection.escape(category)+
+	var query = 'INSERT INTO product VALUES('+connection.escape(name)+','+connection.escape(category)+
 					','+barcode+','+cost_price+','+connection.escape(manufacturer)+','+connection.escape(image)+');';
-			console.log(query);
-			connection.query( query, function (err, rows, fields) {
-				console.log(err);
-				callback(err, rows);
-			});
+
+	connection.query(query, function( err2, rows2, fields2) {
+		if(!err2) {
+			callback(err2, rows);
+		} else {
+			console.log("ERROR : " + err2);
+			callback(true,null);
+		}
+	});
+	
+};
+
+exports.isBarcodeValid = function (args, callback) {
+	var barcode = args.barcode;
+	var query = 'SELECT * FROM product where barcode='+barcode+' ;';
+
+	connection.query(query, function( err2, rows2, fields2) {
+		if(!err2) {
+			if(rows2.length === 0)
+				callback(err2, true);
+			else
+				callback(err2, false);
 		} else {
 			console.log("ERROR : " + err2);
 			callback(true,null);

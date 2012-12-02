@@ -28,6 +28,18 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.isBarcodeValid = function  (req,res) {
+	// body...
+	product.isBarcodeValid(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.website_viewAllTransactions = function (req,res) {
 	// body...
 	website_transaction.viewAllTransactions(function (err,result) {

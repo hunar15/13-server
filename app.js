@@ -71,6 +71,8 @@ app.post('/get/request/byOutlet',routes.getRequestsByOutlet);
 app.post('/get/requestDetails', routes.getRequestDetails);
 app.post('/request/approve', routes.approveBatchRequest);
 
+app.post('/product/isBarcodeValid',routes.isBarcodeValid);
+
 app.post('/delete/product',routes.deleteProduct);
 app.post('/delete/outlet',routes.deleteOutlet);
 app.post('/delete/inventory',routes.deleteFromInventory);
