@@ -7,10 +7,14 @@ exports.isAdmin = function (args, callback) {
 	var user = args.user,
 		password = args.password;
 
-	if(user == config.admin && password == config.admin_password)
+	if(user == config.admin && password == config.admin_password) {
 		callback(null,true);
-	else
+		console.log(true);
+	} else {
 		callback(null,false);
+		console.log(false);
+	}
+		
 };
 exports.findUserById = function (id, callback) {
 	var fbid = id;
