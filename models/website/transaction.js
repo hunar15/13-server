@@ -18,12 +18,17 @@ exports.viewAllTransactions = function (callback) {
 	result['metadata'] = [];
 	result['data']= [];
 
-	result['metadata'].push({"name": "id", "label" : "Transaction ID", "datatype" : "integer"});
+	result['metadata'].push({"name": "id", "label" : "Transaction ID", "datatype" : "string"});
 	result['metadata'].push({"name": "address", "label" : "Delivery Address", "datatype" : "string"});
 	result['metadata'].push({"name": "timestamp", "label" : "Time and Date", "datatype" : "string"});
 	result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
+<<<<<<< HEAD
 	result['metadata'].push({"name": "dispatch", "label" : "Dispatch"});
 	result['metadata'].push({"name": "detail", "label" : "Details"});
+=======
+	result['metadata'].push({"name": "approve", "label" : "Approve"});
+	result['metadata'].push({"name": "details", "label" : "Details"});
+>>>>>>> 60129eebf66c6e7df59a13cd1c2ef8df573160aa
 	
 	connection.query(query, function (err, rows, fields) {
 		// body...
@@ -52,7 +57,7 @@ exports.viewTransactions = function (args, callback) {
 		result['metadata'] = [];
 		result['data']= [];
 
-		result['metadata'].push({"name": "id", "label" : "Transaction ID", "datatype" : "integer"});
+		result['metadata'].push({"name": "id", "label" : "Transaction ID", "datatype" : "string"});
 		result['metadata'].push({"name": "address", "label" : "Delivery Address", "datatype" : "string"});
 		result['metadata'].push({"name": "timestamp", "label" : "Time and Date", "datatype" : "string"});
 		result['metadata'].push({"name": "status", "label" : "Status", "datatype" : "string"});
@@ -91,8 +96,8 @@ exports.viewTransactionDetails = function (args, callback) {
 		result['metadata'] = [];
 		result['data']= [];
 
-		result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "integer"});
-		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "integer"});
+		result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
+		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "double(,0,dot,comma,1,n/a)"});
 		result['metadata'].push({"name": "price", "label" : "Price", "datatype" : "float"});
 		
 		connection.query(query, function (err, rows, fields) {

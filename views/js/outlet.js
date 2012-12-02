@@ -1,7 +1,57 @@
 var editableGrid;
+var geocoder;
+var map;
+var global;
 window.onload = function() {
 	initTable();
 	initAddOutlet();
+}
+
+function loadMapScript()
+{
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBLMdDYv64FO14c7wMQBeqNfH5mSduQcEQ&sensor=false&callback=initializeMap"; 
+	document.body.appendChild(script);
+}
+
+function initializeMap(){
+	createMap(new google.maps.LatLng(1.367,103.75));
+	$('#inputAddress').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			codeAddress();
+		}		
+	});
+}
+
+function createMap(latLng)
+{	
+	var mapObj = [];
+	geocoder = new google.maps.Geocoder();
+	
+	map = new google.maps.Map(document.getElementById('googleMap'), {  
+		zoom: 17,
+		center: latLng,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	});
+	var marker = new google.maps.Marker({
+		position: latLng, 
+		map: map
+	});	
+}
+
+function codeAddress() {
+	var address = $("#inputAddress").val();
+	geocoder.geocode( { 'address': address}, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			createMap(results[0].geometry.location);
+			$('#inputLatitude').val(results[0].geometry.location.$a);
+			$('#inputLongitude').val(results[0].geometry.location.ab);
+		} else {
+			alert("Geocode was not successful for the following reason: " + status);
+		}
+	});
 }
 
 function initTable(){
@@ -17,6 +67,8 @@ function initAddOutlet(){
 
 		var name = $('#inputOutletName').val();
 		var address = $('#inputAddress').val();
+		var longitude = $('#inputLongitude').val();
+		var latitude = $('#inputLatitude').val();
 
 		if (validOutletDetails(name,address))
 			$.ajax({
@@ -24,7 +76,9 @@ function initAddOutlet(){
 				type: 'POST',
 				data: {
 						"s_name": name,
-						"address": address
+						"address": address,
+						"longitude": longitude,
+						"latitude": latitude
 				},
 				success: function (response) {
 					console.log('outlet added!');
