@@ -133,22 +133,50 @@ exports.dispatchTransaction = function ( args, callback) {
 
 exports.setAsReceived = function (args, callback) {
 	// body...
-	var id = args.id;
+	var date = args.date,
+		barcode = args.barcode,
+		quantity = args.quantity;
 
-	if(id!==null) {
-		var query = 'UPDATE online_transaction SET status=\'RECEIVED\' WHERE id='+id+';';
+	if(quantity!== null && date!==null && barcode!==null) {
+		var query = "UPDATE request_details SET received=1 WHERE date=\'"+
+				date+"\' AND barcode="+barcode+" AND outlet_id="+onlineid+" ;";
 
-		connection.query(query, function (err, rows, fields) {
-			// body...
+		connection.query(query, function(err,rows, fields) {
 			if(!err) {
-				console.log("Online Transaction ID : " +id+ " RECEIVED by the owner");
-				callback(null,true);
+				console.log(query);
+				console.log("Barcode : " + barcode + " RECEIVED");
+				//callback(null,true);
+
+				//check if all products in the batch have been received and update
+				var query2 ="UPDATE batch_request SET status=\'INCOMPLETE\' WHERE date=\'"+date+"\' AND outlet_id="+onlineid+" ;";
+					query2 += "UPDATE inventory SET stock=stock+"+quantity+" WHERE product_barcode="+barcode+" AND outlet_id="+onlineid+" ;";
+
+				connection.query(query2, function(err2,rows2,fields2) {
+					if(!err2) {
+						var query3 = "UPDATE batch_request SET status=\'COMPLETED\' WHERE date=\'"+date+"\' AND outlet_id ="+onlineid+
+							" AND NOT EXISTS( SELECT * from request_details WHERE date=\'"+date+"\' AND received=0)";
+
+						connection.query(query3, function(err3, rows3, fields3) {
+							if(!err3) {
+								console.log("Batch Request COMPLETED");
+								callback(null,true);
+							} else {
+								console.log("Error encountered : " + err3);
+								callback(true,null);
+							}
+						});
+					} else {
+						console.log("Error encountered : "+ err2);
+						callback(true,null);
+					}
+				});
 			} else {
-				callback(err,true);
+				console.log("Error encountered : " + err);
+				callback(true,null);
 			}
 		});
 	} else {
-		console.log("Invalid or absent parameers");
+		console.log("Invalid or absent parameters");
 		callback(true,null);
 	}
 };
