@@ -33,7 +33,6 @@ function initSetReceived(){
 				url: "/website/setAsReceived",
 				type: 'POST',
 				data: {
-					"outlet_id": "4",	//online shop id
 					"date": date,
 					"barcode": v[0],
 					"quantity": v[1]

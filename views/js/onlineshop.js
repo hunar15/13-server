@@ -29,7 +29,7 @@ function init(data){
 	});
 	
 	editableGrid.load({"metadata": data.metadata,"data": data.data});
-	editableGrid.renderGrid("restocktablecontent", "testgrid");
+	editableGrid.renderGrid("onlinetablecontent", "testgrid");
 	
 	editableGrid.setCellRenderer("approve", new CellRenderer({render: function(cell, value) {
 		// this action will remove the row, so first find the ID of the row containing this cell 
@@ -37,7 +37,7 @@ function init(data){
 		//##########
 		//insert if condition here to check if batch has already been approved
 		//##########
-		var status = editableGrid.getRowValues(rowId).status;
+		var status = editableGrid.getRowValues(cell.rowIndex).status;
 		if (status != "PENDING")
 			cell.innerHTML = "<img src=\"images/dispatched.png\" border=\"0\" title=\"Forwarded to supplier\"/></a>";
 		else
@@ -47,8 +47,6 @@ function init(data){
 	
 	editableGrid.setCellRenderer("details", new CellRenderer({render: function(cell, value) {
 		var rowId = editableGrid.getRowId(cell.rowIndex);
-
-		var status = editableGrid.getRowValues(rowId).status;
 		
 		cell.innerHTML = "<a href=\"#restockDetails\" data-toggle=\"modal\" onclick=\"generateDetails("+cell.rowIndex+"); \" style=\"cursor:pointer\">" +
 						 "<img src=\"images/view.png\" border=\"0\" alt=\"delete\" title=\"View details\"/></a>";
@@ -142,7 +140,7 @@ function initDetail(data){
 	});
 	
 	detailedEditableGrid.load({"metadata": data.metadata,"data": data.data});
-	detailedEditableGrid.renderGrid("restockdetailstablecontent", "detailgrid");
+	detailedEditableGrid.renderGrid("onlinedetailstablecontent", "detailgrid");
 	
 	detailedEditableGrid.updatePaginator = function () {
 		var paginator = $("#paginator2").empty();
@@ -217,14 +215,12 @@ function initDetail(data){
 
 
 function approveBatch(rowIndex) {
-	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
-	var date = editableGrid.getRowValues(rowIndex).date;
+	var id = editableGrid.getRowValues(rowIndex).id;
 	$.ajax({
-		url: "/request/approve",
+		url: "/website/dispatchTransaction",
 		type: 'POST',
 		data: {
-			"outlet_id": outlet_id,
-			"date": date
+			"id": id
 		},
 		success: function (response) {
 			initTable();
@@ -236,7 +232,7 @@ function generateDetails(rowIndex) {
 	var id = editableGrid.getRowValues(rowIndex).id;
 
 	$.ajax({
-		url: "/get/requestDetails", //change this
+		url: "/website/viewTransactionDetails",
 		type: 'POST',
 		data: {
 			"id": id

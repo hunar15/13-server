@@ -1,7 +1,5 @@
 var numItems=0; //number of items in the shopping cart
-var cList;
-var global;
-var fbid="aaa";
+var cList;	//catalog list retrieved
 var totalPrice=0;
 var editableGrid;
 var disabledItems = []; //keeps track of which products are already added into shopping cart
@@ -649,7 +647,7 @@ function createMap(latitude, longitude)
 {	
 	var mapObj = [];
 	geocoder = new google.maps.Geocoder();
-	directionsService = new google.maps.DirectionsService()
+	directionsService = new google.maps.DirectionsService();
 	currentLatLng = new google.maps.LatLng(latitude,longitude);
 	directionsDisplay = new google.maps.DirectionsRenderer();
 	
