@@ -36,6 +36,34 @@ exports.getAllInventory = function  (callback) {
 	});
 };
 
+exports.pushInventoryToHQ =function (args,callback) {
+	// body...;
+	var outlet_id = args.outletid,
+		list = args.list,
+		query = '';
+	console.log(outlet_id);
+	if( outlet_id !== undefined && list !== undefined) {
+		for(var i in list) {
+			var current = list[i];
+			query += 'UPDATE inventory SET stock='+current.stock+', selling_price='+current.selling_price+
+				' WHERE product_barcode='+current.barcode+' AND outlet_id='+outlet_id+' ;';
+		}
+
+		connection.query(query,function (err,rows,fields) {
+			// body...
+			if(!err) {
+				callback(null,{'STATUS' : 'SUCCESS'});
+			} else {
+				console.log("Error encountered : " + err);
+				callback(true,null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		callback(true,null);
+	}
+};
+
 exports.getNotSelling = function(args, callback) {
 	var barcode = args.barcode;
 
@@ -177,12 +205,16 @@ exports.deleteFromInventory = function (args, callback) {
 	// body...
 	var outlet_id = args.outlet_id,
 		product_barcode = args.product_barcode,
+		status = args.status;
 		query = '';
 
 	if(outlet_id != config.onlineid)
 		query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	else	//online does not require syncing!!
 		query = 'UPDATE inventory SET status=\'DISCONTINUED\' where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+
+	if(status === 'ADDED')
+		query = 'DELETE FROM inventory where outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	connection.query( query, function (err, rows, fields) {
 		// body...
 		callback(err, rows);
@@ -195,11 +227,19 @@ exports.updateInventory = function (args, callback) {
 		product_barcode = args.product_barcode,
 		min_stock = args.min_stock,
 		selling_price = args.selling_price,
+		status = args.status,
+		newStatus = 'UPDATED';
 		query ='';
 		
+		console.log('STATUS : '+status);
+		if(status == 'DISCONTINUED' || status == 'DISCONTINUE')
+			newStatus = 'DISCONTINUE';
+		if(status == 'ADDED')
+			newStatus = 'ADDED';
+
 	if(outlet_id != config.onlineid) {
 		query = 'UPDATE inventory SET min_stock='+min_stock+
-				' , selling_price='+selling_price+', status=\'UPDATED\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
+				' , selling_price='+selling_price+', status=\''+newStatus+'\' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
 	} else {
 		query = 'UPDATE inventory SET min_stock='+min_stock+
 				' , selling_price='+selling_price+' WHERE outlet_id='+outlet_id+' AND product_barcode='+product_barcode+';';
@@ -207,6 +247,7 @@ exports.updateInventory = function (args, callback) {
 		
 	connection.query( query, function (err, rows, fields) {
 		// body...
+		console.log(query);
 		if(!err) {
 			callback(null,true);
 		} else {

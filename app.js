@@ -126,6 +126,9 @@ app.get('/isSessionActive', function (req,res) {
 app.post('/website/findOrCreateUser',routes.website_findOrCreate);
 app.post('/website/findUserById',routes.website_findUserById);
 app.get('/website/product/:barcode',routes.website_productInformation);
+app.post('/syncInventoryAck',routes.syncInventoryAck);
+app.post('/pushInventoryToHQ',routes.pushInventoryToHQ);
+app.post('/website/setAsReceived',routes.website_setAsReceived);
 /*app.get('/:barcode', function  (req,res) {
   // body...
   res.render('test.html');

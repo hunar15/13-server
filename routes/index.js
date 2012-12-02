@@ -28,6 +28,29 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.website_setAsReceived = function (req,res) {
+	// body...
+	website_transaction.setAsReceived(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.pushInventoryToHQ = function (req,res) {
+	// body...
+	inventory.pushInventoryToHQ(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.getAllOutletsNoMeta = function (req,res) {
 	// body...
 	outlet.getAllOutletsNoMeta( function (err,result) {
@@ -274,14 +297,57 @@ exports.lastWeekPerformance = function(req,res) {
 	});
 };
 
-exports.syncAll = function(req,res) {
-	var outlet_id = req.body.outletid,
-		list = req.body.inventory;
+exports.syncInventoryAck = function (req,res) {
+	// body...
+	var outlet_id = req.body.outletid;
 
-	if(list!==null  && outlet_id !== null) {
+	if(outlet_id !== null) {
 		var query = '';
+		query += 'UPDATE inventory set status=\'NORMAL\' where status=\'ADDED\' or status=\'UPDATED\'AND outlet_id='+outlet_id+' ;';
+		query += 'UPDATE inventory set status=\'DISCONTINUED\' where status=\'DISCONTINUE\' AND outlet_id='+outlet_id+' ;';
 
-		for(var i in list) {
+		connection.query(query,function (err,rows,fields) {
+			// body...
+			if(!err) {
+				res.send({"STATUS" : "SUCCESS"});
+			} else {
+				res.send({"STATUS" : "ERROR"});
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameters");
+		res.send({"STATUS" : "ERROR"});
+	}
+};
+exports.syncAll = function(req,res) {
+	var outlet_id = req.body.outletid;
+
+	if(outlet_id !== null) {
+		var query = '',
+			list = [];
+
+		query = 'SELECT * from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
+			' AND outlet_id='+outlet_id+' ;';
+
+		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ;';
+
+		connection.query(query,function (err,rows,fields) {
+			// body...
+			if(!err) {
+				for(var i in rows[0]) {
+					list.push(rows[0][i]);
+				}
+				for(var j in rows[1]) {
+					list.push(rows[1][j]);
+				}
+				console.log(JSON.stringify(list));
+				res.send({list : list});
+			} else {
+				console.log("Error in processing query : "+err);
+				res.send({"STATUS" : "ERROR"});
+			}
+		});
+	/*	for(var i in list) {
 			var current = list[i];
 
 			query += 'UPDATE inventory SET stock='+current['stock']+', selling_price='+current['selling_price']+
@@ -296,7 +362,7 @@ exports.syncAll = function(req,res) {
 				console.log("Error encountered : " + err);
 				res.send({"STATUS" : "ERROR"});
 			}
-		});
+		});*/
 	} else {
 		console.log("Invalid or absent parameters");
 		res.send({"STATUS" : "ERROR"});
