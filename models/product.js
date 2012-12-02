@@ -76,6 +76,7 @@ exports.isBarcodeValid = function (args, callback) {
 
 	connection.query(query, function( err2, rows2, fields2) {
 		if(!err2) {
+			console.log((rows2.length === 0)? true:false);
 			if(rows2.length === 0)
 				callback(err2, true);
 			else
