@@ -2,53 +2,14 @@ var editableGrid;
 var global;
 window.onload = function() {
 	initTable();
-	initSetReceived();
 }
 
 function initTable(){
-	$.getJSON( "get/request/all", function(data){
+	$.getJSON( "/website/viewTransactions", function(data){
 		init(data);
 		editableGrid.setPageIndex(0);
 		editableGrid.filter('');
 	});
-}
-
-function initSetReceived(){
-
-	$('#confirm-checked-product').click(function(){
-		var batch_received=[];
-		$('.received-check').each(function(k,v){
-			if ($(v).attr('checked')=='checked')
-				batch_received.push([$(v).attr('id').substring(6),$(v).attr('data-quantity')]);
-		});
-
-		var date = $('#restock-date').text();
-		
-		if (batch_received.length == 0)
-			$('#restockDetails').modal('hide');
-			
-		$.each(batch_received, function(k,v){
-			
-			$.ajax({
-				url: "/website/setAsReceived",
-				type: 'POST',
-				data: {
-					"outlet_id": "4",	//online shop id
-					"date": date,
-					"barcode": v[0],
-					"quantity": v[1]
-				},
-				success: function (response) {
-					if (k==(batch_received.length - 1)){
-						initTable();
-						$('#restockDetails').modal('hide');
-					}
-				}
-			});
-		});
-
-		
-	});	
 }
 
 function init(data){
@@ -183,22 +144,6 @@ function initDetail(data){
 	detailedEditableGrid.load({"metadata": data.metadata,"data": data.data});
 	detailedEditableGrid.renderGrid("restockdetailstablecontent", "detailgrid");
 	
-	if (data.metadata.length == 3){
-		detailedEditableGrid.setCellRenderer("received", new CellRenderer({render: function(cell, value) {
-			// this action will remove the row, so first find the ID of the row containing this cell 
-			var rowId = detailedEditableGrid.getRowId(cell.rowIndex);
-			var quantity = detailedEditableGrid.getRowValues(cell.rowIndex).quantity;
-			if (value==0)
-				cell.innerHTML = "<input class='received-check' id='check-"+rowId+"' data-quantity='"+quantity+"' type='checkbox'/>";
-			else
-				cell.innerHTML = "<input type='checkbox' checked='true' disabled='true'/>";
-		}}));
-		$('.accept').show();
-	}
-	else
-	{
-		$('.accept').hide();
-	}
 	detailedEditableGrid.updatePaginator = function () {
 		var paginator = $("#paginator2").empty();
 		var nbPages = detailedEditableGrid.getPageCount();
@@ -289,13 +234,6 @@ function approveBatch(rowIndex) {
 
 function generateDetails(rowIndex) {
 	var outlet_id = editableGrid.getRowValues(rowIndex).outlet_id;
-	var outlet_name = editableGrid.getRowValues(rowIndex).s_name;
-	var date = editableGrid.getRowValues(rowIndex).date;
-	var status = editableGrid.getRowValues(rowIndex).status;
-	if (status != "FORWARDED" && status != "DISPATCHED")
-		$('#confirm-checked-product').attr("disabled",true);
-	else
-		$('#confirm-checked-product').attr("disabled",false);
 		
 	console.log(outlet_id);
 	console.log(date);
@@ -310,13 +248,7 @@ function generateDetails(rowIndex) {
 			initDetail(response);
 			detailedEditableGrid.setPageIndex(0);
 			detailedEditableGrid.filter('');
-			if (status != "DISPATCHED" && status != "INCOMPLETE")
-				$('.received-check').attr("disabled","disabled");
-			else
-				$('.received-check').removeAttr("disabled","disabled");				
-			$('#outlet-id').text(outlet_id);
-			$('#outlet-name').text(outlet_name);
-			$('#restock-date').text(date);
+
 			$('#restockDetails').modal('show');
 		}
 	});	
