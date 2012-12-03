@@ -102,19 +102,25 @@ exports.getBatchDetails = function (args, callback) {
 	console.log(date);
 	if( outlet_id!==null && date!==null) {
 		var result = {},
-			query = "SELECT barcode, quantity FROM request_details WHERE outlet_id=" + outlet_id + " AND date='" + date + "';";
+			query = "SELECT barcode, quantity,received FROM request_details WHERE outlet_id=" + outlet_id + " AND date='" + date + "';";
 		result['metadata'] = [];
 		result['data']= [];
 
 		result['metadata'].push({"name": "barcode", "label" : "Product Barcode", "datatype" : "string"});
 		result['metadata'].push({"name": "quantity", "label" : "Quantity", "datatype" : "string"});
-		result['metadata'].push({"name":"received","label":"Received"});
+		result['metadata'].push({"name":"received","label":"Received", "datatype" : "string"});
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				for (var i in rows) {
 					var current = {};
 					current['id'] = rows[i]['barcode'];
 					current['values'] = rows[i];
+					if(rows[i]['received'] == 1)
+					{
+						rows[i]['received'] = 'RECEIVED';
+					} else {
+						rows[i]['received'] = 'DISPATCHED';
+					}
 					result['data'].push(current);
 				}
 				callback(null,result);
