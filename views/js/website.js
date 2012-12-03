@@ -106,12 +106,12 @@ function renderAccount(){
 		success: function (response) {
 			var data = response[0];
 			$('#account-display').empty();
-			$('#account-display').append('<h3>Account Information</h3><table>'
+			$('#account-display').append('<div style="margin-left:40%"><h3>Account Information</h3><br/><table>'
 				+'<tr><td>Name: </td><td><h4> '+data.name+'</h4></td></tr>'
 				+'<tr><td>Address: </td><td id="address"><h4> '+data.address+' &nbsp;&nbsp;<a class="change" id="change-address">change</a></h4></td></tr>'
 				+'<tr><td>Contact: </td><td id="phone"><h4> '+data.phone+' &nbsp;&nbsp;<a class="change" id="change-phone">change</a></h4></td></tr>'
 				+'<tr><td>Email: </td><td><h4> '+data.email+'</h4></td></tr>'
-				+'</table>');
+				+'</table></div>');
 			initAccountChange();
 		}
 	});
@@ -120,7 +120,7 @@ function renderAccount(){
 function initAccountChange(){
 	$('#change-address').click(function(){
 		$('#address').empty();
-		$('#address').append('<input type="text" placeholder="Press enter to confirm" id="inputAddress" style="height:10px; font-size:0.8em; width: 450px; margin:0px;"></input> &nbsp;&nbsp;<a onclick="renderAccount();">cancel</a>');
+		$('#address').append('<input type="text" placeholder="Press enter to confirm" id="inputAddress" style="height:10px; font-size:0.8em; width: 250px; margin:0px;"></input> &nbsp;&nbsp;<a onclick="renderAccount();">cancel</a>');
 		$('#inputAddress').bind('keypress',function(e){
 			var code = (e.keyCode ? e.keyCode : e.which);
 			if(code == 13) {
@@ -199,6 +199,10 @@ function catalogGenerator(data,startIndex){
 		+'<button class="btn prev" onclick="catalogGenerator(cList,'+(startIndex-9)+');disableSelectedItems();">&lt; Prev</button>&nbsp;'
 		+'<button class="btn next" onclick="catalogGenerator(cList,'+(startIndex+9)+');disableSelectedItems();">Next &gt;</button></div>');
 	$.each(data,function(k,v){
+		if (v.name.length > 30){
+			v.name = v.name.substring(0,25) + "...";
+		}
+	
 		if (k>= startIndex && k < startIndex + 9)
 		$('#catalog-display').append('<li class="span3" style="padding-bottom: 20px;"><div class="thumbnail" style="height:330px;">'
 		+'<div class="image-holder"><a style="cursor:pointer;" onclick="renderProductDetail('+v.barcode+')">'
@@ -248,16 +252,16 @@ function renderProductDetail(barcode){
 			sameCategoryString = "none";
 		items = [];
 		$.each(data.outlets, function(k,v){
-			items.push(v.name);
+			items.push(v.s_name);
 		});	
 		var outletString = items.join(', ');
 		if (items.length == 0)
 			outletString = "none";
 		$('#product-detail').empty();
-		$('#product-detail').append('<div class="span2"><img class="detail-image" src="'+data.details.image+'"></div><div class="span3"><h13>'+data.details.name+'</h13><br/>Category: '+data.details.category+'<br/>'
+		$('#product-detail').append('<div class="span2"><img class="detail-image" src="'+data.details.image+'"><br/><br/></div><div class="span3"><h13>'+data.details.name+'</h13><br/>Category: '+data.details.category+'<br/>'
 			+'Price: '+data.details.selling_price+'<br/>Stock Availability: '+data.details.stock+'<br/>Manufacturer: '+data.details.manufacturer+'<br/>'
 			+'Similar products: '+sameCategoryString+'<br/>Outlets selling: '+outletString);
-		$('#product-detail').append('<div class="fb-comments" data-href="http://localhost:3001/'+barcode+'" data-width="500" data-num-posts="2"></div>');
+		$('#product-detail').append('<div class="fb-comments" data-href="'+document.URL+barcode+'" data-width="500" data-num-posts="2"></div>');
 		FB.XFBML.parse($('#product-detail').get(0));
 
 	});

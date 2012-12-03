@@ -16,6 +16,8 @@ exports.getAllOutlets = function  (callback) {
 	result['metadata'].push({"name": "address", "label" : "Address", "datatype" : "string", editable: "true"});
 	result['metadata'].push({"name": "latitude", "label" : "Latitude", "datatype" : "float", editable: "true"});
 	result['metadata'].push({"name": "longitude", "label" : "Longitude", "datatype" : "float", editable: "true"});
+	result['metadata'].push({"name": "delete", "label" : "Delete"});
+	
 	connection.query(query, function  (err, rows, fields) {
 		// body...
 		for( var i in rows) {

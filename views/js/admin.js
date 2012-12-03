@@ -1,7 +1,22 @@
-
+$().ready(function(){
+	$('#username').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			login();
+		}		
+	});
+	$('#password').bind('keypress',function(e){
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if(code == 13) {
+			login();
+		}		
+	});	
+});
 
 function initLogin(){
-	$('#login-btn').click(function(){
+	$('#login-btn').click(login);
+}
+function login(){
 		var lgn = $('#username').val();
 		var pw = $('#password').val();
 
@@ -22,9 +37,7 @@ function initLogin(){
 					alert('Wrong username or password!');
 			}
 		});
-	});
 }
-
 function logout(){
 	eraseCookie('admin13logger');
 	window.location="admin.html";
