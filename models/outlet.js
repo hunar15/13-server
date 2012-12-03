@@ -1,5 +1,6 @@
 var config = require('../config/config'),
-	connection = config.connection;
+	connection = config.connection,
+	onlineid = config.onlineid;
 
 exports.getAllOutlets = function  (callback) {
 	// body...
@@ -110,12 +111,16 @@ exports.addOutlet = function (args, callback) {
 exports.deleteOutlet = function (args, callback) {
 	// body...
 	var id = args.id;
-	var query = 'DELETE FROM outlet where id='+id+';';
-	console.log(query);
-	connection.query( query, function (err, rows, fields) {
-		// body...
-		callback(err, rows);
-	});
+	if(id != onlineid) {
+		var query = 'UPDATE inventory SET status=\'DISCONTINUE\' where outlet_id='+id+' ;';
+		console.log(query);
+		connection.query( query, function (err, rows, fields) {
+			// body...
+			callback(err, rows);
+		});
+	} else {
+		callback({"ERROR" : "Can't delete online"}, null);
+	}
 };
 
 exports.updateOutlet = function (args, callback) {
