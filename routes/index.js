@@ -12,6 +12,7 @@ var inventory = require('../models/inventory'),
 	website_transaction = require('../models/website/transaction'),
 	website_account = require('../models/website/account'),
 	email = require('emailjs'),
+    config = require('../config/auth').auth;
 	server  = email.server.connect({
 		user:    "13cg3002",
 		password:"gmailsync",
@@ -27,7 +28,12 @@ var connection = sql.createConnection({
   database : 'hqdb',
   multipleStatements : true
 });
-
+exports.customer = function (req,res) {
+    res.render("index.html",{fbapp: config.fb.appId});
+};
+exports.testEjs = function (req,res) {
+    res.render("test1.html",{foo: "bar"});
+};
 exports.getInventorySize = function (req,res) {
 	// body...
 	inventory.getInventorySize(req.body,function (err,result) {
