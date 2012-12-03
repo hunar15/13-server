@@ -31,7 +31,7 @@ exports.getAllOutlets = function  (callback) {
 exports.getAllOutletsNoMeta = function  (callback) {
 	// body...
 
-	var query = 'select * FROM outlet;';
+	var query = 'select * FROM outlet where id<>'+config.onlineid+' ;';
 
 	connection.query(query, function  (err, rows, fields) {
 		// body...
@@ -89,7 +89,7 @@ exports.addOutlet = function (args, callback) {
 		longitude = args.longitude;
 
 	var query = '';
-	if( latitude != undefined && longitude != undefined) {
+	if( latitude !== undefined && longitude !== undefined) {
 		query ='INSERT INTO outlet(s_name,address,longitude,latitude) VALUES('+connection.escape(s_name)+
 			','+connection.escape(address)+','+longitude+','+latitude+');';
 	} else {

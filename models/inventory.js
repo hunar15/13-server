@@ -61,6 +61,9 @@ exports.pushInventoryToHQ =function (args,callback) {
 		query = '';
 	console.log(outlet_id);
 	if( outlet_id !== undefined && list !== undefined) {
+
+
+
 		for(var i in list) {
 			var current = list[i];
 			query += 'UPDATE inventory SET stock='+current.stock+', selling_price='+current.selling_price+

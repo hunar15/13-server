@@ -1,4 +1,5 @@
 var config = require('../config/config'),
+	async = require('async'),
 	connection = config.connection;
 
 exports.getBatch =  function(args, callback) {
@@ -133,8 +134,8 @@ exports.getBatchDetails = function (args, callback) {
 };
 
 exports.pushNewRequests = function(args, callback) {
-	var outlet_id = args.outletid,
-		addedList = args.addedList;
+	var outlet_id = args.data.outletid,
+		addedList = args.list;
 
 	if(outlet_id !== null &&  addedList !== null) {
 		/*var query = "INSERT INTO batch_request VALUES("+outlet_id+",CURDATE(),\'PENDING\');",
@@ -142,38 +143,50 @@ exports.pushNewRequests = function(args, callback) {
 			query2 = '';*/
 		var detail_query='',
 			batch_query = 'INSERT INTO batch_request SELECT '+outlet_id+',CURDATE(),\'PENDING\' FROM DUAL WHERE ' +
-				'NOT EXISTS(SELECT * FROM batch_request WHERE date=CURDATE() AND outlet_id='+outlet_id+');';
+				'NOT EXISTS(SELECT * FROM batch_request WHERE date=CURDATE() AND outlet_id='+outlet_id+');',
+			i=0;
 
 		if(addedList.length === 0) {
 			console.log("No new requests to sync");
-			callback(null,{status : "ADDED"});
+			callback(null,{STATUS : "SUCCESS"});
 		} else {
-			for(var i in addedList) {
-				var current = addedList[i];
-				detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
-							current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
-							"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
-							" AND barcode="+current['barcode']+" );";
-			}
-
 			connection.query(batch_query, function(err, rows, fields){
 				if(!err) {
 					console.log("Adding request details from " + outlet_id);
-					connection.query(detail_query, function(err, rows, fields) {
-							if(err) {
-								//errorFlag = 1;
-								console.log("Error encountered : " + err);
-								callback(err,{status : "ERROR"});
-							} else {
-								console.log("Requests successfully added");
-								callback(err, {status : "ADDED"});
-							}
-						});
+					async.forEachSeries(addedList,function (current,async_callback) {
+				// body...
+						i++;
+						detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
+									current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
+									"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
+									" AND barcode="+current['barcode']+" );";
+
+						if((i%config.segment_size)===0 || i ==(addedList.length)) {
+							connection.query(detail_query, function (err2, rows2, fields2) {
+								if(!err2) {
+									console.log('POST : ' + i);
+									detail_query='';
+									async_callback(null);
+								} else {
+									console.log(err2);
+									async_callback(true);
+								}
+							});
+						} else {
+							async_callback(null);
+						}
+					},
+					function(err){
+							// if any of the saves produced an error, err would equal that error
+							if(err)
+								callback(err,true);
+							else
+								callback(null,{STATUS : "SUCCESS"});
+					});
 				} else {
 					console.log(err);
 					callback(err);
 				}
-				
 			});
 		}
 	} else {
