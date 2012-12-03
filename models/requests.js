@@ -117,9 +117,9 @@ exports.getBatchDetails = function (args, callback) {
 					current['values'] = rows[i];
 					if(rows[i]['received'] == 1)
 					{
-						rows[i]['received'] = 'RECEIVED';
+						rows[i]['received'] = 'YES';
 					} else {
-						rows[i]['received'] = 'DISPATCHED';
+						rows[i]['received'] = 'NO';
 					}
 					result['data'].push(current);
 				}
