@@ -1,4 +1,5 @@
 var editableGrid;
+var validBarcode = false;
 window.onload = function() {
 	initTable();
 	initAddProduct();
@@ -15,30 +16,69 @@ function initTable(){
 
 function initAddProduct(){
 	$('#confirm-add-product').click(function(){
+		var barcode = $('#inputBarcode').val();
 		var name = $('#inputName').val();
 		var category = $('#inputCategory').val();
 		var manufacturer = $('#inputManufacturer').val();
 		var cost_price = $('#inputPrice').val();
 		var image = $('#inputImage').val();
 
-		if (validProductDetails(name, category, manufacturer, cost_price))
+		if (validProductDetails(name, category, manufacturer, cost_price) && validBarcode)
 			$.ajax({
 				url: "/add/product",
 				type: 'POST',
 				data: {
-						"name": name,
-						"category": category,
-						"manufacturer": manufacturer,
-						"cost_price": cost_price,
-						"image":image
+					"barcode": barcode,
+					"name": name,
+					"category": category,
+					"manufacturer": manufacturer,
+					"cost_price": cost_price,
+					"image":image
 				},
 				success: function (response) {
 					console.log(response.responseText);
 					initTable();
 					$('#addNewProduct').modal('hide');
+				},
+				error: function (response) {
+					alert('Error: Invalid barcode!');
 				}
 			});
+		else if (!validBarcode)
+			alert('Barcode invalid!');
 	});
+	$('#inputBarcode').bind('input',function(e){
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if($('#inputBarcode').val().length == 8 && is_int($('#inputBarcode').val())) {
+				$.ajax({
+					url: "/product/isBarcodeValid",
+					type: 'POST',
+					data: {
+						"barcode": $('#inputBarcode').val()
+					},
+					success: function (response) {
+						if (response == true && is_int($('#inputBarcode').val())){
+							$('#feedback').html(' <i class="icon-ok-circle"></i> OK');
+							validBarcode = true;
+						}
+						else{
+							$('#feedback').html(' <i class="icon-ban-circle"></i> Not unique or invalid');
+							validBarcode = false;
+						}
+					}
+				});
+			}
+			else
+				$('#feedback').html(' <i class="icon-ban-circle"></i> Must be 8 digits barcode');
+	});
+}
+
+function is_int(value){ 
+	if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+		return true;
+	} else { 
+		return false;
+	} 
 }
 
 function initAddInventory(){

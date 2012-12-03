@@ -9,19 +9,23 @@
 		<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
 		<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
 		<script src="js/bootstrap-modal.js"></script>
+		<script src="js/bootstrap.js"></script>
 		<script src="js/bootstrap-alert.js"></script>
+		<script src="js/bootstrap-carousel.js"></script>
 		<script src="js/website.js"></script>
 
 		<script src="js/editablegrid.js"></script>
 		<script src="js/editablegrid_renderers.js" ></script>
 		<script src="js/editablegrid_editors.js" ></script>
 		<script src="js/editablegrid_validators.js" ></script>
-		<script src="js/editablegrid_utils.js" ></script>	
+		<script src="js/editablegrid_utils.js" ></script>
+		<link href='http://fonts.googleapis.com/css?family=Allura' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Amaranth:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/editablegrid.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap-responsive.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="css/website-style.css" type="text/css" media="screen">		
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />
+		<link rel="stylesheet" href="css/website-style.css" type="text/css" media="screen">	
 		<!--[if lt IE 9]>
 		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -40,12 +44,22 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 		<div class="container-fluid">	
 			<div class="row-fluid">
-				<div class="span9">		
+				<div class="span9" id="mainner">		
 					<div class="hero-unit">
-						<h1>Customer website</h1><br/><div id="login-ui"></div>
+						<h1>Hyper 13 Online Shop</h1><br/><div id="login-ui"></div>
 					</div>
+					<div class="carousel slide" id="myCarousel">
+						<div class="carousel-inner">
+							<div class="item active"><img class="c-image" src="/images/1.jpg"/></div>
+							<div class="item"><img class="c-image" src="/images/2.jpg"/></div>
+							<div class="item"><img class="c-image" src="/images/3.jpg"/></div>
+							<div class="item"><img class="c-image" src="/images/4.jpg"/></div>
+						</div>
+						<a data-slide="prev" href="#myCarousel" class="left carousel-control" style="display:none;">‹</a>
+						<a data-slide="next" href="#myCarousel" class="right carousel-control" style="display:none;">›</a>
+					</div>						
 					<div class="navbar navbar-inverse">
-						<div class="navbar-inner ">
+						<div class="navbar-inner">
 							<ul class="nav">
 								<li id="catalog-link" class="tb-link active"><a style="cursor:pointer;">Catalog</a></li>
 								<li id="order-link" class="tb-link"><a style="cursor:pointer;">Your Orders</a></li>
@@ -66,7 +80,7 @@
 					<div id="order-display" class="display">
 						<label for="filter"><br/>Filter :</label>
 						<input class="span4" type="text" id="filter" placeholder="Filter by any transaction details"/>
-						<div id="ordertablecontent"></div>
+						<div id="ordertablecontent" ></div>
 						<div id="paginator"></div>
 					</div>
 					<div id="store-display" class="display">
@@ -75,10 +89,11 @@
 					</div>
 					<div id="account-display" class="display">
 					</div>
+					<br/><br/>
 				</div>
-				<div class="span3" id="sc-panel">
+				<div id="sc-panel" class="span3">
 					<br /><br />
-					<h4 style="text-align: right;">Your Shopping Cart&nbsp;&nbsp;<img src="images/shoppingcart.png"/></h4>
+					<h4 style="text-align: right; margin-right:4px;">Your Shopping Cart&nbsp;&nbsp;<img src="images/shoppingcart.png"/></h4>
 					<hr>
 					<div id="shopping-cart-wrapper">
 						<span id="empty-msg">You have no items in the shopping cart.</span>
@@ -96,7 +111,7 @@
 					</div>
 				</div>
 			</div>
-			<hr />
+
 			<div id="addNewOrder" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addNewOrderLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -147,10 +162,10 @@
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
 			</div>				
-			<footer>
-			<p>CG3002 Hypermarket Project AY12/13 Semester 1</p>
-			</footer>
+
+			
 		</div>
+	
 	</body>
 
 </html>
