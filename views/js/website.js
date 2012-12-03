@@ -8,6 +8,7 @@ $().ready(function(){
 	renderCatalog();
 	checkLogin();
 	$('#search-catalog').focus();
+	$('.carousel').carousel();
 })
 
 function checkLogin(){
@@ -22,14 +23,14 @@ function checkLogin(){
 			initToolbar();
 			initAlert();
 			$('#login-ui').empty();
-			$('#login-ui').append('<h13>Welcome, '+data[0].name+'!</h13>&nbsp; &nbsp;<a href="/logout"><img src="images/fblogout.png"/></a>');
+			$('#login-ui').append('<h14>Welcome, '+data[0].name+'!</h14>&nbsp; &nbsp;<a href="/logout"><img style="box-shadow: white 0em 0em 3.2em;" src="images/fblogout.png"/></a>');
 			$('#catalog-display').show();
 		}
 	})
 	.error(function(){
 		console.log('not logged in');
 		$('#login-ui').empty();
-		$('#login-ui').append('<a style="cursor:pointer;" onclick="login()"><img src="images/fblogin.png"/></a>');
+		$('#login-ui').append('<a style="cursor:pointer;" onclick="login()"><img style="box-shadow: white 0em 0em 3.2em;" src="images/fblogin.png"/></a>');
 		hideLoginElements();
 	});
 }

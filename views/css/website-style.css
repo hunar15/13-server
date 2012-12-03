@@ -1,5 +1,13 @@
-body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
-h1 { font-size: 15px; }
+body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; 
+background-image: url('../images/fabric_plaid_@2X.png');}
+h1 { font-size: 2.4em; 
+	color: white;
+	font-weight:normal;
+	-webkit-text-fill-color: black; /* Will override color (regardless of order) */
+
+   text-shadow:0px 0px 7px lightgrey,0px 0px 7px lightgrey,0px 0px 7px lightgrey,0px 0px 7px lightgrey,
+ 0px 0px 11px white;
+	   font-family: 'Allura'}
 a { color: #548dc4; text-decoration: none; }
 a:hover { text-decoration: underline; }
 table.testgrid { border-collapse: collapse; border: 1px solid #CCB; width: 800px; }
@@ -9,17 +17,31 @@ table.detailgrid th { background: #E5E5E5; text-align: left; }
 table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
 table.testgrid th { background: #E5E5E5; text-align: left; }
 label.invalid { color: red; }
-.container-fluid{width: 1150px; margin-left:auto;margin-right:auto;}
-
+.container-fluid{width: 1150px; margin-left:auto;margin-right:auto;  }
+.carousel{margin-bottom:0px;}
+.carousel .item {-webkit-transition: opacity 7s; -moz-transition: opacity 7s; -ms-transition: opacity 7s; -o-transition: opacity 7s; transition: opacity 7s;}
+.carousel .active.left {left:0;opacity:0;z-index:2;}
+.carousel .next {left:0;opacity:1;z-index:1;}
 #sc-panel{
 border-left: 4px solid black; 
 border-bottom: 1px solid lightgrey; 
 padding-bottom: 7px;
 position: fixed;
 right: 65px;
+background: white;
+}
+#mainner{
+-moz-box-shadow: 0 0 5px #888;
+-webkit-box-shadow: 0 0 5px#888;
+box-shadow: 0 0 5px #888;
+background-color:white;
+
 }
 #catalog-display{padding-left:85px;}
 #shopping-cart-wrapper{margin: 10px 10px; padding-bottom: 10px;}
+#search-catalog{
+margin-left:18px;
+}
 .table{padding:0px}
 .image-holder {
 	text-align: center;
@@ -49,6 +71,31 @@ h13{
 font-size:1.4em;
 font-weight:bold;
 }
+h14{
+font-size:1.4em;
+font-weight:bold;
+   text-shadow: white 0em 0em 1.2em,white 0em 0em 1.2em,white 0.1em 0.1em 1.2em;
+margin-left:5px;
+}
 .mvs.pam.uiBoxYellow {
 display: none;
+}
+.hero-unit{
+position:absolute;
+z-index:100;
+background: transparent;
+width:735px;
+top:-1px;
+border-radius: 10px;
+}
+.navbar-inner{
+background: url('../images/dark_wood.png');
+border-radius: 0 0 5px 5px;
+}
+#shopping-cart-options{
+	margin-right:5px;
+}
+.testgrid{
+margin-left: auto;
+margin-right: auto;
 }

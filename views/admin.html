@@ -6,6 +6,17 @@
 		<title>HQ Interface - CEG Hypermarket 13</title>
 
 		<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+		<script src="js/admin.js"></script>
+		<script>
+			$().ready(function(){
+
+				if (readCookie('admin13logger')=='auth')
+					window.location="product.html";
+					
+				initLogin();
+			});
+		</script>
+		
 		<link href='http://fonts.googleapis.com/css?family=Amaranth:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">		
@@ -23,7 +34,7 @@
 				<div><input id="username" type="text" placeholder="Username"/></div>
 				<div><input id="password" type="password" placeholder="Password"/></div>
 			</div>
-			<div><br/><button class="btn btn-success" style="width: 263px; height: 34px; border-radius: 7px; font-size:1.5em;font-weight:bold;">Login</button><div/>
+			<div><br/><button id="login-btn" class="btn btn-success" style="width: 263px; height: 34px; border-radius: 7px; font-size:1.5em;font-weight:bold;">Login</button><div/>
 		</div>
 	</body>
 

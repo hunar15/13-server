@@ -15,7 +15,9 @@
 		<script src="js/editablegrid_validators.js" ></script>
 		<script src="js/editablegrid_utils.js" ></script>
 		<script src="js/product.js"></script>
+		<script src="js/admin.js"></script>
 		
+		<link href='http://fonts.googleapis.com/css?family=Amaranth:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/editablegrid.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/bootstrap-responsive.css" type="text/css" media="screen">
@@ -45,8 +47,8 @@
 					  <li id="online-link"><a href="onlineshop.html">Online Shop</a></li>
 					</ul>
 					<ul class="nav pull-right">
-						<li><a onclick="removeCookie();" style="cursor: pointer;">Logout</a></li>
-					</ul>						
+						<li><a onclick="logout();" style="cursor: pointer;">Logout</a></li>
+					</ul>
 				</div>
 				
 				
@@ -139,7 +141,7 @@
 				<label for="filter"><br/>Filter :</label>
 				<input class="span4" type="text" id="filter" placeholder="Enter product barcodes or any of its details"/>
 
-				<div id="producttablecontent" align="center"></div>
+				<div id="producttablecontent"></div>
 				<!-- Paginator control -->
 				<div id="paginator"></div>
 			</div>
