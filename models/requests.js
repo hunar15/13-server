@@ -155,34 +155,34 @@ exports.pushNewRequests = function(args, callback) {
 					console.log("Adding request details from " + outlet_id);
 					async.forEachSeries(addedList,function (current,async_callback) {
 				// body...
-					i++;
-					detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
-								current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
-								"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
-								" AND barcode="+current['barcode']+" );";
+						i++;
+						detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
+									current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
+									"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
+									" AND barcode="+current['barcode']+" );";
 
-					if((i%config.segment_size)===0 || i ==(addedList.length)) {
-						connection.query(detail_query, function (err2, rows2, fields2) {
-							if(!err2) {
-								console.log('POST : ' + i);
-								detail_query='';
-								async_callback(null);
-							} else {
-								console.log(err2);
-								async_callback(true);
-							}
-						});
-					} else {
-						async_callback(null);
-					}
-				}, function(err){
-						// if any of the saves produced an error, err would equal that error
-						if(err)
-							callback(err,true);
-						else
-							callback(null,{STATUS : "SUCCESS"});
-					}
-				);
+						if((i%config.segment_size)===0 || i ==(addedList.length)) {
+							connection.query(detail_query, function (err2, rows2, fields2) {
+								if(!err2) {
+									console.log('POST : ' + i);
+									detail_query='';
+									async_callback(null);
+								} else {
+									console.log(err2);
+									async_callback(true);
+								}
+							});
+						} else {
+							async_callback(null);
+						}
+					},
+					function(err){
+							// if any of the saves produced an error, err would equal that error
+							if(err)
+								callback(err,true);
+							else
+								callback(null,{STATUS : "SUCCESS"});
+					});
 				} else {
 					console.log(err);
 					callback(err);
