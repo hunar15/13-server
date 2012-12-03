@@ -141,6 +141,8 @@ exports.pushNewRequests = function(args, callback) {
 	var outlet_id = args.data.outletid,
 		addedList = args.list;
 
+
+	console.log("THIS IS CALLED");
 	if(outlet_id !== null &&  addedList !== null) {
 		/*var query = "INSERT INTO batch_request VALUES("+outlet_id+",CURDATE(),\'PENDING\');",
 			errorFlag= 0,
@@ -156,26 +158,33 @@ exports.pushNewRequests = function(args, callback) {
 		} else {
 			connection.query(batch_query, function(err, rows, fields){
 				if(!err) {
-					console.log("Adding request details from " + outlet_id);
+				/*	console.log("Adding request details from " + outlet_id);
 					async.forEachSeries(addedList,function (current,async_callback) {
 				// body...
-						i++;
-						detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
+						i++;*/
+						for(var i in addedList) {
+
+							var current = addedList[i];
+							console.log(current.barcode);
+							detail_query += "INSERT INTO request_details SELECT "+outlet_id+",CURDATE(),"+
 									current['barcode']+","+current['quantity']+",0 FROM DUAL WHERE NOT EXISTS"+
 									"( SELECT * from request_details WHERE date=CURDATE() AND outlet_id="+outlet_id+
 									" AND barcode="+current['barcode']+" );";
-
+						}
+						connection.query(detail_query, function (err2, rows2, fields2) {
+							if(!err2) {
+								console.log('POST : ' + i);
+								console.log(current['barcode']);
+								detail_query='';
+								callback(null,{"STATUS" : "SUCCESS"});
+							} else {
+								console.log(err2);
+								callback(err2,null);
+							}
+						});
+/*
 						if((i%config.segment_size)===0 || i ==(addedList.length)) {
-							connection.query(detail_query, function (err2, rows2, fields2) {
-								if(!err2) {
-									console.log('POST : ' + i);
-									detail_query='';
-									async_callback(null);
-								} else {
-									console.log(err2);
-									async_callback(true);
-								}
-							});
+							
 						} else {
 							async_callback(null);
 						}
@@ -186,7 +195,7 @@ exports.pushNewRequests = function(args, callback) {
 								callback(err,true);
 							else
 								callback(null,{STATUS : "SUCCESS"});
-					});
+					});*/
 				} else {
 					console.log(err);
 					callback(err);
