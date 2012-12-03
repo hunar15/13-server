@@ -23,6 +23,7 @@ function initializeMap(){
 			codeAddress();
 		}		
 	});
+
 }
 
 function createMap(latLng)
@@ -37,8 +38,12 @@ function createMap(latLng)
 	});
 	var marker = new google.maps.Marker({
 		position: latLng, 
-		map: map
+		map: map,
+		draggable: true
 	});	
+	google.maps.event.addListener(marker, 'dragend', function() {
+		geocodePosition(marker.getPosition());
+	});		
 }
 
 function codeAddress() {
@@ -53,6 +58,20 @@ function codeAddress() {
 		}
 	});
 }
+function geocodePosition(pos) {
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      $('#inputAddress').val(responses[0].formatted_address);
+			$('#inputLatitude').val(responses[0].geometry.location.$a);
+			$('#inputLongitude').val(responses[0].geometry.location.ab);
+    } else {
+      alert('Cannot determine address at this location.');
+    }
+  });
+}
+
 
 function initTable(){
 	$.getJSON( "get/outlet", function(data){

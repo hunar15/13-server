@@ -7,6 +7,7 @@ var disabledItems = []; //keeps track of which products are already added into s
 $().ready(function(){
 	renderCatalog();
 	checkLogin();
+	initToolbar();
 	$('#search-catalog').focus();
 	$('.carousel').carousel();
 })
@@ -20,7 +21,7 @@ function checkLogin(){
 			$('.tb-link').show();
 			$('#sc-panel').show();
 			initCheckout();
-			initToolbar();
+			
 			initAlert();
 			$('#login-ui').empty();
 			$('#login-ui').append('<h14>Welcome, '+data[0].name+'!</h14>&nbsp; &nbsp;<a href="/logout"><img style="box-shadow: white 0em 0em 3.2em;" src="images/fblogout.png"/></a>');
@@ -46,6 +47,8 @@ function hideLoginElements(){
 	$('.display').hide();
 	$('#catalog-display').show();
 	$('.tb-link').hide();
+	$('#catalog-link').show();
+	$('#store-link').show();
 }
 
 function initAlert(){
@@ -661,7 +664,8 @@ function initializeMap(){
 		}		
 	});
 }
-
+var outlet_coord = [];
+var map;
 function createMap(latitude, longitude)
 {	
 	var mapObj = [];
@@ -670,7 +674,7 @@ function createMap(latitude, longitude)
 	currentLatLng = new google.maps.LatLng(latitude,longitude);
 	directionsDisplay = new google.maps.DirectionsRenderer();
 	
-	var map = new google.maps.Map(document.getElementById('googleMap'), {  
+	map = new google.maps.Map(document.getElementById('googleMap'), {  
 		zoom: 17,
 		center: currentLatLng,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -684,7 +688,7 @@ function createMap(latitude, longitude)
 	$.getJSON( "/get/outlet/nometa", function(data){
 		$.each(data,function(k,v){
 			var position = new google.maps.LatLng(v.latitude, v.longitude);
-
+			outlet_coord.push(position);
 			var marker = new google.maps.Marker({
 				position: position, 
 				map: map
@@ -703,6 +707,49 @@ function createMap(latitude, longitude)
 function appendOutletListing(name, address,latitude,longitude){
 	$('#outlet-info').append('<div class="outlet-listing"><button class="btn btn-small" title="Locate on map" onclick="createMap('+latitude+','+longitude+')"><i class="icon-map-marker"></i></button>'+
 		' <b> '+name+'</b>, <span>'+address+'</span></div>');
+}
+
+function locateMe(){
+// Check for geolocation support
+if (navigator.geolocation) {
+	// Use method getCurrentPosition to get coordinates
+	navigator.geolocation.getCurrentPosition(function (position) {
+		// Access them accordingly
+		var myLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		findClosest(myLocation);
+	});
+}
+}
+
+function findClosest(loc){
+    var lat1 = loc.lat();
+    var lon1 = loc.lng();
+	var R = 6371; // radius of earth in km
+	var pi = Math.PI;
+    var distances = [];
+    var closest = -1;
+    for( i=0;i<outlet_coord.length; i++ ) {
+    var lat2 = outlet_coord[i].lat();
+    var lon2 = outlet_coord[i].lng();
+    var chLat = lat2-lat1;
+    var chLon = lon2-lon1;
+
+    var dLat = chLat*(pi/180);
+    var dLon = chLon*(pi/180);
+    var rLat1 = lat1*(pi/180);
+    var rLat2 = lat2*(pi/180);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(rLat1) * Math.cos(rLat2); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c;
+        distances[i] = d;
+        if ( closest == -1 || d < distances[closest] ) {
+            closest = i;
+        }
+    }
+	createMap(outlet_coord[closest].lat(),outlet_coord[closest].lng());
+    calcRoute(loc);
 }
 
 function codeAddress() {
