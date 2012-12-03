@@ -45,8 +45,8 @@ app.configure(function(){
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
-
-app.get('/', routes.index);
+app.get('/testEjs',routes.testEjs);
+app.get('/', routes.customer);
 app.get('/users', user.list);
 app.get('/testIndex', function (req,res){
   res.sendFile("views/index.html");
