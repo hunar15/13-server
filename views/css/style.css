@@ -10,3 +10,35 @@ table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; 
 table.testgrid th { background: #E5E5E5; text-align: left; }
 label.invalid { color: red; }
 .container{width: 850px;}
+#username{
+width: 250px;
+margin-bottom: 0px;
+border-bottom: 0;
+border-radius: 7px 7px 0px 0px;
+height: 29px;
+font-size: 1.5em;
+padding: 4px 4px 0px 8px;
+}
+#password{
+width: 250px;
+margin-bottom: 0px;
+border-top: 0;
+border-radius: 0px 0px 7px 7px;
+height: 29px;
+font-size: 1.5em;
+padding: 4px 4px 0px 8px;
+}
+.big-heading{
+	font-size:2.8em;
+	font-weight: bold;
+	font-family: 'Amaranth', sans-serif;
+	margin-bottom:15px;
+}
+.login-container{
+	text-align:center;
+	margin:auto;
+	width: 300px;
+}
+body{
+background-image: url('../images/fabric_plaid_@2X.png');
+}

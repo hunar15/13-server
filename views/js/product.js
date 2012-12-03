@@ -49,7 +49,7 @@ function initAddProduct(){
 	});
 	$('#inputBarcode').bind('input',function(e){
 			var code = (e.keyCode ? e.keyCode : e.which);
-			if($('#inputBarcode').val().length == 8) {
+			if($('#inputBarcode').val().length == 8 && is_int($('#inputBarcode').val())) {
 				$.ajax({
 					url: "/product/isBarcodeValid",
 					type: 'POST',
@@ -57,7 +57,7 @@ function initAddProduct(){
 						"barcode": $('#inputBarcode').val()
 					},
 					success: function (response) {
-						if (response == true && parseInt($('#inputBarcode').val())){
+						if (response == true && is_int($('#inputBarcode').val())){
 							$('#feedback').html(' <i class="icon-ok-circle"></i> OK');
 							validBarcode = true;
 						}
@@ -71,6 +71,14 @@ function initAddProduct(){
 			else
 				$('#feedback').html(' <i class="icon-ban-circle"></i> Must be 8 digits barcode');
 	});
+}
+
+function is_int(value){ 
+	if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+		return true;
+	} else { 
+		return false;
+	} 
 }
 
 function initAddInventory(){
