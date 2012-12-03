@@ -132,7 +132,7 @@ exports.getBatchDetails = function (args, callback) {
 
 };
 
-exports.syncAddedRequests = function(args, callback) {
+exports.pushNewRequests = function(args, callback) {
 	var outlet_id = args.outletid,
 		addedList = args.addedList;
 
@@ -200,10 +200,6 @@ exports.approveBatchRequest = function(args, callback) {
 	}
 };
 
-var s_errorFlag = 0;
-
-
-
 exports.outletReceived =  function(args, callback) {
 	var outlet_id = args.outletid,
 		barcode = args.barcode,
@@ -221,10 +217,10 @@ exports.outletReceived =  function(args, callback) {
 			console.log(query);
 			if(err) {
 				console.log("Error encountered : "+err);
-				callback(err, {status : "ERROR"});
+				callback(err, {'STATUS' : "ERROR"});
 			} else {
 				console.log("RECEIVED requests of Outlet ID: " + outlet_id + " synced");
-				callback(err, {status : "COMPLETED"});
+				callback(err, {'STATUS' : "COMPLETED"});
 			}
 		});
 	} else {
@@ -248,10 +244,10 @@ exports.outletReceivedAll =  function(args, callback) {
 			console.log(query);
 			if(err) {
 				console.log("Error encountered : "+err);
-				callback(err, {status : "ERROR"});
+				callback(err, {'STATUS' : "ERROR"});
 			} else {
 				console.log("RECEIVED requests of Outlet ID: " + outlet_id + " synced");
-				callback(err, {status : "COMPLETED"});
+				callback(err, {'STATUS' : "COMPLETED"});
 			}
 		});
 	} else {
@@ -261,55 +257,7 @@ exports.outletReceivedAll =  function(args, callback) {
 
 };
 
-exports.updateRequest = function (args, callback) {
-	// body...
-	var barcode = args.barcode,
-		request_id = args.request_id,
-		quantity = args.quantity,
-		outlet_id = args.outlet_id;
-	var query = 'UPDATE request_details SET quantity='+quantity+
-				' WHERE request_id='+request_id+' AND barcode='+barcode+' AND outlet_id='+outlet_id+';';
-	connection.query( query, function (err, rows, fields) {
-		// body...
-		callback(err, rows);
-	});
-};
-
-exports.syncIncompleteRequests = function (args, callback) {
-	var outlet_id = args.outletid,
-		incompleteList = args.incompleteList;
-
-	if(outlet_id !== null && incompleteList !== null) {
-		var query = '',
-			query2 = '';
-		
-		if(incompleteList.length !== 0) {
-
-			for(var i in incompleteList) {
-				var current = incompleteList[i];
-				query += 'UPDATE batch_request set status=\'INCOMPLETE\' WHERE outlet_id='+outlet_id+' AND date=\''+current['date']+'\';';
-				query += 'UPDATE request_details set received=\''+current['received']+'\' WHERE outlet_id='+outlet_id+' AND barcode='+current['barcode']+' AND date=\''+current['date']+'\';';
-			}
-			connection.query(query, function( err, rows, fields ) {
-				console.log(err);
-				if(!err) {
-					console.log("INCOMPLETE Requests from Outlet ID : " + outlet_id + " synced");
-					callback(null,{status : "COMPLETED"});
-				} else {
-					console.log("ERROR : " + err);
-					callback(true,null);
-				}
-			});
-		} else {
-			console.log("No INCOMPLETE requests to be synced");
-			callback(null,{status : "COMPLETED"});
-		}
-	} else {
-		console.log("Invalid or absent parameters");
-		callback(true,null);
-	}
-};
-exports.syncDispatchedRequests = function (args, callback) {
+exports.pullDispatchedRequests = function (args, callback) {
 	var outlet_id = args.outletid;
 
 	if(outlet_id !== null) {

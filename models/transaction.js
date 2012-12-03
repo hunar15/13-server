@@ -98,7 +98,7 @@ exports.viewTransactionDetails = function (args,callback) {
 	}
 };
 
-exports.syncTransactions = function (args,callback) {
+exports.pushTransactions = function (args,callback) {
 	// body...
 	var outlet_id = args.outletid,
 		t_list = args.transaction;

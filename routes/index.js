@@ -28,6 +28,29 @@ var connection = sql.createConnection({
   multipleStatements : true
 });
 
+exports.getInventorySize = function (req,res) {
+	// body...
+	inventory.getInventorySize(req.body,function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+exports.isAdmin = function  (req,res) {
+	// body...
+	website_account.isAdmin(req.body, function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
 exports.isBarcodeValid = function  (req,res) {
 	// body...
 	product.isBarcodeValid(req.body, function (err,result) {
@@ -270,9 +293,9 @@ exports.viewTransactionDetails = function(req,res) {
 		}
 	});
 };
-exports.syncTransactions = function(req,res) {
+exports.pushTransactions = function(req,res) {
 	// body...
-	transaction.syncTransactions(req.body, function (err,result) {
+	transaction.pushTransactions(req.body, function (err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -281,9 +304,9 @@ exports.syncTransactions = function(req,res) {
 	});
 };
 
-exports.syncDispatchedRequests = function(req,res) {
+exports.pullDispatchedRequests = function(req,res) {
 	// body...
-	requests.syncDispatchedRequests(req.body, function (err,result) {
+	requests.pullDispatchedRequests(req.body, function (err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -292,8 +315,18 @@ exports.syncDispatchedRequests = function(req,res) {
 	});
 };
 
-exports.syncIncompleteRequests = function (req,res) {
-	requests.syncIncompleteRequests(req.body,function (err, result) {
+exports.outletReceived = function (req,res) {
+	requests.outletReceived(req.body,function (err, result) {
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
+
+exports.outletReceivedAll = function (req,res) {
+	requests.outletReceivedAll(req.body,function (err, result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -343,17 +376,26 @@ exports.syncInventoryAck = function (req,res) {
 		res.send({"STATUS" : "ERROR"});
 	}
 };
+function sendRes(res,list) {
+	res.send({list : list});
+}
 exports.syncAll = function(req,res) {
-	var outlet_id = req.body.outletid;
+	var outlet_id = req.body.data.outletid,
+		index = req.body.index,
+		length = req.body.length,
+		result= {};
+		result.STATUS ='SUCCESS';
 
 	if(outlet_id !== null) {
 		var query = '',
 			list = [];
 
-		query = 'SELECT * from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
-			' AND outlet_id='+outlet_id+' ;';
+		query = 'SELECT name,category,barcode,cost_price,manufacturer,selling_price,min_stock,status '+
+			'from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
+			' AND outlet_id='+outlet_id+' ORDER BY barcode LIMIT '+index+', '+length+' ;';
 
-		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ;';
+		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' '+
+			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ORDER BY product_barcode LIMIT '+index+', '+length+' ;';
 
 		connection.query(query,function (err,rows,fields) {
 			// body...
@@ -364,8 +406,11 @@ exports.syncAll = function(req,res) {
 				for(var j in rows[1]) {
 					list.push(rows[1][j]);
 				}
-				console.log(JSON.stringify(list));
-				res.send({list : list});
+				result.list = list;
+				//console.log(JSON.stringify(list));
+				console.log(list.length);
+				res.send(result);
+			//	sendRes(res,list);
 			} else {
 				console.log("Error in processing query : "+err);
 				res.send({"STATUS" : "ERROR"});
@@ -392,34 +437,9 @@ exports.syncAll = function(req,res) {
 		res.send({"STATUS" : "ERROR"});
 	}
 };
-exports.syncRevenue = function(req, res) {
-	var body = req.body;
-	var outlet_id = body['outlet_id'],
-		date = body['date'].split('T')[0];
 
-	if(body !== null) {
-		var query = 'INSERT INTO revenue SELECT '+outlet_id+','+body['revenue']+','+body['barcode']+',\''+
-				date + '\' FROM DUAL WHERE NOT EXISTS( SELECT * FROM revenue WHERE outlet_id='+outlet_id+' AND '+
-				' date=\''+date+'\');';
-		console.log(query);
-		connection.query(query, function(err, rows, fields) {
-			if(!err) {
-				console.log("Revenue from Outlet ID : " + outlet_id + " synced");
-				res.send({"STATUS" : "SUCCESS"});
-			} else {
-				console.log("Error encountered");
-				console.log("ERROR : " + err);
-				res.send({"STATUS" : "ERROR"});
-			}
-		});
-	} else {
-		console.log("Invalid or missing parameters");
-		res.send({"STATUS" : "ERROR"});
-	}
-};
-
-exports.syncAddedRequests = function(req, res){
-  requests.syncAddedRequests(req.body, function(err, result) {
+exports.pushNewRequests = function(req, res){
+  requests.pushNewRequests(req.body, function(err, result) {
 	res.send(result);
   });
 };
@@ -432,24 +452,9 @@ exports.getNotSelling = function(req,res) {
 		}
 	});
 };
-exports.syncReceivedRequests = function(req, res){
-  requests.syncReceivedRequests(req.body, function(err, result) {
-	res.send(result);
-  });
-};
 
 exports.approveBatchRequest = function(req, res) {
 	requests.approveBatchRequest(req.body, function(err,result) {
-		if(!err) {
-			res.send(result);
-		} else {
-			res.send(err);
-		}
-	});
-};
-
-exports.syncUpdated = function(req,res) {
-	inventory.syncUpdated(req.body, function(err,result) {
 		if(!err) {
 			res.send(result);
 		} else {
@@ -463,6 +468,7 @@ exports.getAllInventory = function(req, res){
 	res.send(result);
   });
 };
+
 exports.setAsReceived = function(req,res) {
 	requests.setAsReceived(req.body, function (err, result) {
 		if(!err) {
@@ -623,24 +629,6 @@ exports.updateInventory = function  (req, res) {
 exports.getRequests = function  (req, res) {
 	// body...
 	requests.getBatch( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.addRequest = function  (req, res) {
-	// body...
-	requests.addRequest( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.deleteRequest = function  (req, res) {
-	// body...
-	requests.deleteRequest( req.body, function(err, result ) {
-		res.send(result);
-	});
-};
-exports.updateRequest = function  (req, res) {
-	// body...
-	requests.updateRequest( req.body, function(err, result ) {
 		res.send(result);
 	});
 };

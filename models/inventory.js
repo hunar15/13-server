@@ -1,6 +1,24 @@
 var config = require('../config/config'),
 	connection = config.connection;
 
+exports.getInventorySize = function (args,callback) {
+	// body...
+	var outlet_id = args.outletid,
+
+		query = 'SELECT COUNT(*) as size FROM inventory WHERE outlet_id='+outlet_id+' ;';
+
+	connection.query(query,function  (err,rows,fields) {
+		// body...
+		var res = {};
+		if(!err) {
+			res.size = rows[0].size;
+			res.STATUS = 'SUCCESS';
+			callback(null,res);
+		} else {
+			callback(err,null);
+		}
+	});
+};
 exports.getAllInventory = function  (callback) {
 	// body...
 	var query = 'SELECT s_name,outlet_id, barcode, name,category, manufacturer, stock, min_stock' +
@@ -38,7 +56,7 @@ exports.getAllInventory = function  (callback) {
 
 exports.pushInventoryToHQ =function (args,callback) {
 	// body...;
-	var outlet_id = args.outletid,
+	var outlet_id = args.data.outletid,
 		list = args.list,
 		query = '';
 	console.log(outlet_id);
