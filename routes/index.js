@@ -372,10 +372,12 @@ exports.syncAll = function(req,res) {
 		var query = '',
 			list = [];
 
-		query = 'SELECT * from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
-			' AND outlet_id='+outlet_id+' ;';
+		query = 'SELECT name,category,barcode,cost_price,manufacturer,selling_price,min_stock,status '+
+			'from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
+			' AND outlet_id='+outlet_id+' LIMIT 3000;';
 
-		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ;';
+		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' '+
+			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' LIMIT 3000;';
 
 		connection.query(query,function (err,rows,fields) {
 			// body...
@@ -386,7 +388,7 @@ exports.syncAll = function(req,res) {
 				for(var j in rows[1]) {
 					list.push(rows[1][j]);
 				}
-				console.log(JSON.stringify(list));
+				//console.log(JSON.stringify(list));
 				res.send({list : list});
 			} else {
 				console.log("Error in processing query : "+err);
