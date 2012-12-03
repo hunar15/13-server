@@ -53,8 +53,11 @@ margin-left:18px;
 .detail-image{
 	max-height: 200px;
 }
-#catalog-paginator{
+.catalog-paginator{
+	text-align:right;
 	clear:left;
+	margin-right:178px;
+	margin-bottom:10px;
 }
 .change{
 font-weight:normal;
@@ -89,7 +92,7 @@ top:-1px;
 border-radius: 10px;
 }
 .navbar-inner{
-background: url('../images/dark_wood.png');
+background: url('../images/dark_wood.png') black;
 border-radius: 0 0 5px 5px;
 }
 #shopping-cart-options{

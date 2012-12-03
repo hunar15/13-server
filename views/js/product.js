@@ -49,7 +49,7 @@ function initAddProduct(){
 	});
 	$('#inputBarcode').bind('input',function(e){
 			var code = (e.keyCode ? e.keyCode : e.which);
-			if($('#inputBarcode').val().length == 8 && is_int($('#inputBarcode').val())) {
+			if($('#inputBarcode').val().length == 8 && is_int($('#inputBarcode').val()) && parseInt($('#inputBarcode').val()) > 0) {
 				$.ajax({
 					url: "/product/isBarcodeValid",
 					type: 'POST',
@@ -126,7 +126,7 @@ function validProductDetails(name, category, manufacturer, cost_price){
 	else
 		$('label[for=inputCategory]').removeClass('invalid');
 		
-	if (parseInt(manufacturer) > 9999 || manufacturer.length == 0 || !parseInt(manufacturer)){
+	if (parseInt(manufacturer) > 9999 || parseInt(manufacturer) <0 || manufacturer.length == 0 || !is_int(manufacturer)){
 		$('label[for=inputManufacturer]').addClass('invalid');
 		valid = false;
 	}
@@ -135,7 +135,7 @@ function validProductDetails(name, category, manufacturer, cost_price){
 	
 	var cp = parseFloat(cost_price)
 	
-	if (!cp){
+	if (isNaN(cost_price)){
 		alert('Price must be a float!');
 		$('label[for=inputPrice]').addClass('invalid');
 		valid = false;
@@ -158,7 +158,17 @@ function validInventoryDetails(selling_price,min_stock){
 	var alertmsg = '';
 	var sp = parseFloat(selling_price);
 	var ms = parseInt(min_stock);
-	if (!sp){
+	
+	if ($('#outlet-selector').val() == null){
+		valid = false;
+		alertmsg = alertmsg + 'No outlets selected! ';
+	}
+	if (selling_price.length == 0)
+	{
+		valid= false;
+		alertmsg = alertmsg + 'Selling price cannot be empty!';
+	}
+	if (isNaN(selling_price)){
 		$('label[for=inputSellingPrice]').addClass('invalid');
 		valid = false;
 		alertmsg = alertmsg + 'Selling price must be a float! ';
@@ -174,7 +184,7 @@ function validInventoryDetails(selling_price,min_stock){
 	else
 		$('label[for=inputSellingPrice]').removeClass('invalid');		
 		
-	if (!ms){
+	if (!is_int(min_stock)){
 		$('label[for=inputMinStock]').addClass('invalid');
 		valid = false;
 		alertmsg = alertmsg + 'Minimum stock must be an integer!';

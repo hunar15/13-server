@@ -182,7 +182,7 @@ function initDetail(data){
 	detailedEditableGrid.load({"metadata": data.metadata,"data": data.data});
 	detailedEditableGrid.renderGrid("restockdetailstablecontent", "detailgrid");
 	
-	if (data.metadata.length == 3){
+	if (data.metadata.length == 4){
 		detailedEditableGrid.setCellRenderer("received", new CellRenderer({render: function(cell, value) {
 			// this action will remove the row, so first find the ID of the row containing this cell 
 			var rowId = detailedEditableGrid.getRowId(cell.rowIndex);

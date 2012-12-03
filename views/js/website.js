@@ -187,11 +187,17 @@ function renderCatalog(){
 }
 
 function catalogGenerator(data,startIndex){
-	console.log('cat');
 	cList = data;
 	var maxIndex = data.length;
 	$('#catalog-display li').remove();
-	$('#catalog-paginator').remove();
+	$('.catalog-paginator').remove();
+	var lastItem = startIndex+9;
+	if (maxIndex < lastItem)
+		lastItem = maxIndex;
+	$('#catalog-display').append('<li style="list-style-type:none;margin-left:18px;">Showing results '+(startIndex+1)+' to '+lastItem+' of '+maxIndex+' results</li>');
+	$('#catalog-display').append('</ul><div class="catalog-paginator">'
+		+'<button class="btn prev" onclick="catalogGenerator(cList,'+(startIndex-9)+');disableSelectedItems();">&lt; Prev</button>&nbsp;'
+		+'<button class="btn next" onclick="catalogGenerator(cList,'+(startIndex+9)+');disableSelectedItems();">Next &gt;</button></div>');
 	$.each(data,function(k,v){
 		if (k>= startIndex && k < startIndex + 9)
 		$('#catalog-display').append('<li class="span3" style="padding-bottom: 20px;"><div class="thumbnail" style="height:330px;">'
@@ -205,13 +211,13 @@ function catalogGenerator(data,startIndex){
 		+'</div></li>');
 					
 	});
-	$('#catalog-display').append('</ul><div id="catalog-paginator">'
-		+'<button id="prev" class="btn" onclick="catalogGenerator(cList,'+(startIndex-9)+');disableSelectedItems();">&lt; Prev</button>&nbsp;'
-		+'<button id="next" class="btn" onclick="catalogGenerator(cList,'+(startIndex+9)+');disableSelectedItems();">Next &gt;</button></div>');
+	$('#catalog-display').append('</ul><div class="catalog-paginator">'
+		+'<button class="btn prev" onclick="catalogGenerator(cList,'+(startIndex-9)+');disableSelectedItems();">&lt; Prev</button>&nbsp;'
+		+'<button class="btn next" onclick="catalogGenerator(cList,'+(startIndex+9)+');disableSelectedItems();">Next &gt;</button></div>');
 	if (startIndex-9 <0)
-		$('#prev').attr('disabled','disabled');
+		$('.prev').attr('disabled','disabled');
 	if (startIndex+9 >maxIndex)
-		$('#next').attr('disabled','disabled');
+		$('.next').attr('disabled','disabled');
 }
 
 function renderOrderHistory(){
@@ -430,7 +436,13 @@ function clearAll(){
 	});
 	disabledItems = [];
 }
-
+function is_int(value){ 
+	if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+		return true;
+	} else { 
+		return false;
+	} 
+}
 function addToShoppingCart(barcode,name,price,stock){
 	$.getJSON("/isSessionActive",function(data){
 		if (data==false){
@@ -439,7 +451,7 @@ function addToShoppingCart(barcode,name,price,stock){
 		}
 		else{
 			var qty = parseInt($('#qty-'+barcode).val());
-			if (!qty)
+			if (!qty || qty<1 || !is_int($('#qty-'+barcode).val()))
 			{
 				alert("Invalid quantity input");
 				return;
