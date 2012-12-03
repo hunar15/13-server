@@ -1,6 +1,7 @@
 var config = require('../../config/config'),
 	connection = config.connection,
-	onlineid = config.onlineid;
+	onlineid = config.onlineid,
+	cronJob = require('cron').CronJob;
 
 exports.getAllInventory = function  (callback) {
 	// body...
@@ -18,6 +19,17 @@ exports.getAllInventory = function  (callback) {
 		}
 	});
 };
+
+var options = {
+						cronTime : '25 6 * * *',
+
+						onTick : recomputePrice,
+						start : false,
+						timeZone :'Singapore'
+					},
+	priceRecomputationJob = new cronJob(options);
+	priceRecomputationJob.start();
+
 
 exports.searchInventory = function  (args,callback) {
 	// body...
@@ -51,9 +63,27 @@ exports.searchInventory = function  (args,callback) {
 
 };
 
-exports.recomputePrice = function (callback) {
-	
-};
+function recomputePrice () {
+	var select_query = 'UPDATE product p INNER JOIN inventory i ON p.barcode = i.product_barcode '+
+	'LEFT JOIN (SELECT d.barcode as barcode,SUM(d.quantity) as total from online_transaction o inner'+
+	' join online_transaction_details d on d.id=o.id where DATE(o.timestamp)=CURDATE() group by barcode)'+
+' s on s.barcode=i.product_barcode set i.selling_price=FORMAT(GREATEST(1.05* p.cost_price, ( IFNULL( s.total, 0 )'+
+	' * i.selling_price ) / ( 0.9 * i.min_stock ) ),2) WHERE i.status<>\'DISCONTINUED\' and outlet_id='+onlineid+';';
+
+	select_query += 'UPDATE product p INNER JOIN inventory i ON p.barcode = i.product_barcode '+
+	'set i.selling_price=FORMAT(p.cost_price/2,2) WHERE i.status=\'DISCONTINUED\' and outlet_id='+onlineid+';';
+
+
+	connection.query(select_query,function (err, rows, fields) {
+		if(!err) {
+			console.log('Online Prices Successfully Recomputed!!');
+		} else {
+			console.log("Error encountered");
+			console.log("ERROR : "+err);
+		//	callback(true,null);
+		}
+	});
+}
 
 exports.getProductInformation = function(args, callback) {
 	var barcode = args;
