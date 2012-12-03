@@ -392,11 +392,12 @@ exports.syncAll = function(req,res) {
 
 		query = 'SELECT name,category,barcode,cost_price,manufacturer,selling_price,min_stock,status '+
 			'from product inner join inventory on barcode=product_barcode where status=\'ADDED\''+
-			' AND outlet_id='+outlet_id+' ORDER BY barcode LIMIT '+index+', '+length+' ;';
+			' AND outlet_id='+outlet_id+' ORDER BY barcode LIMIT '+(index*length)+', '+length+' ;';
 
 		query += 'SELECT * from inventory where status<>\'NORMAL\' and status<>\'ADDED\' '+
-			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ORDER BY product_barcode LIMIT '+index+', '+length+' ;';
+			'and status<>\'DISCONTINUED\' AND outlet_id='+outlet_id+' ORDER BY product_barcode LIMIT '+(index*length)+', '+length+' ;';
 
+		console.log(query);
 		connection.query(query,function (err,rows,fields) {
 			// body...
 			if(!err) {
@@ -409,6 +410,7 @@ exports.syncAll = function(req,res) {
 				result.list = list;
 				//console.log(JSON.stringify(list));
 				console.log(list.length);
+				//connection.connect();
 				res.send(result);
 			//	sendRes(res,list);
 			} else {

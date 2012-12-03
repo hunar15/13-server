@@ -13,7 +13,7 @@
     "forever": "*",
     "everyauth": "*",
     "connect-redis":"*",
-    "emailjs" : "*"
-
+    "emailjs" : "*",
+    "async" : "*"
   }
 }
