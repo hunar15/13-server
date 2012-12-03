@@ -65,7 +65,7 @@ function changeOutlet(scroll){
                 type: 'column'
         },
         title: {
-                text: 'Last Week\'s Performance'
+                text: 'Last Week\'s Best Selling Product'
 		},
 		xAxis: {
                 categories: []

@@ -5,14 +5,14 @@ var config = require('../config/config'),
 exports.lastWeekPerformance = function (args, callback) {
 	var outlet_id = args.outlet_id;
 	console.log(outlet_id);
-	if(outlet_id!==null) {
+	if(outlet_id) {
 		var query = 'select DATE_FORMAT(a.date,\'%Y-%m-%d\') as date, p.name as name, a.revenue as revenue from product p,'+
-			'(select t.date as date,d.barcode as barcode, d.price*d.quantity ' +
+			'(select t.date as date,d.barcode as barcode, SUM(d.price*d.quantity) ' +
 			'as revenue from transaction t inner join transaction_details d on '+
-			'd.id=t.id where t.outlet_id='+outlet_id+' and t.date>=subdate(curdate(),7)) a where a.revenue >= ALL(select '+
-			'd1.price*d1.quantity from transaction t1 inner join transaction_details '+
-			'd1 on d1.id=t1.id where t1.date=a.date and t1.outlet_id='+outlet_id+' and t1.date>=subdate(curdate(),7)) '+
-			' and p.barcode=a.barcode;';
+			'd.id=t.id where t.outlet_id='+outlet_id+' and t.date>=subdate(curdate(),7) group by t.date,d.barcode) a where a.revenue >= ALL(select '+
+			'SUM(d1.price*d1.quantity) from transaction t1 inner join transaction_details '+
+			'd1 on d1.id=t1.id where t1.date=a.date and t1.outlet_id='+outlet_id+' group by d1.barcode) '+
+			' and p.barcode=a.barcode group by a.date;';
 
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
