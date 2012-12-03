@@ -126,6 +126,9 @@ app.get('/isSessionActive', function (req,res) {
   }
 });
 //testing routes
+app.get('/online/:barcode',function(req,res) {
+  res.end();
+});
 app.post('/website/findOrCreateUser',routes.website_findOrCreate);
 app.post('/website/findUserById',routes.website_findUserById);
 app.get('/website/product/:barcode',routes.website_productInformation);
