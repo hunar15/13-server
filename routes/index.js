@@ -601,6 +601,12 @@ exports.updateOutlet = function  (req, res) {
 		res.send(result);
 	});
 };
+exports.getDiscontinuedOutlet = function  (callback) {
+	// body...
+	outlet.getDiscontinued( function(err, result ) {
+		res.send(result);
+	});
+};
 
 
 exports.getInventory = function  (req, res) {

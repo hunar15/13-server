@@ -29,6 +29,26 @@ exports.getAllOutlets = function  (callback) {
 	});
 };
 
+exports.getDiscontinued = function  (callback) {
+	// body...
+
+	var query = 'select * FROM outlet WHERE NOT EXISTS ( SELECT * FROM inventory'+
+		' where id=outlet_id and status NOT LIKE \'%DISCONTINUE%\');';
+
+	var result = {};
+	connection.query(query, function  (err, rows, fields) {
+		// body...
+		/*for( var i in rows) {
+			var current = {};
+			console.log(current);
+			current['id'] = rows[i]['id'];
+			current['values'] = rows[i];
+			result['data'].push(current);
+		}*/
+		callback(err, rows);
+	});
+};
+
 exports.getAllOutletsNoMeta = function  (callback) {
 	// body...
 
