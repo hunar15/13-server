@@ -85,13 +85,39 @@ exports.pushInventoryToHQ =function (args,callback) {
 	}
 };
 
+
+exports.canAdd = function  (args, callback) {
+	// body...
+	var outlet_id = args.outlet_id;
+
+	if(outlet_id) {
+		var query = 'SELECT * from inventory where outlet_id='+outlet_id+' and status not like \'%DISCONTINUE%\';';
+
+		connection.query(query,function (err,rows,fields) {
+			// body...
+			if(!err) {
+				if(rows.length === 0)
+					callback(null,false);
+				else
+					callback(null,true);
+			} else {
+				console.log("Error : " + err);
+				callback(err, null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameers");
+		callback(true,null);
+	}
+};
+
 exports.getNotSelling = function(args, callback) {
 	var barcode = args.barcode;
 
 	if(barcode!== null) {
 		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM'+
-			' inventory WHERE product_barcode='+barcode+' and outlet_id = id) AND NOT EXISTS(SELECT * FROM'+
-			' inventory WHERE outlet_id = id and status NOT LIKE \'%DISCONTINUE%\');';
+			' inventory i WHERE i.product_barcode='+barcode+' and i.outlet_id = id) AND EXISTS(SELECT * FROM'+
+			' inventory j WHERE j.outlet_id = id and j.status NOT LIKE \'%DISCONTINUE%\');';
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				console.log(rows);
