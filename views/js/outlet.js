@@ -167,7 +167,9 @@ function init(data){
 			data: {
 				"id": editableGrid.getRowValues(rowIndex).id,
 				"s_name": editableGrid.getRowValues(rowIndex).s_name,
-				"address": editableGrid.getRowValues(rowIndex).address
+				"address": editableGrid.getRowValues(rowIndex).address,
+				"latitude": editableGrid.getRowValues(rowIndex).latitude,
+				"longitude": editableGrid.getRowValues(rowIndex).longitude,
 			},
 
 			success: function (response) {
