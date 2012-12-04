@@ -292,6 +292,36 @@ CREATE TABLE IF NOT EXISTS `product` (
 -- Dumping data for table `product`
 --
 
+UPDATE product set image='http://www.smokescenenyc.com/money-clips.jpg' where barcode=11521340;
+UPDATE product set image='http://naijaintellect.files.wordpress.com/2012/07/ballpoint-pen-parts-2.jpg' where barcode=11760294;
+UPDATE product set image='http://www.robbinssports.com/images/A4-N8106-Two-Color-Athletic-Duffle.jpg' where barcode=12008016;
+UPDATE product set image='http://www.chinawholesalegift.com/pic3/2010-9/13/coin-bank-tin-in-round-shape-with-zipper-20555433960.jpg' where barcode=13523279;
+UPDATE product set image='http://www.execugifts.com.au/images/MM4Z1V461VIP9MMNGibELBGtGtMf/Assorted-Colour-Jelly-Beans-In-Screw-Cap-Jar.jpg' where barcode=15521955;
+UPDATE product set image='http://www.redpromotional.com.au/image/cache/data/Products/S13-500x500.jpg' where barcode=16543556;
+UPDATE product set image='http://royallink.com.sg/Categories/Shopping%20Bag/SB003%20-%20Khaki%20Shopper%20Bag.jpg' where barcode=16686549;
+UPDATE product set image='http://www.premium-partners.com/Upload/Picture_3465_22.jpg' where barcode=16948044;
+UPDATE product set image='http://4.bp.blogspot.com/_Yoa2qeMANqQ/TUiuJBjJSPI/AAAAAAAABTo/KGMzCgayfSQ/s1600/DSCF0359.JPG' where barcode=18121244;
+UPDATE product set image='http://www.damascusfair.org/Blue_Balloona.gif' where barcode=18164847;
+UPDATE product set image='http://dist.imagecollection.com.au/images/products/D482.jpg' where barcode=18175970;
+UPDATE product set image='http://www.freshpromotions.com.au/products/memo-pad-holder1.jpg' where barcode=18243337;
+UPDATE product set image='http://www.acasports.co.uk/images/products/full/speedo_sports_towel_blue.jpg' where barcode=19619262;
+UPDATE product set image='http://www.stateside.com.au/images/Hatbands_lge.jpg' where barcode=20151308;
+UPDATE product set image='http://upload.wikimedia.org/wikipedia/commons/thumb/8/86/SanDisk_Cruzer_Micro.png/220px-SanDisk_Cruzer_Micro.png' where barcode=20219909;
+UPDATE product set image='http://image.made-in-china.com/2f0j00fvIteMRgOucC/Ladies-Check-Short-Sleeve-Shirt.jpg' where barcode=20909394;
+UPDATE product set image='http://www.ad-promotion-gift.com/pupload/2400/MARKSMAN_CLASSICAL_A4_PORTFOLIO_14695.jpg' where barcode=21884433;
+UPDATE product set image='http://www.backcountry.com/images/items/medium/QKS/QKS4882/BK.jpg' where barcode=22016225;
+UPDATE product set image='http://i.ebayimg.com/00/s/NTAwWDUwMA==/$(KGrHqV,!i0E9gve!qvOBP)tcG7bFg~~48_35.JPG' where barcode=23946308;
+UPDATE product set image='http://www.gemnation.com/images/watches/Pane/PAM00173.jpg' where barcode=24067314;
+UPDATE product set image='http://www.proprofs.com/flashcards/upload/q6326015.jpg' where barcode=24768324;
+UPDATE product set image='http://www.freshpromotions.com.au/products/metal-whistle-keyring.jpg' where barcode=26653184;
+UPDATE product set image='http://www.earthinpictures.com/stuff/office_and_school/stationery/blue_plastic_pen.jpg' where barcode=27693372;
+UPDATE product set image='http://cache0.bigcartel.com/product_images/72354267/no_fit_state_american_apparel_black_2_beanie.jpg' where barcode=28127291;
+UPDATE product set image='http://www.positiveratio.com/wp-content/uploads/2012/04/Coffee-Mug.jpg' where barcode=28323264;
+UPDATE product set image='http://www.qualitylogoproducts.com/custom-bags/deluxe-sticky-noteholder-extralarge.jpg' where barcode=28366167;
+UPDATE product set image='http://www.adhesive.com/catImages/accessory/L/AA1GOGGCHSP-goggles_L.jpg' where barcode=30011470;
+UPDATE product set image='http://www.baeshiow.com.tw/WMPics/PrdtGroup/Cap/Sports_Cap/Sports_Cap.jpg' where barcode=30300675;
+UPDATE product set image='http://rlv.zcache.com/certified_freight_relocation_engineer_red_mesh_cap_hat-p148327882594052637enxqa_400.jpg' where barcode=30364600;
+
 INSERT INTO `product` (`name`, `category`, `barcode`, `cost_price`, `manufacturer`, `image`) VALUES
 ('Money Clip', 'Breakfast Foods', 11521340, 21.8, '3315', 'http://www.smokescenenyc.com/money-clips.jpg'),
 ('4 ink colour ball pen', 'Tobacco Papers', 11760294, 82.4, '4715', 'http://naijaintellect.files.wordpress.com/2012/07/ballpoint-pen-parts-2.jpg'),

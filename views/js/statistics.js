@@ -47,9 +47,10 @@ $(function(){
 		$.each(response.data, function(idx, item){
 			$('#show-outlet').append('<option id="outlet-'+item.id+'" value="'+item.id+'">'+item.values.s_name+'</option>');
 		});
+			changeOutlet(false);
 	});
 	
-	changeOutlet(false);
+
 		
 });
 
@@ -57,6 +58,7 @@ $(function(){
 function changeOutlet(scroll){
 	var arr = {};
 	var outlet_id = $('#show-outlet option:selected').val();
+	console.log(outlet_id);
 	$('#outletcontent').empty();
 	$.post('../getLastWeeksPerformance', { outlet_id : outlet_id }, function (data) {
 	var option_line = {
