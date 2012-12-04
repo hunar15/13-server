@@ -112,17 +112,36 @@ exports.canAdd = function  (args, callback) {
 };
 
 exports.getNotSelling = function(args, callback) {
-	var barcode = args.barcode;
+	var barcode = args.barcode,
+		result = [];
 
 	if(barcode!== null) {
 		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM'+
-			' inventory i WHERE i.product_barcode='+barcode+' and i.outlet_id = id) AND NOT EXISTS(SELECT * FROM'+
-			' inventory j WHERE j.outlet_id = id and j.status LIKE \'%DISCONTINUE%\');';
+			' inventory i WHERE i.product_barcode='+barcode+' and i.outlet_id = id) AND EXISTS (SELECT * FROM'+
+			' inventory j WHERE j.outlet_id = id and j.status NOT LIKE \'%DISCONTINUE%\');';
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				console.log(rows);
 				console.log("Query successfully executed");
-				callback(null,rows);
+				for(var i in rows) {
+					result.push(rows[i]);
+				}
+				//callback(null,rows);
+				query = 'SELECT distinct id, s_name from outlet where NOT EXISTS(SELECT * FROM inventory where outlet_id=id);';
+					connection.query(query, function(err2, rows2, fields) {
+					if(!err2) {
+						console.log(rows2);
+						console.log("Query successfully executed");
+						for(var i in rows2) {
+							result.push(rows2[i]);
+						}
+						callback(null,result);
+							
+					} else {
+						console.log("Error encountered : " + err);
+						callback(true,null);
+					}
+				});
 			} else {
 				console.log("Error encountered : " + err);
 				callback(true,null);
