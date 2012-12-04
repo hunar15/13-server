@@ -28,6 +28,18 @@ var connection = sql.createConnection({
   database : 'hqdb',
   multipleStatements : true
 });
+
+exports.canAdd = function (req,res) {
+	// body...
+	inventory.canAdd(req.body,function (err,result) {
+		// body...
+		if(!err) {
+			res.send(result);
+		} else {
+			res.send(err);
+		}
+	});
+};
 exports.customer = function (req,res) {
     res.render("index.html",{fbapp: config.fb.appId});
 };

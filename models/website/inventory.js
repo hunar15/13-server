@@ -20,6 +20,31 @@ exports.getAllInventory = function  (callback) {
 	});
 };
 
+exports.canAdd = function  (args, callback) {
+	// body...
+	var outlet_id = args.outlet_id;
+
+	if(outlet_id) {
+		var query = 'SELECT * from inventory where outlet_id='+outlet_id+' and status not like \'%DISCONTINUE%\';';
+
+		connection.query(query,function (err,rows,fields) {
+			// body...
+			if(!err) {
+				if(rows.length === 0)
+					callback(null,false);
+				else
+					callback(null,true);
+			} else {
+				console.log("Error : " + err);
+				callback(err, null);
+			}
+		});
+	} else {
+		console.log("Invalid or absent parameers");
+		callback(true,null);
+	}
+};
+
 var options = {
 						cronTime : '25 6 * * *',
 
