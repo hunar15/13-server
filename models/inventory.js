@@ -90,7 +90,7 @@ exports.getNotSelling = function(args, callback) {
 
 	if(barcode!== null) {
 		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM'+
-			' inventory WHERE product_barcode='+barcode+' and outlet_id = id) AND NOT EXIST(SELECT * FROM'+
+			' inventory WHERE product_barcode='+barcode+' and outlet_id = id) AND NOT EXISTS(SELECT * FROM'+
 			' inventory WHERE outlet_id = id and status NOT LIKE \'%DISCONTINUE%\');';
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
@@ -174,7 +174,7 @@ exports.getInventory =  function(args, callback) {
 	result['metadata'].push({"name": "barcode", "label" : "Barcode", "datatype" : "string"});
 	result['metadata'].push({"name": "name", "label" : "Name", "datatype" : "string"});
 	result['metadata'].push({"name": "category", "label" : "Category", "datatype" : "string"});
-	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "string"});
+	result['metadata'].push({"name": "manufacturer", "label" : "Manufacturer", "datatype" : "double(,0,dot,comma,1,n/a)"});
 	result['metadata'].push({"name": "stock", "label" : "Stock", "datatype" : "double(,0,dot,comma,1,n/a)"});
 	result['metadata'].push({"name": "min_stock", "label" : "Min. Stock", "datatype" : "double(,0,dot,comma,1,n/a)", "editable": true});
 	result['metadata'].push({"name": "selling_price", "label" : "Selling Price", "datatype" : "double($, 2, dot,comma, 1, n/a)", "editable": true});
@@ -188,6 +188,7 @@ exports.getInventory =  function(args, callback) {
 			current['id'] = rows[i]['barcode'];
 			current['values'] = rows[i];
 			result['data'].push(current);
+			console.log(current);
 		}
 		callback(err, result);
 	});
