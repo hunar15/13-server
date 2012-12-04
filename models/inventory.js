@@ -116,8 +116,8 @@ exports.getNotSelling = function(args, callback) {
 
 	if(barcode!== null) {
 		var query = 'SELECT distinct id, s_name from outlet WHERE NOT EXISTS( SELECT * FROM'+
-			' inventory i WHERE i.product_barcode='+barcode+' and i.outlet_id = id) AND EXISTS(SELECT * FROM'+
-			' inventory j WHERE j.outlet_id = id and j.status NOT LIKE \'%DISCONTINUE%\');';
+			' inventory i WHERE i.product_barcode='+barcode+' and i.outlet_id = id) AND NOT EXISTS(SELECT * FROM'+
+			' inventory j WHERE j.outlet_id = id and j.status LIKE \'%DISCONTINUE%\');';
 		connection.query(query, function(err, rows, fields) {
 			if(!err) {
 				console.log(rows);
